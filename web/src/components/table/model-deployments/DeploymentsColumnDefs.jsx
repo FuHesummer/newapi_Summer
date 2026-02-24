@@ -64,7 +64,12 @@ const STATUS_TAG_CONFIG = {
   stopped: {
     color: 'grey',
     labelKey: '已停止',
-    icon: <FaStop size={12} className='text-gray-500' />,
+    icon: (
+      <FaStop
+        size={12}
+        style={{ color: 'var(--semi-color-text-2)' }}
+      />
+    ),
   },
   error: {
     color: 'red',
@@ -101,7 +106,12 @@ const STATUS_TAG_CONFIG = {
 const DEFAULT_STATUS_CONFIG = {
   color: 'grey',
   labelKey: null,
-  icon: <FaInfoCircle size={12} className='text-gray-500' />,
+  icon: (
+    <FaInfoCircle
+      size={12}
+      style={{ color: 'var(--semi-color-text-2)' }}
+    />
+  ),
 };
 
 const parsePercentValue = (value) => {
@@ -326,11 +336,7 @@ export const getDeploymentsColumns = ({
             <span>{provider}</span>
           </div>
         ) : (
-          <Typography.Text
-            type='tertiary'
-            size='small'
-            className='text-xs text-gray-500'
-          >
+          <Typography.Text type='tertiary' size='small' className='text-xs'>
             {t('暂无')}
           </Typography.Text>
         ),
@@ -426,13 +432,20 @@ export const getDeploymentsColumns = ({
       ellipsis: true,
       render: (text, record) => (
         <div className='flex items-center gap-2'>
-          <div className='flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded-md'>
+          <div
+            className='flex items-center gap-1 px-2 py-1 border rounded-md'
+            style={{
+              borderColor: 'rgba(34,197,94,0.28)',
+              background:
+                'color-mix(in srgb, var(--glass-bg) 82%, rgba(34,197,94,0.10))',
+            }}
+          >
             <FaServer className='text-green-600 text-xs' />
-            <span className='text-xs font-medium text-green-700'>
+            <span className='text-xs font-medium' style={{ color: '#15803d' }}>
               {record.hardware_name}
             </span>
           </div>
-          <span className='text-xs text-gray-500 font-medium'>
+          <span className='text-xs font-medium' style={{ color: 'var(--semi-color-text-2)' }}>
             x{record.hardware_quantity}
           </span>
         </div>
@@ -444,7 +457,9 @@ export const getDeploymentsColumns = ({
       key: COLUMN_KEYS.created_at,
       width: 150,
       render: (text) => (
-        <span className='text-sm text-gray-600'>{timestamp2string(text)}</span>
+        <span className='text-sm' style={{ color: 'var(--semi-color-text-2)' }}>
+          {timestamp2string(text)}
+        </span>
       ),
     },
     {
