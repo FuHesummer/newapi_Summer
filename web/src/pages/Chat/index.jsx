@@ -67,7 +67,7 @@ const ChatPage = () => {
     />
   ) : (
     <div
-      className='fixed inset-0 w-screen h-screen flex items-center justify-center z-[1000] mt-[60px]'
+      className='fixed inset-x-0 bottom-0 top-[60px] flex items-center justify-center z-[1000]'
       style={{
         background: 'color-mix(in srgb, var(--glass-bg) 86%, transparent)',
         backdropFilter: 'blur(14px) saturate(140%)',
