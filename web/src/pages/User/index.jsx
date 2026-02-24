@@ -22,8 +22,10 @@ import UsersTable from '../../components/table/users';
 
 const User = () => {
   return (
-    <div className='mt-[60px] px-2'>
-      <UsersTable />
+    <div className='mt-[60px] px-2 pb-2'>
+      <div className='with-pastel-balls rounded-2xl p-1 md:p-2'>
+        <UsersTable />
+      </div>
     </div>
   );
 };

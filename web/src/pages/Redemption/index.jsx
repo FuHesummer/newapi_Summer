@@ -22,8 +22,10 @@ import RedemptionsTable from '../../components/table/redemptions';
 
 const Redemption = () => {
   return (
-    <div className='mt-[60px] px-2'>
-      <RedemptionsTable />
+    <div className='mt-[60px] px-2 pb-2'>
+      <div className='with-pastel-balls rounded-2xl p-1 md:p-2'>
+        <RedemptionsTable />
+      </div>
     </div>
   );
 };

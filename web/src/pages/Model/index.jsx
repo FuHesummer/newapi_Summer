@@ -21,8 +21,10 @@ import ModelsTable from '../../components/table/models';
 
 const ModelPage = () => {
   return (
-    <div className='mt-[60px] px-2'>
-      <ModelsTable />
+    <div className='mt-[60px] px-2 pb-2'>
+      <div className='with-pastel-balls rounded-2xl p-1 md:p-2'>
+        <ModelsTable />
+      </div>
     </div>
   );
 };

@@ -21,8 +21,10 @@ import React from 'react';
 import TaskLogsTable from '../../components/table/task-logs';
 
 const Task = () => (
-  <div className='mt-[60px] px-2'>
-    <TaskLogsTable />
+  <div className='mt-[60px] px-2 pb-2'>
+    <div className='with-pastel-balls rounded-2xl p-1 md:p-2'>
+      <TaskLogsTable />
+    </div>
   </div>
 );
 
