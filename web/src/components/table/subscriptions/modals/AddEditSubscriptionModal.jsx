@@ -219,7 +219,15 @@ const AddEditSubscriptionModal = ({
         visible={visible}
         width={isMobile ? '100%' : 600}
         footer={
-          <div className='flex justify-end bg-white'>
+          <div
+            className='flex justify-end'
+            style={{
+              background: 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
+              backdropFilter: 'blur(12px) saturate(135%)',
+              WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+              borderTop: '1px solid var(--glass-border)',
+            }}
+          >
             <Space>
               <Button
                 theme='solid'
