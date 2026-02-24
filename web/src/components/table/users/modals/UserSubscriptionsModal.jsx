@@ -354,7 +354,12 @@ const UserSubscriptionsModal = ({ visible, onCancel, user, t, onSuccess }) => {
       visible={visible}
       placement='right'
       width={isMobile ? '100%' : 920}
-      bodyStyle={{ padding: 0 }}
+      bodyStyle={{
+        padding: 0,
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+      }}
       onCancel={onCancel}
       title={
         <Space>

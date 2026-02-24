@@ -134,7 +134,12 @@ const EditPrefillGroupModal = ({
       visible={visible}
       onCancel={onClose}
       width={isMobile ? '100%' : 600}
-      bodyStyle={{ padding: '0' }}
+      bodyStyle={{
+        padding: '0',
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+      }}
       footer={
         <div
           className='flex justify-end'

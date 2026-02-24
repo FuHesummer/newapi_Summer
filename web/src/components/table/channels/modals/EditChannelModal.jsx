@@ -1831,11 +1831,24 @@ const EditChannelModal = (props) => {
             </Title>
           </Space>
         }
-        bodyStyle={{ padding: '0' }}
+        bodyStyle={{
+          padding: '0',
+          background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+          backdropFilter: 'blur(12px) saturate(135%)',
+          WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+        }}
         visible={props.visible}
         width={isMobile ? '100%' : 600}
         footer={
-          <div className='flex justify-between items-center bg-white'>
+          <div
+            className='flex justify-between items-center'
+            style={{
+              background: 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
+              backdropFilter: 'blur(12px) saturate(135%)',
+              WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+              borderTop: '1px solid var(--glass-border)',
+            }}
+          >
             <div className='flex gap-2'>
               <Button
                 size='small'
