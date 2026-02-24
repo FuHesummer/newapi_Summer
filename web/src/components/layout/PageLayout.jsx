@@ -149,6 +149,7 @@ const PageLayout = () => {
           overflow: isMobile ? 'visible' : 'auto',
           display: 'flex',
           flexDirection: 'column',
+          background: 'transparent',
         }}
       >
         {showSider && (
@@ -162,6 +163,7 @@ const PageLayout = () => {
               border: 'none',
               paddingRight: '0',
               width: 'var(--sidebar-current-width)',
+              background: 'transparent',
             }}
           >
             <SiderBar
@@ -181,6 +183,7 @@ const PageLayout = () => {
             flex: '1 1 auto',
             display: 'flex',
             flexDirection: 'column',
+            background: 'transparent',
           }}
         >
           <Content
@@ -188,8 +191,9 @@ const PageLayout = () => {
               flex: '1 0 auto',
               overflowY: isMobile ? 'visible' : 'hidden',
               WebkitOverflowScrolling: 'touch',
-              padding: shouldInnerPadding ? (isMobile ? '5px' : '24px') : '0',
+              padding: shouldInnerPadding ? (isMobile ? '10px' : '24px') : '0',
               position: 'relative',
+              background: 'transparent',
             }}
           >
             <App />

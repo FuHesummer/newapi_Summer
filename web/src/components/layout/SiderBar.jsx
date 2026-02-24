@@ -305,6 +305,7 @@ const SiderBar = ({ onNavigate = () => {} }) => {
 
   // 选中高亮颜色（统一）
   const SELECTED_COLOR = 'var(--semi-color-primary)';
+  const navItemBorderRadius = 10;
 
   // 渲染自定义菜单项
   const renderNavItem = (item) => {
@@ -409,6 +410,11 @@ const SiderBar = ({ onNavigate = () => {} }) => {
           itemStyle='sidebar-nav-item'
           hoverStyle='sidebar-nav-item:hover'
           selectedStyle='sidebar-nav-item-selected'
+          style={{
+            background: 'transparent',
+            borderRadius: navItemBorderRadius,
+            color: 'var(--app-text-primary)',
+          }}
           renderWrapper={({ itemElement, props }) => {
             const to =
               routerMapState[props.itemKey] || routerMap[props.itemKey];

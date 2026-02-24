@@ -18,22 +18,79 @@
   --sidebar-width: 180px;
   --sidebar-width-collapsed: 60px;
   --sidebar-current-width: var(--sidebar-width);
+
+  --app-bg-primary: #edf2ff;
+  --app-bg-secondary: #f6f9ff;
+  --app-bg-tertiary: #e8f7ff;
+  --app-text-primary: rgba(15, 23, 42, 0.92);
+  --app-text-secondary: rgba(30, 41, 59, 0.72);
+
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-hover: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(148, 163, 184, 0.35);
+  --glass-border-strong: rgba(124, 140, 255, 0.45);
+  --glass-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --glass-shadow-strong: 0 18px 40px rgba(15, 23, 42, 0.18);
+
+  --brand-primary: #7c8cff;
+  --brand-accent: #5eead4;
+}
+
+html.dark {
+  --app-bg-primary: #0b1020;
+  --app-bg-secondary: #111a33;
+  --app-bg-tertiary: #1a2342;
+  --app-text-primary: rgba(255, 255, 255, 0.92);
+  --app-text-secondary: rgba(255, 255, 255, 0.68);
+
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-hover: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-border-strong: rgba(124, 140, 255, 0.6);
+  --glass-shadow: 0 12px 36px rgba(2, 6, 23, 0.45);
+  --glass-shadow-strong: 0 20px 48px rgba(2, 6, 23, 0.62);
 }
 
 body.sidebar-collapsed {
   --sidebar-current-width: var(--sidebar-width-collapsed);
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 body {
   font-family: Lato, 'Helvetica Neue', Arial, Helvetica, 'Microsoft YaHei',
     sans-serif;
   color: var(--semi-color-text-0);
-  background-color: var(--semi-color-bg-0);
+  background-color: var(--app-bg-primary);
+  background-image:
+    radial-gradient(
+      circle at 12% -10%,
+      color-mix(in srgb, var(--brand-primary) 28%, transparent) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 90% -15%,
+      color-mix(in srgb, var(--brand-accent) 26%, transparent) 0%,
+      transparent 42%
+    ),
+    linear-gradient(
+      140deg,
+      var(--app-bg-primary) 0%,
+      var(--app-bg-secondary) 48%,
+      var(--app-bg-tertiary) 100%
+    );
+  background-attachment: fixed;
 }
 
 .app-layout {
   height: 100vh;
   height: 100dvh;
+  color: var(--app-text-primary);
+  background: transparent;
 }
 
 .app-sider {
@@ -119,13 +176,17 @@ code {
   flex-direction: column;
   min-height: 0;
   transition: width 0.3s ease;
-  background: var(--semi-color-bg-0);
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-right: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
 .sidebar-nav {
   flex: 1;
   width: 100%;
-  background: var(--semi-color-bg-0);
+  background: transparent;
   height: 100%;
   overflow-x: hidden;
   border-right: none;
@@ -142,19 +203,24 @@ code {
 
 /* 侧边栏导航项样式 */
 .sidebar-nav-item {
-  border-radius: 6px;
-  margin: 3px 8px;
-  transition: all 0.15s ease;
+  border-radius: 10px;
+  margin: 4px 8px;
+  transition: all 0.2s ease;
   padding: 8px 12px;
+  border: 1px solid transparent;
 }
 
 .sidebar-nav-item:hover {
-  background-color: rgba(var(--semi-blue-0), 0.08);
+  background-color: var(--glass-bg-hover);
+  border-color: var(--glass-border);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
   color: var(--semi-color-primary);
 }
 
 .sidebar-nav-item-selected {
-  background-color: rgba(var(--semi-blue-0), 0.12);
+  background-color: color-mix(in srgb, var(--brand-primary) 18%, var(--glass-bg));
+  border-color: var(--glass-border-strong);
+  box-shadow: 0 8px 18px rgba(124, 140, 255, 0.22);
   color: var(--semi-color-primary);
   font-weight: 500;
 }
@@ -205,13 +271,13 @@ code {
   padding: 12px;
   margin-top: auto;
   cursor: pointer;
-  background-color: var(--semi-color-bg-0);
+  background-color: color-mix(in srgb, var(--glass-bg) 85%, transparent);
   position: sticky;
   bottom: 0;
   z-index: 10;
-  box-shadow: 0 -10px 10px -5px var(--semi-color-bg-0);
-  backdrop-filter: blur(4px);
-  border-top: 1px solid rgba(var(--semi-grey-0), 0.08);
+  box-shadow: 0 -14px 18px -8px color-mix(in srgb, var(--app-bg-primary) 70%, transparent);
+  backdrop-filter: blur(10px) saturate(130%);
+  border-top: 1px solid var(--glass-border);
 }
 
 .sidebar-collapse-button-inner {
@@ -237,17 +303,17 @@ code {
 
 @media (max-width: 767px) {
   .sidebar-container {
-    background: var(--semi-color-bg-1);
-    border-right: 1px solid var(--semi-color-border);
+    background: color-mix(in srgb, var(--glass-bg-hover) 95%, transparent);
+    border-right: 1px solid var(--glass-border-strong);
   }
 
   .sidebar-nav {
-    background: var(--semi-color-bg-1);
+    background: transparent;
   }
 
   .sidebar-collapse-button {
-    background-color: var(--semi-color-bg-1);
-    box-shadow: 0 -10px 10px -5px var(--semi-color-bg-1);
+    background-color: color-mix(in srgb, var(--glass-bg-hover) 92%, transparent);
+    box-shadow: 0 -14px 18px -8px color-mix(in srgb, var(--app-bg-primary) 70%, transparent);
   }
 }
 
@@ -323,6 +389,27 @@ code {
 }
 
 /* ==================== 组件特定样式 ==================== */
+.semi-modal,
+.semi-sidesheet-content,
+.semi-dropdown,
+.semi-popover-content,
+.semi-tooltip-content {
+  background: color-mix(in srgb, var(--glass-bg) 92%, transparent) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow-strong) !important;
+  backdrop-filter: blur(16px) saturate(145%);
+  -webkit-backdrop-filter: blur(16px) saturate(145%);
+}
+
+.semi-modal-content {
+  background: transparent !important;
+}
+
+.semi-modal-header,
+.semi-modal-footer {
+  border-color: color-mix(in srgb, var(--glass-border) 85%, transparent) !important;
+}
+
 /* SelectableButtonGroup */
 .sbg-button .semi-button-content {
   min-width: 0 !important;
@@ -361,6 +448,28 @@ code {
 }
 
 /* 表格样式 */
+.semi-table {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.semi-table-container {
+  background: color-mix(in srgb, var(--glass-bg) 90%, transparent) !important;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  backdrop-filter: blur(12px) saturate(135%);
+  -webkit-backdrop-filter: blur(12px) saturate(135%);
+}
+
+.semi-table-thead > .semi-table-row > .semi-table-row-head {
+  background: color-mix(in srgb, var(--glass-bg-hover) 85%, transparent) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+.semi-table-tbody .semi-table-row:hover {
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent) !important;
+}
+
 .tableShow {
   display: revert;
 }
@@ -826,9 +935,80 @@ html.dark .with-pastel-balls::before {
 }
 
 /* ==================== semi-ui 组件自定义样式 ==================== */
+.semi-card {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+.semi-card:hover {
+  background: var(--glass-bg-hover) !important;
+  box-shadow: var(--glass-shadow-strong) !important;
+}
+
 .semi-card-header,
 .semi-card-body {
   padding: 10px !important;
+}
+
+.semi-button {
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  border-color: var(--glass-border) !important;
+  transition: all 0.2s ease !important;
+}
+
+.semi-button:hover {
+  border-color: var(--glass-border-strong) !important;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+}
+
+.semi-button.semi-button-primary {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--brand-primary) 90%, white) 0%,
+    color-mix(in srgb, var(--brand-accent) 75%, white) 100%
+  ) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+.semi-button.semi-button-primary:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 12px 24px rgba(124, 140, 255, 0.32);
+}
+
+.semi-input-wrapper,
+.semi-input-number,
+.semi-select,
+.semi-tagInput,
+.semi-input-textarea-wrapper,
+.semi-datepicker-range-input {
+  background: color-mix(in srgb, var(--glass-bg) 92%, transparent) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: none;
+  transition: all 0.2s ease !important;
+}
+
+.semi-input-wrapper:hover,
+.semi-input-number:hover,
+.semi-select:hover,
+.semi-tagInput:hover,
+.semi-input-textarea-wrapper:hover,
+.semi-datepicker-range-input:hover {
+  border-color: var(--glass-border-strong) !important;
+}
+
+.semi-input-wrapper-focus,
+.semi-input-number:focus-within,
+.semi-select.semi-select-focus,
+.semi-tagInput.semi-tagInput-focus,
+.semi-input-textarea-wrapper-focus,
+.semi-datepicker-range-input-focus {
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 24%, transparent) !important;
 }
 
 /* ==================== 使用日志: channel affinity tag ==================== */
@@ -872,6 +1052,12 @@ html.dark .with-pastel-balls::before {
 .semi-tabs-tab-button,
 .semi-select,
 .semi-button,
-.semi-datepicker-range-input {
+.semi-datepicker-range-input,
+.semi-card,
+.semi-modal,
+.semi-sidesheet-content,
+.semi-dropdown,
+.semi-popover-content,
+.semi-tooltip-content {
   border-radius: 10px !important;
 }
