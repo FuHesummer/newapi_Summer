@@ -161,7 +161,12 @@ const EditDeploymentModal = ({
       visible={visible}
       onCancel={handleClose}
       width={isMobile ? '100%' : 600}
-      bodyStyle={{ padding: 0 }}
+      bodyStyle={{
+        padding: 0,
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+      }}
       maskClosable={false}
       closeOnEsc={true}
     >
@@ -198,7 +203,14 @@ const EditDeploymentModal = ({
               </Row>
 
               {isEdit && (
-                <div className='mt-4 p-3 bg-gray-50 rounded'>
+                <div
+                  className='mt-4 p-3 rounded'
+                  style={{
+                    background:
+                      'color-mix(in srgb, var(--glass-bg) 82%, transparent)',
+                    border: '1px solid var(--glass-border)',
+                  }}
+                >
                   <Text type='secondary'>{t('部署ID')}: </Text>
                   <Text code>{editingDeployment.id}</Text>
                   <br />
@@ -217,7 +229,15 @@ const EditDeploymentModal = ({
         </Spin>
       </div>
 
-      <div className='p-4 border-t border-gray-200 bg-gray-50 flex justify-end'>
+      <div
+        className='p-4 flex justify-end'
+        style={{
+          background: 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
+          backdropFilter: 'blur(12px) saturate(135%)',
+          WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+          borderTop: '1px solid var(--glass-border)',
+        }}
+      >
         <Space>
           <Button theme='outline' onClick={handleClose} disabled={loading}>
             <X size={16} className='mr-1' />

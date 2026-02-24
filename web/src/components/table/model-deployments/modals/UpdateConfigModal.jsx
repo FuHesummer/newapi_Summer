@@ -208,10 +208,22 @@ const UpdateConfigModal = ({ visible, onCancel, deployment, onSuccess, t }) => {
       confirmLoading={loading}
       width={700}
       className='update-config-modal'
+      bodyStyle={{
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+      }}
     >
       <div className='space-y-4 max-h-[600px] overflow-y-auto'>
         {/* Container Info */}
-        <Card className='border-0 bg-gray-50'>
+        <Card
+          className='border-0'
+          bodyStyle={{
+            background: 'color-mix(in srgb, var(--glass-bg) 82%, transparent)',
+            border: '1px solid var(--glass-border)',
+            borderRadius: 12,
+          }}
+        >
           <div className='flex items-center justify-between'>
             <div>
               <Text strong className='text-base'>
@@ -452,7 +464,14 @@ const UpdateConfigModal = ({ visible, onCancel, deployment, onSuccess, t }) => {
                   ))}
 
                   {secretEnvVars.length === 0 && (
-                    <div className='text-center text-gray-500 py-4 border-2 border-dashed border-red-200 rounded-lg bg-red-50'>
+                    <div
+                      className='text-center text-gray-500 py-4 border-2 border-dashed rounded-lg'
+                      style={{
+                        background:
+                          'color-mix(in srgb, var(--glass-bg) 84%, rgba(239,68,68,0.08))',
+                        borderColor: 'rgba(239,68,68,0.28)',
+                      }}
+                    >
                       <Text type='secondary'>{t('暂无机密环境变量')}</Text>
                     </div>
                   )}
@@ -472,7 +491,14 @@ const UpdateConfigModal = ({ visible, onCancel, deployment, onSuccess, t }) => {
         </Form>
 
         {/* Final Warning */}
-        <div className='bg-yellow-50 border border-yellow-200 rounded-lg p-3'>
+        <div
+          className='rounded-lg p-3'
+          style={{
+            background:
+              'color-mix(in srgb, var(--glass-bg) 84%, rgba(234,179,8,0.08))',
+            border: '1px solid rgba(234,179,8,0.28)',
+          }}
+        >
           <div className='flex items-start gap-2'>
             <FaExclamationTriangle className='text-yellow-600 mt-0.5' />
             <div>

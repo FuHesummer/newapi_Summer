@@ -163,6 +163,11 @@ const ViewDetailsModal = ({ visible, onCancel, deployment, t }) => {
       }
       width={800}
       className='deployment-details-modal'
+      bodyStyle={{
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+      }}
     >
       {loading && !details ? (
         <div className='flex items-center justify-center py-12'>
@@ -354,7 +359,14 @@ const ViewDetailsModal = ({ visible, onCancel, deployment, t }) => {
                       <Text strong className='block mb-2'>
                         {t('环境变量')}:
                       </Text>
-                      <div className='bg-gray-50 p-3 rounded-lg max-h-32 overflow-y-auto'>
+                      <div
+                        className='p-3 rounded-lg max-h-32 overflow-y-auto'
+                        style={{
+                          background:
+                            'color-mix(in srgb, var(--glass-bg) 84%, transparent)',
+                          border: '1px solid var(--glass-border)',
+                        }}
+                      >
                         {Object.entries(
                           details.container_config.env_variables,
                         ).map(([key, value]) => (
@@ -401,7 +413,12 @@ const ViewDetailsModal = ({ visible, onCancel, deployment, t }) => {
                 {containers.map((ctr) => (
                   <Card
                     key={ctr.container_id}
-                    className='bg-gray-50 border border-gray-100'
+                    className='border'
+                    style={{
+                      background:
+                        'color-mix(in srgb, var(--glass-bg) 84%, transparent)',
+                      borderColor: 'var(--glass-border)',
+                    }}
                     bodyStyle={{ padding: '12px 16px' }}
                   >
                     <div className='flex flex-wrap items-center justify-between gap-3'>
@@ -446,7 +463,14 @@ const ViewDetailsModal = ({ visible, onCancel, deployment, t }) => {
                     </div>
 
                     {ctr.events && ctr.events.length > 0 && (
-                      <div className='mt-3 bg-white rounded-md border border-gray-100 p-3'>
+                      <div
+                        className='mt-3 rounded-md border p-3'
+                        style={{
+                          background:
+                            'color-mix(in srgb, var(--glass-bg) 80%, transparent)',
+                          borderColor: 'var(--glass-border)',
+                        }}
+                      >
                         <Text
                           size='small'
                           type='secondary'
@@ -516,7 +540,14 @@ const ViewDetailsModal = ({ visible, onCancel, deployment, t }) => {
             className='border-0 shadow-sm'
           >
             <div className='space-y-3'>
-              <div className='flex items-center justify-between p-3 bg-green-50 rounded-lg'>
+              <div
+                className='flex items-center justify-between p-3 rounded-lg'
+                style={{
+                  background:
+                    'color-mix(in srgb, var(--glass-bg) 84%, rgba(34,197,94,0.08))',
+                  border: '1px solid rgba(34,197,94,0.2)',
+                }}
+              >
                 <Text>{t('已支付金额')}</Text>
                 <Text strong className='text-lg text-green-600'>
                   $

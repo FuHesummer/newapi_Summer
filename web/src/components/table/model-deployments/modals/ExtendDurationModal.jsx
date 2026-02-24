@@ -314,9 +314,21 @@ const ExtendDurationModal = ({
       }}
       width={600}
       className='extend-duration-modal'
+      bodyStyle={{
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+      }}
     >
       <div className='space-y-4'>
-        <Card className='border-0 bg-gray-50'>
+        <Card
+          className='border-0'
+          bodyStyle={{
+            background: 'color-mix(in srgb, var(--glass-bg) 82%, transparent)',
+            border: '1px solid var(--glass-border)',
+            borderRadius: 12,
+          }}
+        >
           <div className='flex items-center justify-between'>
             <div>
               <Text strong className='text-base'>
@@ -486,7 +498,14 @@ const ExtendDurationModal = ({
                 </Text>
               </div>
 
-              <div className='bg-blue-50 p-3 rounded-lg'>
+              <div
+                className='p-3 rounded-lg'
+                style={{
+                  background:
+                    'color-mix(in srgb, var(--glass-bg) 84%, rgba(59,130,246,0.08))',
+                  border: '1px solid rgba(59,130,246,0.22)',
+                }}
+              >
                 <div className='flex items-start gap-2'>
                   <FaInfoCircle className='text-blue-500 mt-0.5' />
                   <div>
@@ -519,7 +538,14 @@ const ExtendDurationModal = ({
           )}
         </Card>
 
-        <div className='bg-red-50 border border-red-200 rounded-lg p-3'>
+        <div
+          className='rounded-lg p-3'
+          style={{
+            background:
+              'color-mix(in srgb, var(--glass-bg) 84%, rgba(239,68,68,0.08))',
+            border: '1px solid rgba(239,68,68,0.25)',
+          }}
+        >
           <div className='flex items-start gap-2'>
             <FaExclamationTriangle className='text-red-500 mt-0.5' />
             <div>
