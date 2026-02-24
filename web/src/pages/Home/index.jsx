@@ -342,10 +342,11 @@ const Home = () => {
               className='w-full h-screen border-none'
             />
           ) : (
-            <div
-              className='mt-[60px]'
-              dangerouslySetInnerHTML={{ __html: homePageContent }}
-            />
+            <div className='mt-[60px] px-2 pb-2'>
+              <div className='with-pastel-balls rounded-2xl p-3 md:p-4'>
+                <div dangerouslySetInnerHTML={{ __html: homePageContent }} />
+              </div>
+            </div>
           )}
         </div>
       )}

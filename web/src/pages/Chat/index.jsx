@@ -66,15 +66,30 @@ const ChatPage = () => {
       allow='camera;microphone'
     />
   ) : (
-    <div className='fixed inset-0 w-screen h-screen flex items-center justify-center bg-white/80 z-[1000] mt-[60px]'>
-      <div className='flex flex-col items-center'>
-        <Spin size='large' spinning={true} tip={null} />
-        <span
-          className='whitespace-nowrap mt-2 text-center'
-          style={{ color: 'var(--semi-color-primary)' }}
-        >
-          {t('正在跳转...')}
-        </span>
+    <div
+      className='fixed inset-0 w-screen h-screen flex items-center justify-center z-[1000] mt-[60px]'
+      style={{
+        background: 'color-mix(in srgb, var(--glass-bg) 86%, transparent)',
+        backdropFilter: 'blur(14px) saturate(140%)',
+        WebkitBackdropFilter: 'blur(14px) saturate(140%)',
+      }}
+    >
+      <div
+        className='with-pastel-balls rounded-2xl px-8 py-6'
+        style={{
+          border: '1px solid var(--glass-border)',
+          boxShadow: 'var(--glass-shadow)',
+        }}
+      >
+        <div className='flex flex-col items-center'>
+          <Spin size='large' spinning={true} tip={null} />
+          <span
+            className='whitespace-nowrap mt-2 text-center'
+            style={{ color: 'var(--semi-color-primary)' }}
+          >
+            {t('正在跳转...')}
+          </span>
+        </div>
       </div>
     </div>
   );
