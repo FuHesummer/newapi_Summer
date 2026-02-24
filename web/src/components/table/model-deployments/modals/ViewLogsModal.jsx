@@ -444,7 +444,10 @@ const ViewLogsModal = ({ visible, onCancel, deployment, t }) => {
                       <span className='font-mono text-xs'>
                         {ctr.container_id}
                       </span>
-                      <span className='text-xs text-gray-500'>
+                      <span
+                        className='text-xs'
+                        style={{ color: 'var(--semi-color-text-2)' }}
+                      >
                         {ctr.brand_name || 'IO.NET'}
                         {ctr.hardware ? ` · ${ctr.hardware}` : ''}
                       </span>
@@ -675,12 +678,15 @@ const ViewLogsModal = ({ visible, onCancel, deployment, t }) => {
                               key={`${event.time}-${index}`}
                               className='flex gap-3 text-xs font-mono'
                             >
-                              <span className='text-gray-500'>
+                              <span style={{ color: 'var(--semi-color-text-2)' }}>
                                 {event.time
                                   ? timestamp2string(event.time)
                                   : '--'}
                               </span>
-                              <span className='text-gray-700 break-all flex-1'>
+                              <span
+                                className='break-all flex-1'
+                                style={{ color: 'var(--semi-color-text-0)' }}
+                              >
                                 {event.message}
                               </span>
                             </div>
@@ -732,11 +738,12 @@ const ViewLogsModal = ({ visible, onCancel, deployment, t }) => {
           {/* Footer status */}
           {logLines.length > 0 && (
             <div
-              className='flex items-center justify-between px-3 py-2 border-t text-xs text-gray-500'
+              className='flex items-center justify-between px-3 py-2 border-t text-xs'
               style={{
                 background:
                   'color-mix(in srgb, var(--glass-bg) 86%, transparent)',
                 borderColor: 'var(--glass-border)',
+                color: 'var(--semi-color-text-2)',
               }}
             >
               <span>{following ? t('正在跟随最新日志') : t('日志已加载')}</span>

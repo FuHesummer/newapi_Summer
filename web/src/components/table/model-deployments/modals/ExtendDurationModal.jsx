@@ -521,7 +521,7 @@ const ExtendDurationModal = ({
               </div>
             </div>
           ) : (
-            <div className='text-center text-gray-500 py-4'>
+            <div className='text-center py-4' style={{ color: 'var(--semi-color-text-2)' }}>
               {costLoading ? (
                 <Space align='center' className='justify-center'>
                   <Spin size='small' />

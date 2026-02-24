@@ -300,7 +300,10 @@ const ViewDetailsModal = ({ visible, onCancel, deployment, t }) => {
                   strokeWidth={8}
                   showInfo={false}
                 />
-                <div className='flex justify-between text-xs text-gray-500'>
+                <div
+                  className='flex justify-between text-xs'
+                  style={{ color: 'var(--semi-color-text-2)' }}
+                >
                   <span>
                     {t('已服务')}: {details.compute_minutes_served} {t('分钟')}
                   </span>
@@ -377,7 +380,7 @@ const ViewDetailsModal = ({ visible, onCancel, deployment, t }) => {
                             <span className='text-blue-600 font-medium'>
                               {key}=
                             </span>
-                            <span className='text-gray-700 break-all'>
+                            <span className='break-all' style={{ color: 'var(--semi-color-text-0)' }}>
                               {String(value)}
                             </span>
                           </div>
@@ -484,12 +487,18 @@ const ViewDetailsModal = ({ visible, onCancel, deployment, t }) => {
                               key={`${ctr.container_id}-${event.time}-${index}`}
                               className='flex gap-3 text-xs font-mono'
                             >
-                              <span className='text-gray-500 min-w-[140px]'>
+                              <span
+                                className='min-w-[140px]'
+                                style={{ color: 'var(--semi-color-text-2)' }}
+                              >
                                 {event.time
                                   ? timestamp2string(event.time)
                                   : '--'}
                               </span>
-                              <span className='text-gray-700 break-all flex-1'>
+                              <span
+                                className='break-all flex-1'
+                                style={{ color: 'var(--semi-color-text-0)' }}
+                              >
                                 {event.message || '--'}
                               </span>
                             </div>

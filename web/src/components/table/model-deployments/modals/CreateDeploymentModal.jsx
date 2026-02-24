@@ -1422,7 +1422,7 @@ const CreateDeploymentModal = ({ visible, onCancel, onSuccess, t }) => {
                     className='flex flex-col gap-1 rounded-md px-4 py-3'
                     style={{
                       border: '1px solid var(--glass-border)',
-                      backgroundColor: 'var(--semi-color-fill-0)',
+                      background: 'color-mix(in srgb, var(--glass-bg) 82%, transparent)',
                     }}
                   >
                     <Text size='small' type='tertiary'>
@@ -1444,7 +1444,7 @@ const CreateDeploymentModal = ({ visible, onCancel, onSuccess, t }) => {
                     className='flex flex-col gap-1 rounded-md px-4 py-3'
                     style={{
                       border: '1px solid var(--glass-border)',
-                      backgroundColor: 'var(--semi-color-fill-0)',
+                      background: 'color-mix(in srgb, var(--glass-bg) 82%, transparent)',
                     }}
                   >
                     <Text size='small' type='tertiary'>
@@ -1461,7 +1461,7 @@ const CreateDeploymentModal = ({ visible, onCancel, onSuccess, t }) => {
                     className='flex flex-col gap-1 rounded-md px-4 py-3'
                     style={{
                       border: '1px solid var(--glass-border)',
-                      backgroundColor: 'var(--semi-color-fill-0)',
+                      background: 'color-mix(in srgb, var(--glass-bg) 82%, transparent)',
                     }}
                   >
                     <Text size='small' type='tertiary'>
@@ -1483,7 +1483,7 @@ const CreateDeploymentModal = ({ visible, onCancel, onSuccess, t }) => {
                       className='flex items-center justify-between gap-3 rounded-md px-3 py-2'
                       style={{
                         border: '1px solid var(--glass-border)',
-                        backgroundColor: 'var(--semi-color-fill-0)',
+                        background: 'color-mix(in srgb, var(--glass-bg) 82%, transparent)',
                       }}
                     >
                       <Text size='small' type='tertiary'>

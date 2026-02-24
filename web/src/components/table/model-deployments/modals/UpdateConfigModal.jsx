@@ -406,11 +406,12 @@ const UpdateConfigModal = ({ visible, onCancel, deployment, onSuccess, t }) => {
 
                   {envVars.length === 0 && (
                     <div
-                      className='text-center text-gray-500 py-4 border-2 border-dashed rounded-lg'
+                      className='text-center py-4 border-2 border-dashed rounded-lg'
                       style={{
                         background:
                           'color-mix(in srgb, var(--glass-bg) 84%, transparent)',
                         borderColor: 'var(--glass-border)',
+                        color: 'var(--semi-color-text-2)',
                       }}
                     >
                       <Text type='secondary'>{t('暂无环境变量')}</Text>
@@ -472,11 +473,12 @@ const UpdateConfigModal = ({ visible, onCancel, deployment, onSuccess, t }) => {
 
                   {secretEnvVars.length === 0 && (
                     <div
-                      className='text-center text-gray-500 py-4 border-2 border-dashed rounded-lg'
+                      className='text-center py-4 border-2 border-dashed rounded-lg'
                       style={{
                         background:
                           'color-mix(in srgb, var(--glass-bg) 84%, rgba(239,68,68,0.08))',
                         borderColor: 'rgba(239,68,68,0.28)',
+                        color: 'var(--semi-color-text-2)',
                       }}
                     >
                       <Text type='secondary'>{t('暂无机密环境变量')}</Text>
