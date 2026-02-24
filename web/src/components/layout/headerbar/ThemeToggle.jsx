@@ -54,8 +54,8 @@ const ThemeToggle = ({ theme, onThemeToggle, t }) => {
 
   const getItemClassName = (isSelected) =>
     isSelected
-      ? '!bg-semi-color-primary-light-default !font-semibold'
-      : 'hover:!bg-semi-color-fill-1';
+      ? '!bg-[color-mix(in_srgb,var(--glass-bg)_82%,rgba(59,130,246,0.20))] !font-semibold'
+      : 'hover:!bg-[var(--glass-bg-hover)]';
 
   const currentButtonIcon = useMemo(() => {
     const currentOption = themeOptions.find((option) => option.key === theme);
@@ -66,7 +66,7 @@ const ThemeToggle = ({ theme, onThemeToggle, t }) => {
     <Dropdown
       position='bottomRight'
       render={
-        <Dropdown.Menu>
+        <Dropdown.Menu className='!bg-[color-mix(in_srgb,var(--glass-bg)_92%,transparent)] !border-[var(--glass-border)] !shadow-lg !rounded-lg backdrop-blur-md'>
           {themeOptions.map((option) => (
             <Dropdown.Item
               key={option.key}
@@ -76,7 +76,7 @@ const ThemeToggle = ({ theme, onThemeToggle, t }) => {
             >
               <div className='flex flex-col'>
                 <span>{option.label}</span>
-                <span className='text-xs text-semi-color-text-2'>
+                <span className='text-xs text-[var(--semi-color-text-2)]'>
                   {option.description}
                 </span>
               </div>
@@ -86,7 +86,7 @@ const ThemeToggle = ({ theme, onThemeToggle, t }) => {
           {theme === 'auto' && (
             <>
               <Dropdown.Divider />
-              <div className='px-3 py-2 text-xs text-semi-color-text-2'>
+              <div className='px-3 py-2 text-xs text-[var(--semi-color-text-2)]'>
                 {t('当前跟随系统')}：
                 {actualTheme === 'dark' ? t('深色') : t('浅色')}
               </div>

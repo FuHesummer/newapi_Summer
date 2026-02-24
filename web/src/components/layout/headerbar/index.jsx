@@ -65,16 +65,7 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
   const { mainNavLinks } = useNavigation(t, docsLink, headerNavModules);
 
   return (
-    <header
-      className='text-semi-color-text-0 sticky top-0 z-50 transition-colors duration-300'
-      style={{
-        background: 'var(--glass-bg)',
-        backdropFilter: 'blur(14px) saturate(145%)',
-        WebkitBackdropFilter: 'blur(14px) saturate(145%)',
-        borderBottom: '1px solid var(--glass-border)',
-        boxShadow: 'var(--glass-shadow)',
-      }}
-    >
+    <header className='sticky top-0 z-50 text-[var(--semi-color-text-0)] transition-colors duration-300'>
       <NoticeModal
         visible={noticeVisible}
         onClose={handleNoticeClose}
@@ -83,55 +74,59 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
         unreadKeys={getUnreadKeys()}
       />
 
-      <div className='w-full px-2'>
-        <div className='flex items-center justify-between h-16'>
-          <div className='flex items-center'>
-            <MobileMenuButton
-              isConsoleRoute={isConsoleRoute}
-              isMobile={isMobile}
-              drawerOpen={drawerOpen}
-              collapsed={collapsed}
-              onToggle={handleMobileMenuToggle}
-              t={t}
-            />
+      <div className='w-full h-16 px-2 sm:px-3'>
+        <div className='mx-auto h-full w-full max-w-[1320px] flex items-center'>
+          <div className='relative grid h-[52px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] px-2 sm:px-3 shadow-[var(--glass-shadow)] backdrop-blur-[14px]'>
+            <div className='flex items-center'>
+              <MobileMenuButton
+                isConsoleRoute={isConsoleRoute}
+                isMobile={isMobile}
+                drawerOpen={drawerOpen}
+                collapsed={collapsed}
+                onToggle={handleMobileMenuToggle}
+                t={t}
+              />
 
-            <HeaderLogo
+              <HeaderLogo
+                isMobile={isMobile}
+                isConsoleRoute={isConsoleRoute}
+                logo={logo}
+                logoLoaded={logoLoaded}
+                isLoading={isLoading}
+                systemName={systemName}
+                isSelfUseMode={isSelfUseMode}
+                isDemoSiteMode={isDemoSiteMode}
+                t={t}
+              />
+            </div>
+
+            <Navigation
+              mainNavLinks={mainNavLinks}
               isMobile={isMobile}
-              isConsoleRoute={isConsoleRoute}
-              logo={logo}
-              logoLoaded={logoLoaded}
               isLoading={isLoading}
-              systemName={systemName}
+              userState={userState}
+              pricingRequireAuth={pricingRequireAuth}
+            />
+
+            <ActionButtons
+              isNewYear={isNewYear}
+              unreadCount={unreadCount}
+              onNoticeOpen={handleNoticeOpen}
+              theme={theme}
+              onThemeToggle={handleThemeToggle}
+              currentLang={currentLang}
+              onLanguageChange={handleLanguageChange}
+              userState={userState}
+              isLoading={isLoading}
+              isMobile={isMobile}
               isSelfUseMode={isSelfUseMode}
-              isDemoSiteMode={isDemoSiteMode}
+              logout={logout}
+              navigate={navigate}
               t={t}
             />
+
+            <div className='pointer-events-none absolute inset-x-4 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--glass-border)] to-transparent' />
           </div>
-
-          <Navigation
-            mainNavLinks={mainNavLinks}
-            isMobile={isMobile}
-            isLoading={isLoading}
-            userState={userState}
-            pricingRequireAuth={pricingRequireAuth}
-          />
-
-          <ActionButtons
-            isNewYear={isNewYear}
-            unreadCount={unreadCount}
-            onNoticeOpen={handleNoticeOpen}
-            theme={theme}
-            onThemeToggle={handleThemeToggle}
-            currentLang={currentLang}
-            onLanguageChange={handleLanguageChange}
-            userState={userState}
-            isLoading={isLoading}
-            isMobile={isMobile}
-            isSelfUseMode={isSelfUseMode}
-            logout={logout}
-            navigate={navigate}
-            t={t}
-          />
         </div>
       </div>
     </header>
