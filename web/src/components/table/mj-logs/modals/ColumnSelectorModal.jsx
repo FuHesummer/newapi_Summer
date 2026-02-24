@@ -51,16 +51,33 @@ const ColumnSelectorModal = ({
       visible={showColumnSelector}
       onCancel={() => setShowColumnSelector(false)}
       footer={
-        <div className='flex justify-end'>
-          <Button onClick={() => initDefaultColumns()}>{t('重置')}</Button>
-          <Button onClick={() => setShowColumnSelector(false)}>
-            {t('取消')}
-          </Button>
-          <Button onClick={() => setShowColumnSelector(false)}>
-            {t('确定')}
-          </Button>
+        <div
+          className='flex justify-end gap-2'
+          style={{
+            background: 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
+            backdropFilter: 'blur(12px) saturate(135%)',
+            WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+            borderTop: '1px solid var(--glass-border)',
+            padding: '12px 0',
+            margin: '0 -24px -16px',
+          }}
+        >
+          <div className='px-6 flex gap-2'>
+            <Button onClick={() => initDefaultColumns()}>{t('重置')}</Button>
+            <Button onClick={() => setShowColumnSelector(false)}>
+              {t('取消')}
+            </Button>
+            <Button type='primary' onClick={() => setShowColumnSelector(false)}>
+              {t('确定')}
+            </Button>
+          </div>
         </div>
       }
+      bodyStyle={{
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+      }}
     >
       <div style={{ marginBottom: 20 }}>
         <Checkbox
@@ -76,7 +93,10 @@ const ColumnSelectorModal = ({
       </div>
       <div
         className='flex flex-wrap max-h-96 overflow-y-auto rounded-lg p-4'
-        style={{ border: '1px solid var(--semi-color-border)' }}
+        style={{
+          border: '1px solid var(--glass-border)',
+          background: 'color-mix(in srgb, var(--glass-bg) 82%, transparent)',
+        }}
       >
         {allColumns.map((column) => {
           // Skip admin-only columns for non-admin users
