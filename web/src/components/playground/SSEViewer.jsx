@@ -207,16 +207,16 @@ const SSEViewer = ({ sseData }) => {
 
   if (!parsedSSEData || parsedSSEData.length === 0) {
     return (
-      <div className='flex items-center justify-center h-full min-h-[200px] text-gray-500'>
+      <div className='flex items-center justify-center h-full min-h-[200px] text-[var(--semi-color-text-2)]'>
         <span>{t('暂无SSE响应数据')}</span>
       </div>
     );
   }
 
   return (
-    <div className='h-full flex flex-col bg-gray-50 dark:bg-gray-900/50 rounded-lg'>
+    <div className='h-full flex flex-col bg-[color-mix(in_srgb,var(--glass-bg)_88%,transparent)] rounded-lg border border-[var(--glass-border)]'>
       {/* 头部工具栏 */}
-      <div className='flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0'>
+      <div className='flex items-center justify-between p-4 border-b border-[var(--glass-border)] flex-shrink-0'>
         <div className='flex items-center gap-3'>
           <Zap size={16} className='text-blue-500' />
           <Typography.Text strong>{t('SSE数据流')}</Typography.Text>
@@ -270,7 +270,7 @@ const SSEViewer = ({ sseData }) => {
           activeKey={expandedKeys}
           onChange={setExpandedKeys}
           accordion={false}
-          className='bg-white dark:bg-gray-800 rounded-lg'
+          className='bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] rounded-lg'
         >
           {parsedSSEData.map((item) => (
             <Collapse.Panel
@@ -284,13 +284,13 @@ const SSEViewer = ({ sseData }) => {
                     <span className='text-red-600'>{t('解析错误')}</span>
                   ) : (
                     <>
-                      <span className='text-gray-600'>
+                      <span className='text-[var(--semi-color-text-1)]'>
                         {item.parsed?.id ||
                           item.parsed?.object ||
                           t('SSE 事件')}
                       </span>
                       {item.parsed?.choices?.[0]?.delta && (
-                        <span className='text-xs text-gray-400'>
+                        <span className='text-xs text-[var(--semi-color-text-2)]'>
                           •{' '}
                           {Object.keys(item.parsed.choices[0].delta)
                             .filter((k) => item.parsed.choices[0].delta[k])

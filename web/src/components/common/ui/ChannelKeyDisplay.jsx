@@ -154,14 +154,14 @@ const ChannelKeyDisplay = ({
           {parsedKeys.map((keyItem) => (
             <Card
               key={keyItem.id}
-              className='!rounded-lg !border !border-gray-200 dark:!border-gray-700'
+              className='!rounded-lg !border !border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)]'
             >
               <div className='space-y-2'>
                 <div className='flex items-center justify-between'>
                   <Typography.Text
                     strong
                     size='small'
-                    className='text-gray-700 dark:text-gray-300'
+                    className='text-[var(--semi-color-text-1)]'
                   >
                     {keyItem.label}
                   </Typography.Text>
@@ -192,10 +192,10 @@ const ChannelKeyDisplay = ({
                   </div>
                 </div>
 
-                <div className='bg-gray-50 dark:bg-gray-800 rounded-lg p-3 max-h-40 overflow-auto'>
+                <div className='bg-[color-mix(in_srgb,var(--glass-bg)_88%,transparent)] rounded-lg p-3 max-h-40 overflow-auto border border-[var(--glass-border)]'>
                   <Typography.Text
                     code
-                    className='text-xs font-mono break-all whitespace-pre-wrap text-gray-800 dark:text-gray-200'
+                    className='text-xs font-mono break-all whitespace-pre-wrap text-[var(--semi-color-text-0)]'
                   >
                     {keyItem.content}
                   </Typography.Text>

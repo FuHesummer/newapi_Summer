@@ -52,7 +52,7 @@ const FooterBar = () => {
               <img
                 src={logo}
                 alt={systemName}
-                className='w-16 h-16 rounded-full bg-gray-800 p-1.5 object-contain'
+                className='w-16 h-16 rounded-full bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] p-1.5 object-contain border border-[var(--glass-border)]'
               />
             </div>
 

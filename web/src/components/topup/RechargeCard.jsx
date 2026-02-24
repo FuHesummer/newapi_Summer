@@ -353,7 +353,7 @@ const RechargeCard = ({
                           })}
                         </Space>
                       ) : (
-                        <div className='text-gray-500 text-sm p-3 bg-gray-50 rounded-lg border border-dashed border-gray-300'>
+                        <div className='text-[var(--semi-color-text-2)] text-sm p-3 bg-[color-mix(in_srgb,var(--glass-bg)_88%,transparent)] rounded-lg border border-dashed border-[var(--glass-border)]'>
                           {t('暂无可用的支付方式，请联系管理员配置')}
                         </div>
                       )}
@@ -433,7 +433,7 @@ const RechargeCard = ({
                             border:
                               selectedPreset === preset.value
                                 ? '2px solid var(--semi-color-primary)'
-                                : '1px solid var(--semi-color-border)',
+                                : '1px solid var(--glass-border)',
                             height: '100%',
                             width: '100%',
                           }}
@@ -491,13 +491,13 @@ const RechargeCard = ({
                       <Card
                         key={index}
                         onClick={() => creemPreTopUp(product)}
-                        className='cursor-pointer !rounded-2xl transition-all hover:shadow-md border-gray-200 hover:border-gray-300'
+                        className='cursor-pointer !rounded-2xl transition-all hover:shadow-md border border-[var(--glass-border)] hover:border-blue-300'
                         bodyStyle={{ textAlign: 'center', padding: '16px' }}
                       >
                         <div className='font-medium text-lg mb-2'>
                           {product.name}
                         </div>
-                        <div className='text-sm text-gray-600 mb-2'>
+                        <div className='text-sm text-[var(--semi-color-text-1)] mb-2'>
                           {t('充值额度')}: {product.quota}
                         </div>
                         <div className='text-lg font-semibold text-blue-600'>

@@ -392,7 +392,7 @@ const NotificationSettings = ({
           <Typography.Text className='text-lg font-medium'>
             {t('其他设置')}
           </Typography.Text>
-          <div className='text-xs text-gray-600'>
+          <div className='text-xs text-[var(--semi-color-text-2)]'>
             {t('通知、价格和隐私相关设置')}
           </div>
         </div>
@@ -543,7 +543,7 @@ const NotificationSettings = ({
                             language='json'
                           />
                         </div>
-                        <div className='text-xs text-gray-500 leading-relaxed'>
+                        <div className='text-xs text-[var(--semi-color-text-2)] leading-relaxed'>
                           <div>
                             <strong>type:</strong>{' '}
                             {t('通知类型 (quota_exceed: 额度预警)')}{' '}
@@ -595,23 +595,23 @@ const NotificationSettings = ({
                       ]}
                     />
 
-                    <div className='mt-3 p-4 bg-gray-50/50 rounded-xl'>
-                      <div className='text-sm text-gray-700 mb-3'>
+                    <div className='mt-3 p-4 bg-[color-mix(in_srgb,var(--glass-bg)_88%,transparent)] rounded-xl border border-[var(--glass-border)]'>
+                      <div className='text-sm text-[var(--semi-color-text-1)] mb-3'>
                         <strong>{t('模板示例')}</strong>
                       </div>
-                      <div className='text-xs text-gray-600 font-mono bg-white p-3 rounded-lg shadow-sm mb-4'>
+                      <div className='text-xs text-[var(--semi-color-text-1)] font-mono bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] p-3 rounded-lg shadow-sm mb-4 border border-[var(--glass-border)]'>
                         https://api.day.app/yourkey/{'{{title}}'}/
                         {'{{content}}'}?sound=alarm&group=quota
                       </div>
-                      <div className='text-xs text-gray-500 space-y-2'>
+                      <div className='text-xs text-[var(--semi-color-text-2)] space-y-2'>
                         <div>
                           • <strong>{'title'}:</strong> {t('通知标题')}
                         </div>
                         <div>
                           • <strong>{'content'}:</strong> {t('通知内容')}
                         </div>
-                        <div className='mt-3 pt-3 border-t border-gray-200'>
-                          <span className='text-gray-400'>
+                        <div className='mt-3 pt-3 border-t border-[var(--glass-border)]'>
+                          <span className='text-[var(--semi-color-text-2)]'>
                             {t('更多参数请参考')}
                           </span>{' '}
                           <a
@@ -696,11 +696,11 @@ const NotificationSettings = ({
                       style={{ width: '100%', maxWidth: '300px' }}
                     />
 
-                    <div className='mt-3 p-4 bg-gray-50/50 rounded-xl'>
-                      <div className='text-sm text-gray-700 mb-3'>
+                    <div className='mt-3 p-4 bg-[color-mix(in_srgb,var(--glass-bg)_88%,transparent)] rounded-xl border border-[var(--glass-border)]'>
+                      <div className='text-sm text-[var(--semi-color-text-1)] mb-3'>
                         <strong>{t('配置说明')}</strong>
                       </div>
-                      <div className='text-xs text-gray-500 space-y-2'>
+                      <div className='text-xs text-[var(--semi-color-text-2)] space-y-2'>
                         <div>
                           1. {t('在Gotify服务器的应用管理中创建新应用')}
                         </div>
@@ -711,8 +711,8 @@ const NotificationSettings = ({
                           )}
                         </div>
                         <div>3. {t('填写Gotify服务器的完整URL地址')}</div>
-                        <div className='mt-3 pt-3 border-t border-gray-200'>
-                          <span className='text-gray-400'>
+                        <div className='mt-3 pt-3 border-t border-[var(--glass-border)]'>
+                          <span className='text-[var(--semi-color-text-2)]'>
                             {t('更多信息请参考')}
                           </span>{' '}
                           <a
@@ -810,8 +810,8 @@ const NotificationSettings = ({
                   <div
                     className='border rounded-xl p-4'
                     style={{
-                      borderColor: 'var(--semi-color-border)',
-                      backgroundColor: 'var(--semi-color-bg-1)',
+                      borderColor: 'var(--glass-border)',
+                      backgroundColor: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
                     }}
                   >
                     {sectionConfigs.map((section) => (
@@ -820,13 +820,13 @@ const NotificationSettings = ({
                         <div
                           className='flex justify-between items-center mb-4 p-4 rounded-lg'
                           style={{
-                            backgroundColor: 'var(--semi-color-fill-0)',
-                            border: '1px solid var(--semi-color-border-light)',
-                            borderColor: 'var(--semi-color-fill-1)',
+                            backgroundColor: 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
+                            border: '1px solid var(--glass-border)',
+                            borderColor: 'var(--glass-border)',
                           }}
                         >
                           <div>
-                            <div className='font-semibold text-base text-gray-900 mb-1'>
+                            <div className='font-semibold text-base text-[var(--semi-color-text-0)] mb-1'>
                               {section.title}
                             </div>
                             <Typography.Text
@@ -866,7 +866,7 @@ const NotificationSettings = ({
                                 xl={8}
                               >
                                 <Card
-                                  className={`!rounded-xl border border-gray-200 hover:border-blue-300 transition-all duration-200 ${
+                                  className={`!rounded-xl border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] hover:border-blue-300 transition-all duration-200 ${
                                     sidebarModulesUser[section.key]?.enabled !==
                                     false
                                       ? ''
@@ -877,7 +877,7 @@ const NotificationSettings = ({
                                 >
                                   <div className='flex justify-between items-center h-full'>
                                     <div className='flex-1 text-left'>
-                                      <div className='font-semibold text-sm text-gray-900 mb-1'>
+                                      <div className='font-semibold text-sm text-[var(--semi-color-text-0)] mb-1'>
                                         {module.title}
                                       </div>
                                       <Typography.Text

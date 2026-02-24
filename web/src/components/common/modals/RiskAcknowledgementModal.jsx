@@ -142,7 +142,7 @@ const RiskAcknowledgementModal = React.memo(function RiskAcknowledgementModal({
             className='flex flex-col gap-2 rounded-lg'
             style={{
               border: '1px solid var(--semi-color-warning-light-hover)',
-              background: 'var(--semi-color-fill-0)',
+              background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
               padding: isMobile ? '10px 12px' : '12px 14px',
             }}
           >
@@ -157,8 +157,8 @@ const RiskAcknowledgementModal = React.memo(function RiskAcknowledgementModal({
           <div
             className='flex flex-col gap-2 rounded-lg'
             style={{
-              border: '1px solid var(--semi-color-border)',
-              background: 'var(--semi-color-fill-0)',
+              border: '1px solid var(--glass-border)',
+              background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
               padding: isMobile ? '10px 12px' : '12px 14px',
             }}
           >
@@ -186,7 +186,7 @@ const RiskAcknowledgementModal = React.memo(function RiskAcknowledgementModal({
             }}
           >
             {inputPrompt ? <Text strong>{inputPrompt}</Text> : null}
-            <div className='font-mono text-xs break-all rounded-md p-2 bg-gray-50 border border-gray-200'>
+            <div className='font-mono text-xs break-all rounded-md p-2 bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] border border-[var(--glass-border)]'>
               {requiredText}
             </div>
             <Input

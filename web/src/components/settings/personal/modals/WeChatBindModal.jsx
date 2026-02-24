@@ -48,7 +48,7 @@ const WeChatBindModal = ({
     >
       <div className='space-y-4 py-4 text-center'>
         <Image src={status.wechat_qrcode} className='mx-auto' />
-        <div className='text-gray-600'>
+        <div className='text-[var(--semi-color-text-1)]'>
           <p>
             {t('微信扫码关注公众号，输入「验证码」获取验证码（三分钟内有效）')}
           </p>

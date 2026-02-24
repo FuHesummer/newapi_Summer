@@ -253,12 +253,12 @@ const CheckinCalendar = ({ t, status, turnstileEnabled, turnstileSiteKey }) => {
                 {t('每日签到')}
               </Typography.Text>
               {isCollapsed ? (
-                <ChevronDown size={16} className='text-gray-400' />
+                <ChevronDown size={16} className='text-[var(--semi-color-text-2)]' />
               ) : (
-                <ChevronUp size={16} className='text-gray-400' />
+                <ChevronUp size={16} className='text-[var(--semi-color-text-2)]' />
               )}
             </div>
-            <div className='text-xs text-gray-500 dark:text-gray-400'>
+            <div className='text-xs text-[var(--semi-color-text-2)]'>
               {!initialLoaded
                 ? t('正在加载签到状态...')
                 : checkinData.stats?.checked_in_today
@@ -294,19 +294,19 @@ const CheckinCalendar = ({ t, status, turnstileEnabled, turnstileSiteKey }) => {
             <div className='text-xl font-bold text-green-600'>
               {checkinData.stats?.total_checkins || 0}
             </div>
-            <div className='text-xs text-gray-500'>{t('累计签到')}</div>
+            <div className='text-xs text-[var(--semi-color-text-2)]'>{t('累计签到')}</div>
           </div>
           <div className='text-center p-2.5 bg-slate-50 dark:bg-slate-800 rounded-lg'>
             <div className='text-xl font-bold text-orange-600'>
               {renderQuota(monthlyQuota, 6)}
             </div>
-            <div className='text-xs text-gray-500'>{t('本月获得')}</div>
+            <div className='text-xs text-[var(--semi-color-text-2)]'>{t('本月获得')}</div>
           </div>
           <div className='text-center p-2.5 bg-slate-50 dark:bg-slate-800 rounded-lg'>
             <div className='text-xl font-bold text-blue-600'>
               {renderQuota(checkinData.stats?.total_quota || 0, 6)}
             </div>
-            <div className='text-xs text-gray-500'>{t('累计获得')}</div>
+            <div className='text-xs text-[var(--semi-color-text-2)]'>{t('累计获得')}</div>
           </div>
         </div>
 

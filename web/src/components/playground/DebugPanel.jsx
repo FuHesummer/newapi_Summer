@@ -206,8 +206,8 @@ const DebugPanel = ({
       <div className='flex items-center justify-between mt-4 pt-4 flex-shrink-0'>
         {(debugData.timestamp || debugData.previewTimestamp) && (
           <div className='flex items-center gap-2'>
-            <Clock size={14} className='text-gray-500' />
-            <Typography.Text className='text-xs text-gray-500'>
+            <Clock size={14} className='text-[var(--semi-color-text-2)]' />
+            <Typography.Text className='text-xs text-[var(--semi-color-text-2)]'>
               {activeKey === 'preview' && debugData.previewTimestamp
                 ? `${t('预览更新')}: ${new Date(debugData.previewTimestamp).toLocaleString()}`
                 : debugData.timestamp

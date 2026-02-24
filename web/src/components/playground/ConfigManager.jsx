@@ -209,7 +209,7 @@ const ConfigManager = ({
             theme='borderless'
             type='tertiary'
             size='small'
-            className='!rounded-lg !text-gray-600 hover:!text-blue-600 hover:!bg-blue-50'
+            className='!rounded-lg !text-[var(--semi-color-text-1)] hover:!text-blue-600 hover:!bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)]'
           />
         </Dropdown>
 
@@ -229,7 +229,7 @@ const ConfigManager = ({
     <div className='space-y-3'>
       {/* 配置状态信息和重置按钮 */}
       <div className='flex items-center justify-between'>
-        <Typography.Text className='text-xs text-gray-500'>
+        <Typography.Text className='text-xs text-[var(--semi-color-text-2)]'>
           {getConfigStatus()}
         </Typography.Text>
         <Button

@@ -274,7 +274,7 @@ const SetupWizard = () => {
         <Card className='!rounded-2xl shadow-sm border-0'>
           <div className='mb-4'>
             <div className='text-xl font-semibold'>{t('系统初始化')}</div>
-            <div className='text-xs text-gray-600'>
+            <div className='text-xs text-[var(--semi-color-text-2)]'>
               {t('欢迎使用，请完成以下设置以开始使用系统')}
             </div>
           </div>

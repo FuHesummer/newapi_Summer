@@ -493,13 +493,13 @@ const TwoFASetting = ({ t }) => {
             <div className='rounded-xl'>
               {currentStep === 0 && (
                 <div>
-                  <Paragraph className='text-gray-600 dark:text-gray-300 mb-4'>
+                  <Paragraph className='text-[var(--semi-color-text-1)] mb-4'>
                     {t(
                       '使用认证器应用（如 Google Authenticator、Microsoft Authenticator）扫描下方二维码：',
                     )}
                   </Paragraph>
                   <div className='flex justify-center mb-4'>
-                    <div className='bg-white p-4 rounded-lg shadow-sm'>
+                    <div className='bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] p-4 rounded-lg shadow-sm border border-[var(--glass-border)]'>
                       <QRCodeSVG value={setupData.qr_code_data} size={180} />
                     </div>
                   </div>

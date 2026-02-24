@@ -313,7 +313,7 @@ export const useTokensData = (openFluentNotification) => {
       footer: (
         <div className='flex gap-2'>
           <button
-            className='px-3 py-1 bg-gray-200 rounded'
+            className='px-3 py-1 bg-[color-mix(in_srgb,var(--glass-bg)_88%,transparent)] border border-[var(--glass-border)] rounded text-[var(--semi-color-text-1)]'
             onClick={async () => {
               let content = '';
               for (let i = 0; i < selectedKeys.length; i++) {

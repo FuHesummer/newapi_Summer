@@ -253,7 +253,7 @@ export default function SettingModelDeployment(props) {
                           fontWeight: '500',
                           borderColor: testing
                             ? 'var(--semi-color-primary)'
-                            : 'var(--semi-color-border)',
+                            : 'var(--glass-border)',
                           color: testing
                             ? 'var(--semi-color-primary)'
                             : 'var(--semi-color-text-0)',
@@ -267,10 +267,10 @@ export default function SettingModelDeployment(props) {
                 <Col xs={24} lg={10}>
                   <div
                     style={{
-                      background: 'var(--semi-color-fill-0)',
+                      background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
                       padding: '16px',
                       borderRadius: '8px',
-                      border: '1px solid var(--semi-color-border)',
+                      border: '1px solid var(--glass-border)',
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',

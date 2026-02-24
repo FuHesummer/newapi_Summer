@@ -82,11 +82,11 @@ const ThinkingContent = ({
         onClick={() => onToggleReasoningExpansion(message.id)}
       >
         <div className='absolute inset-0 overflow-hidden'>
-          <div className='absolute -top-10 -right-10 w-40 h-40 bg-white opacity-5 rounded-full'></div>
-          <div className='absolute -bottom-8 -left-8 w-24 h-24 bg-white opacity-10 rounded-full'></div>
+          <div className='absolute -top-10 -right-10 w-40 h-40 bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] opacity-40 rounded-full'></div>
+          <div className='absolute -bottom-8 -left-8 w-24 h-24 bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] opacity-50 rounded-full'></div>
         </div>
         <div className='flex items-center gap-2 sm:gap-4 relative'>
-          <div className='w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center shadow-lg'>
+          <div className='w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] flex items-center justify-center shadow-lg'>
             <Brain
               style={{ color: 'white' }}
               size={styleState.isMobile ? 12 : 16}
@@ -127,7 +127,7 @@ const ThinkingContent = ({
             </div>
           )}
           {(!isThinkingStatus || message.isThinkingComplete) && (
-            <div className='w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 flex items-center justify-center'>
+            <div className='w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] flex items-center justify-center'>
               {message.isReasoningExpanded ? (
                 <ChevronUp
                   size={styleState.isMobile ? 12 : 16}
@@ -154,7 +154,7 @@ const ThinkingContent = ({
           <div className='p-3 sm:p-5 pt-2 sm:pt-4'>
             <div
               ref={scrollRef}
-              className='bg-white/70 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 shadow-inner overflow-x-auto overflow-y-auto thinking-content-scroll'
+              className='bg-[color-mix(in_srgb,var(--glass-bg)_88%,transparent)] backdrop-blur-sm rounded-lg sm:rounded-xl p-2 shadow-inner overflow-x-auto overflow-y-auto thinking-content-scroll'
               style={{
                 maxHeight: '200px',
                 scrollbarWidth: 'thin',

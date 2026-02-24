@@ -935,13 +935,16 @@ export const renderGroupOption = (item) => {
     alignItems: 'center',
     padding: '8px 16px',
     cursor: disabled ? 'not-allowed' : 'pointer',
-    backgroundColor: focused ? 'var(--semi-color-fill-0)' : 'transparent',
+    backgroundColor: focused
+      ? 'color-mix(in srgb, var(--glass-bg) 88%, transparent)'
+      : 'transparent',
     opacity: disabled ? 0.5 : 1,
     ...(selected && {
       backgroundColor: 'var(--semi-color-primary-light-default)',
     }),
     '&:hover': {
-      backgroundColor: !disabled && 'var(--semi-color-fill-1)',
+      backgroundColor:
+        !disabled && 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
     },
   };
 

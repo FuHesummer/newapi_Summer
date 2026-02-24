@@ -202,9 +202,9 @@ export default function SettingsHeaderNavModules(props) {
               <Card
                 style={{
                   borderRadius: '8px',
-                  border: '1px solid var(--semi-color-border)',
+                  border: '1px solid var(--glass-border)',
                   transition: 'all 0.2s ease',
-                  background: 'var(--semi-color-bg-1)',
+                  background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
                   minHeight: '80px',
                 }}
                 bodyStyle={{ padding: '16px' }}
@@ -262,7 +262,7 @@ export default function SettingsHeaderNavModules(props) {
                     : headerNavModules[module.key]) && (
                     <div
                       style={{
-                        borderTop: '1px solid var(--semi-color-border)',
+                        borderTop: '1px solid var(--glass-border)',
                         marginTop: '12px',
                         paddingTop: '12px',
                       }}
@@ -322,7 +322,7 @@ export default function SettingsHeaderNavModules(props) {
             justifyContent: 'flex-start',
             alignItems: 'center',
             paddingTop: '8px',
-            borderTop: '1px solid var(--semi-color-border)',
+            borderTop: '1px solid var(--glass-border)',
           }}
         >
           <Button

@@ -146,7 +146,7 @@ const SelectableButtonGroup = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                border: '1px solid var(--semi-color-border)',
+                border: '1px solid var(--glass-border)',
                 borderRadius: 'var(--semi-border-radius-medium)',
                 padding: '0 12px',
                 gap: '6px',

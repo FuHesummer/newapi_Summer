@@ -74,7 +74,7 @@ const codeThemeStyles = {
     color: '#666',
     fontSize: '14px',
     fontStyle: 'italic',
-    backgroundColor: 'var(--semi-color-fill-0)',
+    backgroundColor: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
     borderRadius: '8px',
   },
   performanceWarning: {

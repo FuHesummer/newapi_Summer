@@ -427,12 +427,12 @@ const SubscriptionPlansCard = ({
                             )}
                           </div>
                           {isActive && (
-                            <span className='text-gray-500'>
+                            <span className='text-[var(--semi-color-text-2)]'>
                               {t('剩余')} {remainDays} {t('天')}
                             </span>
                           )}
                         </div>
-                        <div className='text-xs text-gray-500 mb-2'>
+                        <div className='text-xs text-[var(--semi-color-text-2)] mb-2'>
                           {isActive
                             ? t('至')
                             : isCancelled
@@ -442,7 +442,7 @@ const SubscriptionPlansCard = ({
                             (subscription?.end_time || 0) * 1000,
                           ).toLocaleString()}
                         </div>
-                        <div className='text-xs text-gray-500 mb-2'>
+                        <div className='text-xs text-[var(--semi-color-text-2)] mb-2'>
                           {t('总额度')}:{' '}
                           {totalAmount > 0 ? (
                             <Tooltip
@@ -470,7 +470,7 @@ const SubscriptionPlansCard = ({
                 </div>
               </>
             ) : (
-              <div className='text-xs text-gray-500'>
+              <div className='text-xs text-[var(--semi-color-text-2)]'>
                 {t('购买套餐后即可享受模型权益')}
               </div>
             )}
@@ -572,7 +572,7 @@ const SubscriptionPlansCard = ({
                       <div className='flex flex-col items-start gap-1 pb-2'>
                         {planBenefits.map((item) => {
                           const content = (
-                            <div className='flex items-center gap-2 text-xs text-gray-500'>
+                            <div className='flex items-center gap-2 text-xs text-[var(--semi-color-text-2)]'>
                               <Badge dot type='tertiary' />
                               <span>{item.label}</span>
                             </div>
@@ -635,7 +635,7 @@ const SubscriptionPlansCard = ({
               })}
             </div>
           ) : (
-            <div className='text-center text-gray-400 text-sm py-4'>
+            <div className='text-center text-[var(--semi-color-text-2)] text-sm py-4'>
               {t('暂无可购买套餐')}
             </div>
           )}

@@ -76,10 +76,10 @@ const DeploymentAccessGuard = ({
             style={{
               padding: '60px 40px',
               borderRadius: '16px',
-              border: '1px solid var(--semi-color-border)',
+              border: '1px solid var(--glass-border)',
               boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
               background:
-                'linear-gradient(135deg, var(--semi-color-bg-0) 0%, var(--semi-color-fill-0) 100%)',
+                'linear-gradient(135deg, color-mix(in srgb, var(--glass-bg) 86%, transparent) 0%, color-mix(in srgb, var(--glass-bg) 88%, transparent) 100%)',
             }}
           >
             {/* 图标区域 */}
@@ -130,10 +130,10 @@ const DeploymentAccessGuard = ({
             {/* 配置要求区域 */}
             <div
               style={{
-                backgroundColor: 'var(--semi-color-bg-1)',
+                backgroundColor: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
                 padding: '24px',
                 borderRadius: '12px',
-                border: '1px solid var(--semi-color-border)',
+                border: '1px solid var(--glass-border)',
                 margin: '32px 0',
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
               }}
@@ -241,19 +241,19 @@ const DeploymentAccessGuard = ({
                   fontSize: '16px',
                   fontWeight: '500',
                   color: 'var(--semi-color-primary)',
-                  background: 'var(--semi-color-fill-0)',
-                  border: '1px solid var(--semi-color-border)',
+                  background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+                  border: '1px solid var(--glass-border)',
                   transition: 'all 0.2s ease',
                   textDecoration: 'none',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'var(--semi-color-fill-1)';
+                  e.currentTarget.style.background = 'color-mix(in srgb, var(--glass-bg) 90%, transparent)';
                   e.currentTarget.style.transform = 'translateY(-1px)';
                   e.currentTarget.style.boxShadow =
                     '0 2px 8px rgba(0, 0, 0, 0.1)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'var(--semi-color-fill-0)';
+                  e.currentTarget.style.background = 'color-mix(in srgb, var(--glass-bg) 88%, transparent)';
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = 'none';
                 }}
@@ -322,10 +322,10 @@ const DeploymentAccessGuard = ({
             style={{
               padding: '60px 40px',
               borderRadius: '16px',
-              border: '1px solid var(--semi-color-border)',
+              border: '1px solid var(--glass-border)',
               boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
               background:
-                'linear-gradient(135deg, var(--semi-color-bg-0) 0%, var(--semi-color-fill-0) 100%)',
+                'linear-gradient(135deg, color-mix(in srgb, var(--glass-bg) 86%, transparent) 0%, color-mix(in srgb, var(--glass-bg) 88%, transparent) 100%)',
             }}
           >
             <div style={{ marginBottom: '32px' }}>

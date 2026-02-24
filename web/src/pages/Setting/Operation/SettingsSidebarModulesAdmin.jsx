@@ -298,9 +298,9 @@ export default function SettingsSidebarModulesAdmin(props) {
                 alignItems: 'center',
                 marginBottom: '16px',
                 padding: '12px 16px',
-                backgroundColor: 'var(--semi-color-fill-0)',
+                backgroundColor: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
                 borderRadius: '8px',
-                border: '1px solid var(--semi-color-border)',
+                border: '1px solid var(--glass-border)',
               }}
             >
               <div>
@@ -404,7 +404,7 @@ export default function SettingsSidebarModulesAdmin(props) {
             justifyContent: 'flex-start',
             alignItems: 'center',
             paddingTop: '8px',
-            borderTop: '1px solid var(--semi-color-border)',
+            borderTop: '1px solid var(--glass-border)',
           }}
         >
           <Button

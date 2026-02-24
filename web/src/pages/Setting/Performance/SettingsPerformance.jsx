@@ -386,7 +386,7 @@ export default function SettingsPerformance(props) {
                   <div
                     style={{
                       padding: 16,
-                      background: 'var(--semi-color-fill-0)',
+                      background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
                       borderRadius: 8,
                       flex: 1,
                       display: 'flex',
@@ -434,7 +434,7 @@ export default function SettingsPerformance(props) {
                   <div
                     style={{
                       padding: 16,
-                      background: 'var(--semi-color-fill-0)',
+                      background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
                       borderRadius: 8,
                       flex: 1,
                       display: 'flex',
@@ -478,7 +478,7 @@ export default function SettingsPerformance(props) {
                     <div
                       style={{
                         padding: 16,
-                        background: 'var(--semi-color-fill-0)',
+                        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
                         borderRadius: 8,
                       }}
                     >
