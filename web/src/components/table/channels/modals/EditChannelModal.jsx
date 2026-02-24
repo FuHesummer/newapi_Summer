@@ -1772,11 +1772,13 @@ const EditChannelModal = (props) => {
     // 构建样式类名
     const optionClassName = [
       'flex items-center gap-3 px-3 py-2 transition-all duration-200 rounded-lg mx-2 my-1',
-      focused && 'bg-blue-50 shadow-sm',
+      focused &&
+        'bg-[color-mix(in_srgb,var(--glass-bg)_84%,rgba(59,130,246,0.20))] shadow-sm',
       selected &&
-        'bg-blue-100 text-blue-700 shadow-lg ring-2 ring-blue-200 ring-opacity-50',
+        'bg-[color-mix(in_srgb,var(--glass-bg)_82%,rgba(59,130,246,0.28))] text-blue-700 shadow-lg ring-2 ring-blue-200 ring-opacity-50',
       disabled && 'opacity-50 cursor-not-allowed',
-      !disabled && 'hover:bg-gray-50 hover:shadow-md cursor-pointer',
+      !disabled &&
+        'hover:bg-[color-mix(in_srgb,var(--glass-bg)_82%,transparent)] hover:shadow-md cursor-pointer',
       className,
     ]
       .filter(Boolean)
@@ -1929,7 +1931,7 @@ const EditChannelModal = (props) => {
                         <Text className='text-lg font-medium'>
                           {t('基本信息')}
                         </Text>
-                        <div className='text-xs text-gray-600'>
+                        <div className='text-xs text-[var(--semi-color-text-2)]'>
                           {t('渠道的基本配置信息')}
                         </div>
                       </div>
@@ -2606,7 +2608,7 @@ const EditChannelModal = (props) => {
                           <Text className='text-lg font-medium'>
                             {t('API 配置')}
                           </Text>
-                          <div className='text-xs text-gray-600'>
+                          <div className='text-xs text-[var(--semi-color-text-2)]'>
                             {t('API 地址和相关配置')}
                           </div>
                         </div>
@@ -2837,7 +2839,7 @@ const EditChannelModal = (props) => {
                         <Text className='text-lg font-medium'>
                           {t('模型配置')}
                         </Text>
-                        <div className='text-xs text-gray-600'>
+                        <div className='text-xs text-[var(--semi-color-text-2)]'>
                           {t('模型选择和映射设置')}
                         </div>
                       </div>
@@ -3088,7 +3090,7 @@ const EditChannelModal = (props) => {
                         <Text className='text-lg font-medium'>
                           {t('高级设置')}
                         </Text>
-                        <div className='text-xs text-gray-600'>
+                        <div className='text-xs text-[var(--semi-color-text-2)]'>
                           {t('渠道的高级配置选项')}
                         </div>
                       </div>
@@ -3340,7 +3342,7 @@ const EditChannelModal = (props) => {
                     {/* 字段透传控制 - OpenAI 渠道 */}
                     {inputs.type === 1 && (
                       <>
-                        <div className='mt-4 mb-2 text-sm font-medium text-gray-700'>
+                        <div className='mt-4 mb-2 text-sm font-medium text-[var(--semi-color-text-1)]'>
                           {t('字段透传控制')}
                         </div>
 
@@ -3415,7 +3417,7 @@ const EditChannelModal = (props) => {
                     {/* 字段透传控制 - Claude 渠道 */}
                     {inputs.type === 14 && (
                       <>
-                        <div className='mt-4 mb-2 text-sm font-medium text-gray-700'>
+                        <div className='mt-4 mb-2 text-sm font-medium text-[var(--semi-color-text-1)]'>
                           {t('字段透传控制')}
                         </div>
 

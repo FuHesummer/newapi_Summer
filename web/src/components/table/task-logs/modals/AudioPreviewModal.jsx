@@ -53,8 +53,8 @@ const AudioClipCard = ({ clip }) => {
         gap: '16px',
         padding: '16px',
         borderRadius: '8px',
-        border: '1px solid var(--semi-color-border)',
-        background: 'var(--semi-color-bg-1)',
+        border: '1px solid var(--glass-border)',
+        background: 'color-mix(in srgb, var(--glass-bg) 82%, transparent)',
       }}
     >
       {imageUrl && (
@@ -162,6 +162,9 @@ const AudioPreviewModal = ({ isModalOpen, setIsModalOpen, audioClips }) => {
         maxHeight: '70vh',
         overflow: 'auto',
         padding: '16px',
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
       }}
       width={560}
     >

@@ -208,7 +208,7 @@ const EditPrefillGroupModal = ({
                 </Avatar>
                 <div>
                   <Text className='text-lg font-medium'>{t('基本信息')}</Text>
-                  <div className='text-xs text-gray-600'>
+                  <div className='text-xs text-[var(--semi-color-text-2)]'>
                     {t('设置预填组的基本信息')}
                   </div>
                 </div>

@@ -255,7 +255,7 @@ const PrefillGroupManagement = ({ visible, onClose }) => {
                 </Avatar>
                 <div>
                   <Text className='text-lg font-medium'>{t('组列表')}</Text>
-                  <div className='text-xs text-gray-600'>
+                  <div className='text-xs text-[var(--semi-color-text-2)]'>
                     {t('管理模型、标签、端点等预填组')}
                   </div>
                 </div>

@@ -356,7 +356,7 @@ const EditTokenModal = (props) => {
                   </Avatar>
                   <div>
                     <Text className='text-lg font-medium'>{t('基本信息')}</Text>
-                    <div className='text-xs text-gray-600'>
+                    <div className='text-xs text-[var(--semi-color-text-2)]'>
                       {t('设置令牌的基本信息')}
                     </div>
                   </div>
@@ -495,7 +495,7 @@ const EditTokenModal = (props) => {
                   </Avatar>
                   <div>
                     <Text className='text-lg font-medium'>{t('额度设置')}</Text>
-                    <div className='text-xs text-gray-600'>
+                    <div className='text-xs text-[var(--semi-color-text-2)]'>
                       {t('设置令牌可用额度和数量')}
                     </div>
                   </div>
@@ -549,7 +549,7 @@ const EditTokenModal = (props) => {
                   </Avatar>
                   <div>
                     <Text className='text-lg font-medium'>{t('访问限制')}</Text>
-                    <div className='text-xs text-gray-600'>
+                    <div className='text-xs text-[var(--semi-color-text-2)]'>
                       {t('设置令牌的访问限制')}
                     </div>
                   </div>

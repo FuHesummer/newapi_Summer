@@ -243,7 +243,7 @@ const EditRedemptionModal = (props) => {
                       <Text className='text-lg font-medium'>
                         {t('基本信息')}
                       </Text>
-                      <div className='text-xs text-gray-600'>
+                      <div className='text-xs text-[var(--semi-color-text-2)]'>
                         {t('设置兑换码的基本信息')}
                       </div>
                     </div>
@@ -291,7 +291,7 @@ const EditRedemptionModal = (props) => {
                       <Text className='text-lg font-medium'>
                         {t('额度设置')}
                       </Text>
-                      <div className='text-xs text-gray-600'>
+                      <div className='text-xs text-[var(--semi-color-text-2)]'>
                         {t('设置兑换码的额度和数量')}
                       </div>
                     </div>

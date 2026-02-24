@@ -484,16 +484,16 @@ const MultiKeyManageModal = ({ visible, onCancel, channel, onRefresh }) => {
         <div
           className='rounded-xl p-4 mb-3'
           style={{
-            background: 'var(--semi-color-bg-1)',
-            border: '1px solid var(--semi-color-border)',
+            background: 'color-mix(in srgb, var(--glass-bg) 84%, transparent)',
+            border: '1px solid var(--glass-border)',
           }}
         >
           <Row gutter={16} align='middle'>
             <Col span={8}>
               <div
                 style={{
-                  background: 'var(--semi-color-bg-0)',
-                  border: '1px solid var(--semi-color-border)',
+                  background: 'color-mix(in srgb, var(--glass-bg) 80%, transparent)',
+                  border: '1px solid var(--glass-border)',
                   borderRadius: 12,
                   padding: 12,
                 }}
@@ -526,8 +526,8 @@ const MultiKeyManageModal = ({ visible, onCancel, channel, onRefresh }) => {
             <Col span={8}>
               <div
                 style={{
-                  background: 'var(--semi-color-bg-0)',
-                  border: '1px solid var(--semi-color-border)',
+                  background: 'color-mix(in srgb, var(--glass-bg) 80%, transparent)',
+                  border: '1px solid var(--glass-border)',
                   borderRadius: 12,
                   padding: 12,
                 }}
@@ -560,8 +560,8 @@ const MultiKeyManageModal = ({ visible, onCancel, channel, onRefresh }) => {
             <Col span={8}>
               <div
                 style={{
-                  background: 'var(--semi-color-bg-0)',
-                  border: '1px solid var(--semi-color-border)',
+                  background: 'color-mix(in srgb, var(--glass-bg) 80%, transparent)',
+                  border: '1px solid var(--glass-border)',
                   borderRadius: 12,
                   padding: 12,
                 }}
