@@ -23,6 +23,21 @@ import { VChart } from '@visactor/react-vchart';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+const groupStyleMap = {
+  'bg-blue-50': {
+    background: 'linear-gradient(135deg, rgba(125, 211, 252, 0.16), rgba(59, 130, 246, 0.12))',
+  },
+  'bg-green-50': {
+    background: 'linear-gradient(135deg, rgba(110, 231, 183, 0.16), rgba(34, 197, 94, 0.12))',
+  },
+  'bg-yellow-50': {
+    background: 'linear-gradient(135deg, rgba(253, 224, 71, 0.14), rgba(249, 115, 22, 0.12))',
+  },
+  'bg-indigo-50': {
+    background: 'linear-gradient(135deg, rgba(165, 180, 252, 0.16), rgba(99, 102, 241, 0.12))',
+  },
+};
+
 const StatsCards = ({
   groupedStatsData,
   loading,
@@ -39,14 +54,19 @@ const StatsCards = ({
           <Card
             key={idx}
             {...CARD_PROPS}
-            className={`${group.color} border-0 !rounded-2xl w-full`}
+            className='border-0 !rounded-2xl w-full'
             title={group.title}
+            style={groupStyleMap[group.color]}
           >
             <div className='space-y-4'>
               {group.items.map((item, itemIdx) => (
                 <div
                   key={itemIdx}
-                  className='flex items-center justify-between cursor-pointer'
+                  className='flex items-center justify-between cursor-pointer rounded-lg px-2 py-1 transition-colors'
+                  style={{
+                    background:
+                      'color-mix(in srgb, var(--glass-bg) 64%, transparent)',
+                  }}
                   onClick={item.onClick}
                 >
                   <div className='flex items-center'>
@@ -54,12 +74,24 @@ const StatsCards = ({
                       className='mr-3'
                       size='small'
                       color={item.avatarColor}
+                      style={{
+                        boxShadow:
+                          '0 6px 16px color-mix(in srgb, var(--brand-primary) 35%, transparent)',
+                      }}
                     >
                       {item.icon}
                     </Avatar>
                     <div>
-                      <div className='text-xs text-gray-500'>{item.title}</div>
-                      <div className='text-lg font-semibold'>
+                      <div
+                        className='text-xs'
+                        style={{ color: 'var(--app-text-secondary)' }}
+                      >
+                        {item.title}
+                      </div>
+                      <div
+                        className='text-lg font-semibold'
+                        style={{ color: 'var(--app-text-primary)' }}
+                      >
                         <Skeleton
                           loading={loading}
                           active

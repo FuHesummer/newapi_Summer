@@ -115,7 +115,15 @@ const CardTable = ({
       );
 
       return (
-        <Card key={key} className='!rounded-2xl shadow-sm'>
+        <Card
+          key={key}
+          className='!rounded-2xl'
+          style={{
+            background: 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
+            border: '1px solid var(--glass-border)',
+            boxShadow: 'var(--glass-shadow)',
+          }}
+        >
           <Skeleton loading={true} active placeholder={placeholder}></Skeleton>
         </Card>
       );
@@ -139,7 +147,15 @@ const CardTable = ({
       (!tableProps.rowExpandable || tableProps.rowExpandable(record));
 
     return (
-      <Card key={rowKeyVal} className='!rounded-2xl shadow-sm'>
+      <Card
+        key={rowKeyVal}
+        className='!rounded-2xl'
+        style={{
+          background: 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
+          border: '1px solid var(--glass-border)',
+          boxShadow: 'var(--glass-shadow)',
+        }}
+      >
         {columns.map((col, colIdx) => {
           if (
             tableProps?.visibleColumns &&

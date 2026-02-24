@@ -76,7 +76,7 @@ const CardPro = ({
     if (!hasContent) return null;
 
     return (
-      <div className='flex flex-col w-full'>
+      <div className='flex flex-col w-full gap-2'>
         {/* 统计信息区域 - 用于type2 */}
         {type === 'type2' && statsArea && <>{statsArea}</>}
 
@@ -105,6 +105,12 @@ const CardPro = ({
                 size='small'
                 theme='outline'
                 block
+                style={{
+                  background:
+                    'color-mix(in srgb, var(--glass-bg) 86%, transparent)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--app-text-primary)',
+                }}
               >
                 {showMobileActions ? t('隐藏操作项') : t('显示操作项')}
               </Button>
@@ -149,7 +155,7 @@ const CardPro = ({
     return (
       <div
         className={`flex w-full pt-4 border-t ${isMobile ? 'justify-center' : 'justify-between items-center'}`}
-        style={{ borderColor: 'var(--semi-color-border)' }}
+        style={{ borderColor: 'var(--glass-border)' }}
       >
         {paginationArea}
       </div>
@@ -165,7 +171,12 @@ const CardPro = ({
       footer={footerContent}
       shadows={shadows}
       bordered={bordered}
-      style={style}
+      style={{
+        background: 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
+        border: '1px solid var(--glass-border)',
+        boxShadow: 'var(--glass-shadow)',
+        ...style,
+      }}
       {...props}
     >
       {children}

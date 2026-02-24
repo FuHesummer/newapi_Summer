@@ -22,8 +22,10 @@ import ChannelsTable from '../../components/table/channels';
 
 const File = () => {
   return (
-    <div className='mt-[60px] px-2'>
-      <ChannelsTable />
+    <div className='mt-[60px] px-2 pb-2'>
+      <div className='with-pastel-balls rounded-2xl p-1 md:p-2'>
+        <ChannelsTable />
+      </div>
     </div>
   );
 };

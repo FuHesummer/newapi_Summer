@@ -511,7 +511,16 @@ const LoginForm = () => {
             </Title>
           </div>
 
-          <Card className='border-0 !rounded-2xl overflow-hidden'>
+          <Card
+            className='!rounded-2xl overflow-hidden'
+            style={{
+              background: 'color-mix(in srgb, var(--glass-bg) 92%, transparent)',
+              border: '1px solid var(--glass-border)',
+              boxShadow: 'var(--glass-shadow-strong)',
+              backdropFilter: 'blur(18px) saturate(145%)',
+              WebkitBackdropFilter: 'blur(18px) saturate(145%)',
+            }}
+          >
             <div className='flex justify-center pt-6 pb-2'>
               <Title heading={3} className='text-gray-800 dark:text-gray-200'>
                 {t('登 录')}
@@ -725,7 +734,16 @@ const LoginForm = () => {
             <Title heading={3}>{systemName}</Title>
           </div>
 
-          <Card className='border-0 !rounded-2xl overflow-hidden'>
+          <Card
+            className='!rounded-2xl overflow-hidden'
+            style={{
+              background: 'color-mix(in srgb, var(--glass-bg) 92%, transparent)',
+              border: '1px solid var(--glass-border)',
+              boxShadow: 'var(--glass-shadow-strong)',
+              backdropFilter: 'blur(18px) saturate(145%)',
+              WebkitBackdropFilter: 'blur(18px) saturate(145%)',
+            }}
+          >
             <div className='flex justify-center pt-6 pb-2'>
               <Title heading={3} className='text-gray-800 dark:text-gray-200'>
                 {t('登 录')}
@@ -947,7 +965,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className='relative overflow-hidden bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8'>
+    <div className='relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8' style={{ minHeight: 'calc(100vh - 64px)', background: 'transparent' }}>
       {/* 背景模糊晕染球 */}
       <div
         className='blur-ball blur-ball-indigo'
