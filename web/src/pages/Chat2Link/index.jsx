@@ -36,8 +36,10 @@ const chat2page = () => {
   }
 
   return (
-    <div className='mt-[60px] px-2'>
-      <h3>正在加载，请稍候...</h3>
+    <div className='mt-[60px] px-2 pb-2'>
+      <div className='with-pastel-balls rounded-2xl p-4 md:p-6'>
+        <h3>正在加载，请稍候...</h3>
+      </div>
     </div>
   );
 };

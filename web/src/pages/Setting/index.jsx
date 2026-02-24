@@ -193,23 +193,25 @@ const Setting = () => {
     }
   }, [location.search]);
   return (
-    <div className='mt-[60px] px-2'>
-      <Layout>
-        <Layout.Content>
-          <Tabs
-            type='card'
-            collapsible
-            activeKey={tabActiveKey}
-            onChange={(key) => onChangeTab(key)}
-          >
-            {panes.map((pane) => (
-              <TabPane itemKey={pane.itemKey} tab={pane.tab} key={pane.itemKey}>
-                {tabActiveKey === pane.itemKey && pane.content}
-              </TabPane>
-            ))}
-          </Tabs>
-        </Layout.Content>
-      </Layout>
+    <div className='mt-[60px] px-2 pb-2'>
+      <div className='with-pastel-balls rounded-2xl p-1 md:p-2'>
+        <Layout>
+          <Layout.Content>
+            <Tabs
+              type='card'
+              collapsible
+              activeKey={tabActiveKey}
+              onChange={(key) => onChangeTab(key)}
+            >
+              {panes.map((pane) => (
+                <TabPane itemKey={pane.itemKey} tab={pane.tab} key={pane.itemKey}>
+                  {tabActiveKey === pane.itemKey && pane.content}
+                </TabPane>
+              ))}
+            </Tabs>
+          </Layout.Content>
+        </Layout>
+      </div>
     </div>
   );
 };
