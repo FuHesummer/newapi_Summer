@@ -31,7 +31,7 @@ const PricingCardSkeleton = ({
         {Array.from({ length: skeletonCount }).map((_, index) => (
           <Card
             key={index}
-            className='!rounded-2xl border border-gray-200'
+            className='!rounded-2xl border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--glass-bg)_82%,transparent)]'
             bodyStyle={{ padding: '24px' }}
           >
             {/* 头部：图标 + 模型名称 + 操作按钮 */}
@@ -107,7 +107,7 @@ const PricingCardSkeleton = ({
 
             {/* 倍率信息骨架（可选） */}
             {showRatio && (
-              <div className='mt-4 pt-3 border-t border-gray-100'>
+              <div className='mt-4 pt-3 border-t border-[var(--glass-border)]'>
                 <div className='flex items-center space-x-1 mb-2'>
                   <Skeleton.Title
                     style={{ width: 60, height: 12, marginBottom: 0 }}

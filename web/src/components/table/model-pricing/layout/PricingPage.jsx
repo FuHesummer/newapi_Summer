@@ -40,7 +40,7 @@ const PricingPage = () => {
   };
 
   return (
-    <div className='bg-white'>
+    <div className='bg-[color-mix(in_srgb,var(--glass-bg)_86%,transparent)]'>
       <Layout className='pricing-layout'>
         {!isMobile && (
           <Sider className='pricing-scroll-hide pricing-sidebar'>

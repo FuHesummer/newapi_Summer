@@ -43,18 +43,18 @@ const ModelEndpoints = ({ modelData, endpointMap = {}, t }) => {
         <div
           key={type}
           className='flex justify-between border-b border-dashed last:border-0 py-2 last:pb-0'
-          style={{ borderColor: 'var(--semi-color-border)' }}
+          style={{ borderColor: 'var(--glass-border)' }}
         >
           <span className='flex items-center pr-5'>
             <Badge dot type='success' className='mr-2' />
             {type}
             {path && '：'}
             {path && (
-              <span className='text-gray-500 md:ml-1 break-all'>{path}</span>
+              <span className='text-[var(--semi-color-text-2)] md:ml-1 break-all'>{path}</span>
             )}
           </span>
           {path && (
-            <span className='text-gray-500 text-xs md:ml-1'>{method}</span>
+            <span className='text-[var(--semi-color-text-2)] text-xs md:ml-1'>{method}</span>
           )}
         </div>
       );
@@ -69,7 +69,7 @@ const ModelEndpoints = ({ modelData, endpointMap = {}, t }) => {
         </Avatar>
         <div>
           <Text className='text-lg font-medium'>{t('API端点')}</Text>
-          <div className='text-xs text-gray-600'>
+          <div className='text-xs text-[var(--semi-color-text-2)]'>
             {t('模型支持的接口端点信息')}
           </div>
         </div>

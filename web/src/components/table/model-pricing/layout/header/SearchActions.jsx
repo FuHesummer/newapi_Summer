@@ -81,7 +81,7 @@ const SearchActions = memo(
           icon={<IconCopy />}
           onClick={handleCopyClick}
           disabled={selectedRowKeys.length === 0}
-          className='!bg-blue-500 hover:!bg-blue-600 !text-white disabled:!bg-gray-300 disabled:!text-gray-500'
+          className='!bg-blue-500 hover:!bg-blue-600 !text-[var(--semi-color-white)] disabled:!bg-[color-mix(in_srgb,var(--glass-bg)_78%,transparent)] disabled:!text-[var(--semi-color-text-2)]'
         >
           {t('复制')}
         </Button>
@@ -92,7 +92,7 @@ const SearchActions = memo(
 
             {/* 充值价格显示开关 */}
             <div className='flex items-center gap-2'>
-              <span className='text-sm text-gray-600'>{t('充值价格显示')}</span>
+              <span className='text-sm text-[var(--semi-color-text-2)]'>{t('充值价格显示')}</span>
               <Switch
                 checked={showWithRecharge}
                 onChange={setShowWithRecharge}
@@ -114,7 +114,7 @@ const SearchActions = memo(
 
             {/* 显示倍率开关 */}
             <div className='flex items-center gap-2'>
-              <span className='text-sm text-gray-600'>{t('倍率')}</span>
+              <span className='text-sm text-[var(--semi-color-text-2)]'>{t('倍率')}</span>
               <Switch checked={showRatio} onChange={setShowRatio} />
             </div>
 

@@ -136,7 +136,7 @@ const ModelPricingTable = ({
           render: (text) => (
             <>
               <div className='font-semibold text-orange-600'>{text}</div>
-              <div className='text-xs text-gray-500'>
+              <div className='text-xs text-[var(--semi-color-text-2)]'>
                 / {tokenUnit === 'K' ? '1K' : '1M'} tokens
               </div>
             </>
@@ -148,7 +148,7 @@ const ModelPricingTable = ({
           render: (text) => (
             <>
               <div className='font-semibold text-orange-600'>{text}</div>
-              <div className='text-xs text-gray-500'>
+              <div className='text-xs text-[var(--semi-color-text-2)]'>
                 / {tokenUnit === 'K' ? '1K' : '1M'} tokens
               </div>
             </>
@@ -163,7 +163,7 @@ const ModelPricingTable = ({
         render: (text) => (
           <>
             <div className='font-semibold text-orange-600'>{text}</div>
-            <div className='text-xs text-gray-500'>/ 次</div>
+            <div className='text-xs text-[var(--semi-color-text-2)]'>/ 次</div>
           </>
         ),
       });
@@ -189,14 +189,14 @@ const ModelPricingTable = ({
         </Avatar>
         <div>
           <Text className='text-lg font-medium'>{t('分组价格')}</Text>
-          <div className='text-xs text-gray-600'>
+          <div className='text-xs text-[var(--semi-color-text-2)]'>
             {t('不同用户分组的价格信息')}
           </div>
         </div>
       </div>
       {autoChain.length > 0 && (
         <div className='flex flex-wrap items-center gap-1 mb-4'>
-          <span className='text-sm text-gray-600'>{t('auto分组调用链路')}</span>
+          <span className='text-sm text-[var(--semi-color-text-2)]'>{t('auto分组调用链路')}</span>
           <span className='text-sm'>→</span>
           {autoChain.map((g, idx) => (
             <React.Fragment key={g}>
