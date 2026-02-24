@@ -468,11 +468,22 @@ const Playground = () => {
               bg-transparent border-r-0 flex-shrink-0 overflow-auto
               ${
                 isMobile
-                  ? 'fixed top-0 left-0 right-0 bottom-0 z-[1000] w-full h-auto bg-white shadow-lg'
+                  ? 'fixed top-0 left-0 right-0 bottom-0 z-[1000] w-full h-auto shadow-lg'
                   : 'relative z-[1] w-80 h-full'
               }
             `}
                 width={isMobile ? '100%' : 320}
+                style={
+                  isMobile
+                    ? {
+                        background:
+                          'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+                        backdropFilter: 'blur(14px) saturate(140%)',
+                        WebkitBackdropFilter: 'blur(14px) saturate(140%)',
+                        borderRight: '1px solid var(--glass-border)',
+                      }
+                    : undefined
+                }
               >
                 <OptimizedSettingsPanel
                   inputs={inputs}
@@ -535,7 +546,15 @@ const Playground = () => {
 
               {/* 调试面板 - 移动端覆盖层 */}
               {showDebugPanel && isMobile && (
-                <div className='fixed top-0 left-0 right-0 bottom-0 z-[1000] bg-white overflow-auto shadow-lg'>
+                <div
+                  className='fixed top-0 left-0 right-0 bottom-0 z-[1000] overflow-auto shadow-lg'
+                  style={{
+                    background:
+                      'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+                    backdropFilter: 'blur(14px) saturate(140%)',
+                    WebkitBackdropFilter: 'blur(14px) saturate(140%)',
+                  }}
+                >
                   <OptimizedDebugPanel
                     debugData={debugData}
                     activeDebugTab={activeDebugTab}

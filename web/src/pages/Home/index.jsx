@@ -337,10 +337,14 @@ const Home = () => {
       ) : (
         <div className='overflow-x-hidden w-full'>
           {homePageContent.startsWith('https://') ? (
-            <iframe
-              src={homePageContent}
-              className='w-full h-screen border-none'
-            />
+            <div className='mt-[60px] px-2 pb-2'>
+              <div className='with-pastel-balls rounded-2xl p-1 md:p-2'>
+                <iframe
+                  src={homePageContent}
+                  className='w-full h-[calc(100vh-74px)] border-none rounded-xl'
+                />
+              </div>
+            </div>
           ) : (
             <div className='mt-[60px] px-2 pb-2'>
               <div className='with-pastel-balls rounded-2xl p-3 md:p-4'>
