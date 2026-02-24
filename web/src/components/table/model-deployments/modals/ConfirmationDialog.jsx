@@ -18,7 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 
 import React, { useState, useEffect } from 'react';
-import { Modal, Typography, Input } from '@douyinfe/semi-ui';
+import { Modal, Typography, Input, Button } from '@douyinfe/semi-ui';
 
 const { Text } = Typography;
 
@@ -60,15 +60,37 @@ const ConfirmationDialog = ({
       title={title}
       visible={visible}
       onCancel={handleCancel}
-      onOk={handleConfirm}
-      okText={t('确认')}
-      cancelText={t('取消')}
-      okButtonProps={{
-        disabled: !isConfirmed,
-        type: type === 'danger' ? 'danger' : 'primary',
-        loading,
-      }}
       width={480}
+      bodyStyle={{
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+      }}
+      footer={
+        <div
+          className='flex justify-end'
+          style={{
+            background: 'color-mix(in srgb, var(--glass-bg) 90%, transparent)',
+            backdropFilter: 'blur(12px) saturate(135%)',
+            WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+            borderTop: '1px solid var(--glass-border)',
+            padding: '12px 0',
+            margin: '0 -24px -16px',
+          }}
+        >
+          <div className='px-6 flex gap-2'>
+            <Button onClick={handleCancel}>{t('取消')}</Button>
+            <Button
+              type={type === 'danger' ? 'danger' : 'primary'}
+              disabled={!isConfirmed}
+              loading={loading}
+              onClick={handleConfirm}
+            >
+              {t('确认')}
+            </Button>
+          </div>
+        </div>
+      }
     >
       <div className='space-y-4'>
         <Text type='danger' strong>

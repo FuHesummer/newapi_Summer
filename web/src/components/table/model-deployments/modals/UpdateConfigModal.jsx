@@ -405,7 +405,14 @@ const UpdateConfigModal = ({ visible, onCancel, deployment, onSuccess, t }) => {
                   ))}
 
                   {envVars.length === 0 && (
-                    <div className='text-center text-gray-500 py-4 border-2 border-dashed border-gray-300 rounded-lg'>
+                    <div
+                      className='text-center text-gray-500 py-4 border-2 border-dashed rounded-lg'
+                      style={{
+                        background:
+                          'color-mix(in srgb, var(--glass-bg) 84%, transparent)',
+                        borderColor: 'var(--glass-border)',
+                      }}
+                    >
                       <Text type='secondary'>{t('暂无环境变量')}</Text>
                     </div>
                   )}

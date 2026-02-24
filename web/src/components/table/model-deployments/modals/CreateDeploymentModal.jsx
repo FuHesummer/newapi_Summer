@@ -844,6 +844,11 @@ const CreateDeploymentModal = ({ visible, onCancel, onSuccess, t }) => {
       width={800}
       confirmLoading={submitting}
       style={{ top: 20 }}
+      bodyStyle={{
+        background: 'color-mix(in srgb, var(--glass-bg) 88%, transparent)',
+        backdropFilter: 'blur(12px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(135%)',
+      }}
     >
       <Form
         key={formKey}
@@ -1416,7 +1421,7 @@ const CreateDeploymentModal = ({ visible, onCancel, onSuccess, t }) => {
                   <div
                     className='flex flex-col gap-1 rounded-md px-4 py-3'
                     style={{
-                      border: '1px solid var(--semi-color-border)',
+                      border: '1px solid var(--glass-border)',
                       backgroundColor: 'var(--semi-color-fill-0)',
                     }}
                   >
@@ -1438,7 +1443,7 @@ const CreateDeploymentModal = ({ visible, onCancel, onSuccess, t }) => {
                   <div
                     className='flex flex-col gap-1 rounded-md px-4 py-3'
                     style={{
-                      border: '1px solid var(--semi-color-border)',
+                      border: '1px solid var(--glass-border)',
                       backgroundColor: 'var(--semi-color-fill-0)',
                     }}
                   >
@@ -1455,7 +1460,7 @@ const CreateDeploymentModal = ({ visible, onCancel, onSuccess, t }) => {
                   <div
                     className='flex flex-col gap-1 rounded-md px-4 py-3'
                     style={{
-                      border: '1px solid var(--semi-color-border)',
+                      border: '1px solid var(--glass-border)',
                       backgroundColor: 'var(--semi-color-fill-0)',
                     }}
                   >
@@ -1477,7 +1482,7 @@ const CreateDeploymentModal = ({ visible, onCancel, onSuccess, t }) => {
                       key={item.key}
                       className='flex items-center justify-between gap-3 rounded-md px-3 py-2'
                       style={{
-                        border: '1px solid var(--semi-color-border)',
+                        border: '1px solid var(--glass-border)',
                         backgroundColor: 'var(--semi-color-fill-0)',
                       }}
                     >
