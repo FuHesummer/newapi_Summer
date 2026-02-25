@@ -69,6 +69,7 @@ const PageLayout = () => {
 
   const isConsoleRoute = location.pathname.startsWith('/console');
   const showSider = isConsoleRoute && (!isMobile || drawerOpen);
+  const canvasTopOffset = isMobile ? 62 : 76;
 
   useEffect(() => {
     if (isMobile && drawerOpen && collapsed) {
@@ -121,23 +122,17 @@ const PageLayout = () => {
 
   return (
     <div className='neko-fullpage'>
-      <Layout
-        className='app-layout'
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: isMobile ? 'visible' : 'hidden',
-        }}
-      >
+      <div className='neko-canvas'>
         <Header
           style={{
             padding: 0,
             height: 'auto',
             lineHeight: 'normal',
-            position: 'fixed',
+            position: 'absolute',
             width: '100%',
             top: 0,
-            zIndex: 100,
+            left: 0,
+            zIndex: 130,
           }}
         >
           <HeaderBar
@@ -147,74 +142,88 @@ const PageLayout = () => {
         </Header>
 
         <Layout
+          className='app-layout neko-main-layout'
           style={{
-            overflow: isMobile ? 'visible' : 'auto',
             display: 'flex',
             flexDirection: 'column',
-            background: 'transparent',
-            flex: 1,
-            minHeight: 0,
+            overflow: isMobile ? 'visible' : 'hidden',
+            minHeight: `calc(100dvh - ${canvasTopOffset}px)`,
+            paddingTop: `${canvasTopOffset}px`,
           }}
         >
-          {showSider && (
-            <Sider
-              className='app-sider'
-              style={{
-                position: 'fixed',
-                left: 0,
-                top: '64px',
-                zIndex: 99,
-                border: 'none',
-                paddingRight: '0',
-                width: 'var(--sidebar-current-width)',
-                background: 'transparent',
-              }}
-            >
-              <SiderBar
-                onNavigate={() => {
-                  if (isMobile) setDrawerOpen(false);
-                }}
-              />
-            </Sider>
-          )}
           <Layout
             style={{
-              marginLeft: isMobile
-                ? '0'
-                : showSider
-                  ? 'var(--sidebar-current-width)'
-                  : '0',
-              flex: '1 1 auto',
+              position: 'relative',
+              overflow: isMobile ? 'visible' : 'auto',
               display: 'flex',
               flexDirection: 'column',
               background: 'transparent',
+              flex: 1,
+              minHeight: 0,
             }}
           >
-            <Content
-              style={{
-                flex: '1 0 auto',
-                overflowY: isMobile ? 'visible' : 'hidden',
-                WebkitOverflowScrolling: 'touch',
-                padding: shouldInnerPadding ? (isMobile ? '10px' : '24px') : '0',
-                position: 'relative',
-                background: 'transparent',
-              }}
-            >
-              <App />
-            </Content>
-            {!shouldHideFooter && (
-              <Layout.Footer
+            {showSider && (
+              <Sider
+                className='app-sider neko-canvas-sider'
                 style={{
-                  flex: '0 0 auto',
-                  width: '100%',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  zIndex: 99,
+                  border: 'none',
+                  paddingRight: '0',
+                  width: 'var(--sidebar-current-width)',
+                  background: 'transparent',
+                  height: '100%',
                 }}
               >
-                <FooterBar />
-              </Layout.Footer>
+                <SiderBar
+                  onNavigate={() => {
+                    if (isMobile) setDrawerOpen(false);
+                  }}
+                />
+              </Sider>
             )}
+            <Layout
+              style={{
+                marginLeft: isMobile
+                  ? '0'
+                  : showSider
+                    ? 'var(--sidebar-current-width)'
+                    : '0',
+                flex: '1 1 auto',
+                display: 'flex',
+                flexDirection: 'column',
+                background: 'transparent',
+                minHeight: 0,
+              }}
+            >
+              <Content
+                style={{
+                  flex: '1 0 auto',
+                  overflowY: isMobile ? 'visible' : 'hidden',
+                  WebkitOverflowScrolling: 'touch',
+                  padding: shouldInnerPadding ? (isMobile ? '10px' : '24px') : '0',
+                  position: 'relative',
+                  background: 'transparent',
+                }}
+              >
+                <App />
+              </Content>
+              {!shouldHideFooter && (
+                <Layout.Footer
+                  style={{
+                    flex: '0 0 auto',
+                    width: '100%',
+                  }}
+                >
+                  <FooterBar />
+                </Layout.Footer>
+              )}
+            </Layout>
           </Layout>
         </Layout>
-      </Layout>
+      </div>
 
       {/* 猫尾巴 */}
       <div className='neko-tail' />

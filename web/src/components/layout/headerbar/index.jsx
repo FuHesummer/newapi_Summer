@@ -100,16 +100,8 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
             />
           </div>
 
-          {/* 猫脸中央：导航链接（凹下去） */}
-          <div className='neko-face'>
-            <Navigation
-              mainNavLinks={mainNavLinks}
-              isMobile={isMobile}
-              isLoading={isLoading}
-              userState={userState}
-              pricingRequireAuth={pricingRequireAuth}
-            />
-          </div>
+          {/* 中间留空：保留猫头凹槽 */}
+          <div className='neko-face' aria-hidden='true' />
 
           {/* 右耳：动作按钮 + 头像 */}
           <div className='neko-ear neko-ear-right'>
@@ -128,6 +120,17 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
               logout={logout}
               navigate={navigate}
               t={t}
+            />
+          </div>
+
+          {/* 导航悬浮在猫耳之间，独立于猫头画布 */}
+          <div className='neko-nav-overlay'>
+            <Navigation
+              mainNavLinks={mainNavLinks}
+              isMobile={isMobile}
+              isLoading={isLoading}
+              userState={userState}
+              pricingRequireAuth={pricingRequireAuth}
             />
           </div>
         </div>

@@ -119,14 +119,27 @@ body {
   background: transparent;
 }
 
+.neko-main-layout {
+  height: 100%;
+  min-height: 0;
+}
+
 .app-sider {
-  height: calc(100vh - 56px);
-  height: calc(100dvh - 56px);
+  height: 100%;
 }
 
 /* ==================== 全页面猫猫头容器 ==================== */
 /* 整个视口就是一只猫头，所有组件都在猫头内部 */
 .neko-fullpage {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: transparent;
+}
+
+/* 猫头主画布：除顶部耳间导航外，其余内容都在这个统一画布内 */
+.neko-canvas {
   position: relative;
   width: 100%;
   min-height: 100vh;
@@ -148,6 +161,8 @@ body {
   align-items: flex-end;
   width: 100%;
   position: relative;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* 猫耳（左右共用）：圆角方块向上凸出，磨砂玻璃质感 */
@@ -155,26 +170,28 @@ body {
   display: flex;
   align-items: center;
   padding: 0 10px;
-  height: 64px;
+  height: 68px;
   min-width: 0;
-  background: color-mix(in srgb, var(--glass-bg) 60%, transparent);
+  background: color-mix(in srgb, var(--glass-bg) 68%, transparent);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--glass-border) 64%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--glass-border) 42%, transparent);
   position: relative;
   z-index: 1;
   flex-shrink: 0;
+  pointer-events: auto;
   transition: height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* hover时耳朵微微竖起 */
 .neko-head:hover .neko-ear {
-  height: 68px;
+  height: 72px;
 }
 
 /* 左耳：圆角方块，左上角更圆（像猫耳外轮廓），右侧与脸无缝 */
 .neko-ear-left {
-  border-radius: 18px 4px 0 0;
+  border-radius: 20px 6px 0 0;
   padding-left: 14px;
   gap: 4px;
 }
@@ -194,7 +211,7 @@ body {
 
 /* 右耳：圆角方块，右上角更圆，左侧与脸无缝 */
 .neko-ear-right {
-  border-radius: 4px 18px 0 0;
+  border-radius: 6px 20px 0 0;
   padding-right: 14px;
 }
 
@@ -211,16 +228,33 @@ body {
   pointer-events: none;
 }
 
-/* 猫脸中央：猫耳之间的透明导航区域（视觉上在猫头外面） */
+/* 猫脸中央：只保留凹槽占位，不承载导航 */
 .neko-face {
   flex: 1;
   min-width: 0;
-  height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
+  height: 44px;
+  display: block;
   position: relative;
+  background: transparent;
+  border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 45%, transparent);
+}
+
+/* 导航悬浮在猫耳之间（独立于画布） */
+.neko-nav-overlay {
+  position: absolute;
+  left: 50%;
+  top: 26px;
+  transform: translateX(-50%);
+  width: min(62vw, 760px);
+  max-width: calc(100vw - 220px);
+  min-width: min(440px, calc(100vw - 120px));
+  z-index: 4;
+  pointer-events: auto;
+}
+
+.neko-nav-overlay .header-floating-nav-track {
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
 }
 
 /* 猫脸装饰容器：鼻子+胡须 */
@@ -232,6 +266,7 @@ body {
   height: 10px;
   position: relative;
   pointer-events: none;
+  z-index: 2;
 }
 
 /* 猫尾巴：默认隐藏，hover时显示 */
@@ -245,7 +280,7 @@ body {
   border-right: 3px solid color-mix(in srgb, var(--brand-primary) 30%, transparent);
   border-radius: 0 0 40px 0;
   pointer-events: none;
-  z-index: 10;
+  z-index: 150;
   animation: neko-tail-sway 3s ease-in-out infinite;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -262,7 +297,7 @@ body {
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;
-  z-index: 11;
+  z-index: 151;
   animation: neko-tail-sway 3s ease-in-out infinite;
   transition: opacity 0.4s ease;
 }
@@ -284,17 +319,21 @@ body {
 }
 
 @media (max-width: 767px) {
-  .neko-fullpage {
+  .neko-canvas {
     border-radius: 0 0 14px 14px;
   }
 
+  .neko-head {
+    z-index: 2;
+  }
+
   .neko-ear {
-    height: 54px;
+    height: 56px;
     padding: 0 6px;
   }
 
   .neko-head:hover .neko-ear {
-    height: 57px;
+    height: 60px;
   }
 
   .neko-ear-left {
@@ -322,7 +361,14 @@ body {
   }
 
   .neko-face {
-    height: 42px;
+    height: 38px;
+  }
+
+  .neko-nav-overlay {
+    top: 17px;
+    width: calc(100vw - 84px);
+    max-width: calc(100vw - 84px);
+    min-width: calc(100vw - 84px);
   }
 
   .neko-face-decor {
