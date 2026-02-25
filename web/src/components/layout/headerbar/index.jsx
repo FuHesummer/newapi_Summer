@@ -65,7 +65,7 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
   const { mainNavLinks } = useNavigation(t, docsLink, headerNavModules);
 
   return (
-    <header className='neko-header-bar sticky top-0 z-50 text-[var(--semi-color-text-0)] transition-colors duration-300'>
+    <header className='sticky top-0 z-50 text-[var(--semi-color-text-0)] transition-colors duration-300'>
       <NoticeModal
         visible={noticeVisible}
         onClose={handleNoticeClose}
@@ -74,10 +74,11 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
         unreadKeys={getUnreadKeys()}
       />
 
-      <div className='w-full px-3 sm:px-4'>
-        <div className='mx-auto w-full max-w-[1320px] flex items-center h-[56px]'>
-          {/* 左侧：logo + 站名 */}
-          <div className='flex items-center gap-1 flex-shrink-0'>
+      <div className='w-full'>
+        {/* 猫猫头造型顶栏：左耳logo + 中间凹陷导航 + 右耳按钮 */}
+        <div className='neko-head'>
+          {/* 左耳：logo + 站名 */}
+          <div className='neko-ear neko-ear-left'>
             <MobileMenuButton
               isConsoleRoute={isConsoleRoute}
               isMobile={isMobile}
@@ -99,8 +100,8 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
             />
           </div>
 
-          {/* 中央：导航链接 */}
-          <div className='flex-1 flex justify-center min-w-0'>
+          {/* 猫脸中央：导航链接（凹下去） */}
+          <div className='neko-face'>
             <Navigation
               mainNavLinks={mainNavLinks}
               isMobile={isMobile}
@@ -110,8 +111,8 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
             />
           </div>
 
-          {/* 右侧：动作按钮 + 头像 */}
-          <div className='flex items-center flex-shrink-0'>
+          {/* 右耳：动作按钮 + 头像 */}
+          <div className='neko-ear neko-ear-right'>
             <ActionButtons
               isNewYear={isNewYear}
               unreadCount={unreadCount}
@@ -129,6 +130,12 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
               t={t}
             />
           </div>
+        </div>
+        {/* 猫脸装饰：鼻子 + 胡须 */}
+        <div className='neko-face-decor'>
+          <span className='neko-whisker neko-whisker-left' />
+          <span className='neko-nose' />
+          <span className='neko-whisker neko-whisker-right' />
         </div>
       </div>
     </header>

@@ -121,10 +121,6 @@ const PageLayout = () => {
 
   return (
     <div className='neko-fullpage'>
-      {/* 大猫耳：页面顶部左右角 */}
-      <div className='neko-ear-big neko-ear-big-left' />
-      <div className='neko-ear-big neko-ear-big-right' />
-
       <Layout
         className='app-layout'
         style={{
@@ -149,12 +145,6 @@ const PageLayout = () => {
             drawerOpen={drawerOpen}
           />
         </Header>
-        {/* 猫脸装饰：鼻子 + 胡须 */}
-        <div className='neko-face-decor-fixed'>
-          <span className='neko-whisker neko-whisker-left' />
-          <span className='neko-nose' />
-          <span className='neko-whisker neko-whisker-right' />
-        </div>
 
         <Layout
           style={{
