@@ -144,72 +144,79 @@ const PageLayout = () => {
           drawerOpen={drawerOpen}
         />
       </Header>
-      <Layout
-        style={{
-          overflow: isMobile ? 'visible' : 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          background: 'transparent',
-        }}
-      >
-        {showSider && (
-          <Sider
-            className='app-sider'
+      {/* 猫猫身体：侧边栏+内容区的一体式玻璃容器 */}
+      <div className='neko-body-wrapper'>
+        <div className='neko-body'>
+          <Layout
             style={{
-              position: 'fixed',
-              left: 0,
-              top: '64px',
-              zIndex: 99,
-              border: 'none',
-              paddingRight: '0',
-              width: 'var(--sidebar-current-width)',
+              overflow: isMobile ? 'visible' : 'auto',
+              display: 'flex',
+              flexDirection: 'column',
               background: 'transparent',
+              flex: 1,
+              minHeight: 0,
             }}
           >
-            <SiderBar
-              onNavigate={() => {
-                if (isMobile) setDrawerOpen(false);
-              }}
-            />
-          </Sider>
-        )}
-        <Layout
-          style={{
-            marginLeft: isMobile
-              ? '0'
-              : showSider
-                ? 'var(--sidebar-current-width)'
-                : '0',
-            flex: '1 1 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            background: 'transparent',
-          }}
-        >
-          <Content
-            style={{
-              flex: '1 0 auto',
-              overflowY: isMobile ? 'visible' : 'hidden',
-              WebkitOverflowScrolling: 'touch',
-              padding: shouldInnerPadding ? (isMobile ? '10px' : '24px') : '0',
-              position: 'relative',
-              background: 'transparent',
-            }}
-          >
-            <App />
-          </Content>
-          {!shouldHideFooter && (
-            <Layout.Footer
+            {showSider && (
+              <Sider
+                className='app-sider'
+                style={{
+                  position: 'fixed',
+                  left: 0,
+                  top: '64px',
+                  zIndex: 99,
+                  border: 'none',
+                  paddingRight: '0',
+                  width: 'var(--sidebar-current-width)',
+                  background: 'transparent',
+                }}
+              >
+                <SiderBar
+                  onNavigate={() => {
+                    if (isMobile) setDrawerOpen(false);
+                  }}
+                />
+              </Sider>
+            )}
+            <Layout
               style={{
-                flex: '0 0 auto',
-                width: '100%',
+                marginLeft: isMobile
+                  ? '0'
+                  : showSider
+                    ? 'var(--sidebar-current-width)'
+                    : '0',
+                flex: '1 1 auto',
+                display: 'flex',
+                flexDirection: 'column',
+                background: 'transparent',
               }}
             >
-              <FooterBar />
-            </Layout.Footer>
-          )}
-        </Layout>
-      </Layout>
+              <Content
+                style={{
+                  flex: '1 0 auto',
+                  overflowY: isMobile ? 'visible' : 'hidden',
+                  WebkitOverflowScrolling: 'touch',
+                  padding: shouldInnerPadding ? (isMobile ? '10px' : '24px') : '0',
+                  position: 'relative',
+                  background: 'transparent',
+                }}
+              >
+                <App />
+              </Content>
+              {!shouldHideFooter && (
+                <Layout.Footer
+                  style={{
+                    flex: '0 0 auto',
+                    width: '100%',
+                  }}
+                >
+                  <FooterBar />
+                </Layout.Footer>
+              )}
+            </Layout>
+          </Layout>
+        </div>
+      </div>
       <ToastContainer />
     </Layout>
   );

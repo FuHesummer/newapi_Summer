@@ -25,12 +25,12 @@
   --app-text-primary: rgba(15, 23, 42, 0.92);
   --app-text-secondary: rgba(30, 41, 59, 0.72);
 
-  --glass-bg: rgba(255, 255, 255, 0.68);
-  --glass-bg-hover: rgba(255, 255, 255, 0.82);
-  --glass-border: rgba(236, 180, 200, 0.35);
-  --glass-border-strong: rgba(244, 114, 162, 0.45);
-  --glass-shadow: 0 12px 32px rgba(244, 114, 162, 0.10);
-  --glass-shadow-strong: 0 18px 40px rgba(244, 114, 162, 0.16);
+  --glass-bg: rgba(255, 255, 255, 0.52);
+  --glass-bg-hover: rgba(255, 255, 255, 0.68);
+  --glass-border: rgba(236, 180, 200, 0.28);
+  --glass-border-strong: rgba(244, 114, 162, 0.40);
+  --glass-shadow: 0 12px 32px rgba(244, 114, 162, 0.08);
+  --glass-shadow-strong: 0 18px 40px rgba(244, 114, 162, 0.14);
 
   --brand-primary: #f472a6;
   --brand-accent: #c4a1f9;
@@ -56,10 +56,10 @@ html.dark {
   --app-text-primary: rgba(255, 255, 255, 0.92);
   --app-text-secondary: rgba(255, 255, 255, 0.68);
 
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-bg-hover: rgba(255, 255, 255, 0.12);
-  --glass-border: rgba(244, 180, 200, 0.18);
-  --glass-border-strong: rgba(244, 114, 162, 0.55);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-hover: rgba(255, 255, 255, 0.10);
+  --glass-border: rgba(244, 180, 200, 0.14);
+  --glass-border-strong: rgba(244, 114, 162, 0.45);
   --glass-shadow: 0 12px 36px rgba(20, 4, 12, 0.45);
   --glass-shadow-strong: 0 20px 48px rgba(20, 4, 12, 0.62);
   --glass-kawaii-primary: color-mix(in srgb, var(--brand-primary) 34%, transparent);
@@ -122,6 +122,80 @@ body {
 .app-sider {
   height: calc(100vh - 64px);
   height: calc(100dvh - 64px);
+}
+
+/* ==================== 猫猫身体：一体式玻璃容器 ==================== */
+.neko-body-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  padding: 0 8px 8px;
+}
+
+.neko-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: color-mix(in srgb, var(--glass-bg) 82%, transparent);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+  min-height: 0;
+  position: relative;
+}
+
+/* 猫尾巴：从 neko-body 右下角自然延伸的弧线 */
+.neko-body::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  right: -18px;
+  width: 40px;
+  height: 80px;
+  border: 3px solid transparent;
+  border-right: 3px solid color-mix(in srgb, var(--brand-primary) 30%, transparent);
+  border-radius: 0 0 40px 0;
+  pointer-events: none;
+  z-index: 10;
+  animation: neko-tail-sway 3s ease-in-out infinite;
+}
+
+@keyframes neko-tail-sway {
+  0%, 100% { transform: rotate(0deg) scaleY(1); }
+  25% { transform: rotate(3deg) scaleY(1.02); }
+  50% { transform: rotate(-2deg) scaleY(0.98); }
+  75% { transform: rotate(4deg) scaleY(1.01); }
+}
+
+/* 猫尾尖端圆球 */
+.neko-body::before {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  right: -22px;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+  border-radius: 50%;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 11;
+  animation: neko-tail-sway 3s ease-in-out infinite;
+}
+
+@media (max-width: 767px) {
+  .neko-body-wrapper {
+    padding: 0 4px 4px;
+  }
+
+  .neko-body {
+    border-radius: 0 0 14px 14px;
+  }
 }
 
 code {
@@ -1419,42 +1493,15 @@ html.dark .with-pastel-balls::before {
 
 /* ==================== 全局猫娘风格增强 ==================== */
 
-/* 弹窗猫耳面板（一体式，与面板同色） */
+/* 弹窗：柔和粉色光晕边框（不贴猫耳） */
 .semi-modal {
   overflow: visible !important;
 }
 
 .semi-modal .semi-modal-content-wrapper {
-  overflow: visible !important;
-  position: relative;
-}
-
-.semi-modal .semi-modal-content-wrapper::before,
-.semi-modal .semi-modal-content-wrapper::after {
-  content: '';
-  position: absolute;
-  top: -10px;
-  width: 18px;
-  height: 18px;
-  background: color-mix(in srgb, var(--glass-bg) 92%, transparent);
-  backdrop-filter: blur(16px) saturate(145%);
-  -webkit-backdrop-filter: blur(16px) saturate(145%);
-  border: 1px solid var(--glass-border);
-  border-bottom: none;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.semi-modal .semi-modal-content-wrapper::before {
-  left: 20px;
-  border-radius: 8px 3px 0 0;
-  transform: rotate(-12deg);
-}
-
-.semi-modal .semi-modal-content-wrapper::after {
-  right: 20px;
-  border-radius: 3px 8px 0 0;
-  transform: rotate(12deg);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 18%, var(--glass-border)) !important;
+  box-shadow: 0 20px 50px color-mix(in srgb, var(--brand-primary) 14%, rgba(0,0,0,0.12)),
+              inset 0 1px 0 color-mix(in srgb, var(--brand-primary) 8%, transparent) !important;
 }
 
 /* 标签页猫娘风格 */
@@ -1647,10 +1694,11 @@ a:not([class]) {
 
 /* ==================== 一体式猫娘组件效果 ==================== */
 
-/* 卡片hover猫耳（同色渐入动画） */
+/* 卡片：hover 发光边框 + 微浮起 + 猫耳动画 */
 .semi-card {
   position: relative;
   overflow: visible !important;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
 .semi-card::before,
@@ -1681,6 +1729,13 @@ a:not([class]) {
   transform: rotate(8deg);
 }
 
+.semi-card:hover {
+  border-color: color-mix(in srgb, var(--brand-primary) 28%, var(--glass-border)) !important;
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--brand-primary) 12%, transparent),
+              inset 0 1px 0 color-mix(in srgb, var(--brand-primary) 8%, transparent) !important;
+  transform: translateY(-2px);
+}
+
 .semi-card:hover::before,
 .semi-card:hover::after {
   height: 10px;
@@ -1688,10 +1743,13 @@ a:not([class]) {
   opacity: 1;
 }
 
-/* Primary按钮hover猫耳（同色） */
+/* Primary 按钮：粉紫渐变 + hover 猫耳 + 光晕 */
 .semi-button.semi-button-primary {
   position: relative;
   overflow: visible !important;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent)) !important;
+  border: none !important;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--brand-primary) 24%, transparent) !important;
 }
 
 .semi-button.semi-button-primary::before,
@@ -1718,6 +1776,10 @@ a:not([class]) {
   transform: rotate(10deg);
 }
 
+.semi-button.semi-button-primary:hover {
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary) 36%, transparent) !important;
+}
+
 .semi-button.semi-button-primary:hover::before,
 .semi-button.semi-button-primary:hover::after {
   height: 7px;
@@ -1725,7 +1787,7 @@ a:not([class]) {
   opacity: 1;
 }
 
-/* 输入框focus猫耳（品牌色半透明） */
+/* 输入框 focus：猫耳 + 柔和粉色光晕 */
 .semi-input-wrapper,
 .semi-select {
   position: relative;
@@ -1762,6 +1824,13 @@ a:not([class]) {
   transform: rotate(10deg);
 }
 
+.semi-input-wrapper-focus,
+.semi-select.semi-select-focus {
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 12%, transparent),
+              0 4px 12px color-mix(in srgb, var(--brand-primary) 10%, transparent) !important;
+}
+
 .semi-input-wrapper-focus::before,
 .semi-input-wrapper-focus::after,
 .semi-select.semi-select-focus::before,
@@ -1771,62 +1840,9 @@ a:not([class]) {
   opacity: 1;
 }
 
-/* 侧边栏顶部猫耳（一体式，同色） */
+/* 侧边栏容器 */
 .sidebar-container {
   position: relative;
-  overflow: visible !important;
-}
-
-.sidebar-container::before,
-.sidebar-container::after {
-  content: '';
-  position: absolute;
-  top: -1px;
-  width: 14px;
-  height: 14px;
-  background: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--glass-bg) 95%, transparent) 0%,
-    color-mix(in srgb, var(--glass-kawaii-accent) 24%, var(--glass-bg) 76%) 100%
-  );
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid color-mix(in srgb, var(--glass-border) 72%, transparent);
-  border-bottom: none;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.sidebar-container::before {
-  left: 12px;
-  border-radius: 8px 3px 0 0;
-  transform: rotate(-10deg);
-}
-
-.sidebar-container::after {
-  right: 12px;
-  border-radius: 3px 8px 0 0;
-  transform: rotate(10deg);
-}
-
-/* 侧边栏折叠按钮猫爪造型（CSS肉球） */
-.sidebar-collapse-button-inner {
-  position: relative;
-}
-
-.sidebar-collapse-button-inner::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 16px;
-  height: 3px;
-  background: radial-gradient(circle at 2px 1.5px, var(--brand-primary) 1.5px, transparent 1.5px),
-              radial-gradient(circle at 8px 1.5px, var(--brand-primary) 1.5px, transparent 1.5px),
-              radial-gradient(circle at 14px 1.5px, var(--brand-primary) 1.5px, transparent 1.5px);
-  opacity: 0.25;
-  pointer-events: none;
 }
 
 /* 侧边栏分组标签猫娘装饰符 */
