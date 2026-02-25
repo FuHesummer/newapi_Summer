@@ -195,7 +195,9 @@ code {
 .header-floating-nav-link {
   background: color-mix(in srgb, var(--glass-bg) 68%, transparent);
   border-color: color-mix(in srgb, var(--glass-border) 24%, transparent);
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--glass-kawaii-primary) 20%, transparent);
+  transform: translateY(-0.5px);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--glass-kawaii-primary) 18%, transparent);
 }
 
 .header-floating-nav-link:hover {
@@ -228,10 +230,11 @@ code {
 }
 
 .header-floating-action-btn {
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--glass-kawaii-primary) 22%, transparent) !important;
+  transform: translateY(-0.5px) !important;
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--glass-kawaii-primary) 18%, transparent) !important;
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
     background-color 0.2s ease,
     border-color 0.2s ease !important;
 }
@@ -283,11 +286,12 @@ code {
 .sidebar-nav-item {
   border-radius: 14px;
   margin: 4px 8px;
-  transition: all 0.2s ease;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
   padding: 8px 12px;
   border: 1px solid color-mix(in srgb, var(--glass-border) 38%, transparent);
   background: color-mix(in srgb, var(--glass-bg) 78%, transparent);
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--glass-kawaii-primary) 16%, transparent);
+  transform: translateY(-0.5px);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--glass-kawaii-primary) 16%, transparent);
 }
 
 .sidebar-nav .semi-navigation-item,
@@ -296,7 +300,9 @@ code {
   border-radius: 14px !important;
   border: 1px solid color-mix(in srgb, var(--glass-border) 38%, transparent) !important;
   background: color-mix(in srgb, var(--glass-bg) 78%, transparent) !important;
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--glass-kawaii-primary) 16%, transparent) !important;
+  transform: translateY(-0.5px);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--glass-kawaii-primary) 16%, transparent) !important;
 }
 
 .sidebar-nav-item:hover,
@@ -311,7 +317,7 @@ code {
   border-color: color-mix(in srgb, var(--glass-border-strong) 72%, transparent) !important;
   box-shadow: var(--glass-float-shadow) !important;
   color: var(--semi-color-primary);
-  transform: translateY(-1px);
+  transform: translateY(-2px) !important;
 }
 
 .sidebar-nav-item-selected,
@@ -406,8 +412,9 @@ code {
     color-mix(in srgb, var(--glass-bg) 88%, transparent) 0%,
     color-mix(in srgb, var(--glass-kawaii-accent) 26%, var(--glass-bg) 74%) 100%
   );
-  transition: all 0.2s ease;
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--glass-kawaii-primary) 24%, transparent);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateY(-0.5px);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--glass-kawaii-primary) 20%, transparent);
 }
 
 .sidebar-collapse-icon-container {
@@ -1064,11 +1071,14 @@ html.dark .with-pastel-balls::before {
   box-shadow: var(--glass-shadow) !important;
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
+  transform: translateY(-0.5px);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .semi-card:hover {
   background: var(--glass-bg-hover) !important;
   box-shadow: var(--glass-shadow-strong) !important;
+  transform: translateY(-2px);
 }
 
 .semi-card-header,
@@ -1080,14 +1090,15 @@ html.dark .with-pastel-balls::before {
   backdrop-filter: blur(10px) saturate(130%);
   -webkit-backdrop-filter: blur(10px) saturate(130%);
   border-color: var(--glass-border) !important;
-  transition: all 0.2s ease !important;
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--glass-kawaii-primary) 18%, transparent);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transform: translateY(-0.5px);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--glass-kawaii-primary) 16%, transparent);
 }
 
 .semi-button:hover {
   border-color: var(--glass-border-strong) !important;
   box-shadow: var(--glass-float-shadow-strong);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .semi-button.semi-button-primary {
@@ -1113,8 +1124,9 @@ html.dark .with-pastel-balls::before {
 .semi-datepicker-range-input {
   background: color-mix(in srgb, var(--glass-bg) 92%, transparent) !important;
   border: 1px solid var(--glass-border) !important;
-  box-shadow: none;
-  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--glass-kawaii-primary) 10%, transparent);
+  transform: translateY(-0.5px);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
 .semi-input-wrapper:hover,
