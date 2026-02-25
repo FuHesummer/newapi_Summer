@@ -844,7 +844,7 @@ code {
     90deg,
     currentColor 0%,
     currentColor 40%,
-    #facc15 50%,
+    #f9a8c9 50%,
     currentColor 60%,
     currentColor 100%
   );
@@ -1319,6 +1319,274 @@ html.dark .neko-ear-inner-right {
   background: linear-gradient(180deg, var(--brand-primary), transparent);
   border-radius: 4px;
   opacity: 0.2;
+  pointer-events: none;
+}
+
+/* ==================== 全局猫娘风格增强 ==================== */
+
+/* 弹窗猫耳装饰 */
+.semi-modal {
+  overflow: visible !important;
+}
+
+.semi-modal .semi-modal-content-wrapper {
+  overflow: visible !important;
+}
+
+.semi-modal-header {
+  position: relative;
+}
+
+.semi-modal-header::before,
+.semi-modal-header::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 2px 8px 0 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.semi-modal-header::before {
+  left: 24px;
+  background: linear-gradient(145deg, #ffb6d0, #ffd6e8);
+  border: 1px solid rgba(244, 114, 162, 0.3);
+  border-bottom: none;
+  transform: rotate(-20deg);
+}
+
+.semi-modal-header::after {
+  right: 24px;
+  background: linear-gradient(215deg, #ffb6d0, #ffd6e8);
+  border: 1px solid rgba(244, 114, 162, 0.3);
+  border-bottom: none;
+  transform: rotate(20deg);
+}
+
+html.dark .semi-modal-header::before {
+  background: linear-gradient(145deg, #5a2040, #3d1530);
+  border-color: rgba(244, 114, 162, 0.4);
+}
+
+html.dark .semi-modal-header::after {
+  background: linear-gradient(215deg, #5a2040, #3d1530);
+  border-color: rgba(244, 114, 162, 0.4);
+}
+
+/* 标签页猫娘风格 */
+.semi-tabs-bar {
+  border-color: color-mix(in srgb, var(--brand-primary) 20%, transparent) !important;
+}
+
+.semi-tabs-tab {
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.semi-tabs-tab:hover {
+  color: var(--brand-primary) !important;
+  transform: translateY(-1px);
+}
+
+.semi-tabs-tab-active {
+  color: var(--brand-primary) !important;
+}
+
+.semi-tabs-ink-bar {
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent)) !important;
+  border-radius: 2px !important;
+  height: 3px !important;
+}
+
+/* 分页器猫娘风格 */
+.semi-page-item {
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transform: translateY(-0.5px);
+}
+
+.semi-page-item:hover {
+  border-color: var(--brand-primary) !important;
+  color: var(--brand-primary) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--brand-primary) 18%, transparent);
+}
+
+.semi-page-item-active {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent)) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--brand-primary) 28%, transparent) !important;
+}
+
+/* 标签猫娘风格 */
+.semi-tag {
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transform: translateY(-0.5px);
+  border-radius: 9999px !important;
+}
+
+.semi-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 14%, transparent);
+}
+
+/* 表格行hover猫娘粉色高亮 */
+.semi-table-tbody .semi-table-row:hover {
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent) !important;
+}
+
+.semi-table-thead > .semi-table-row > .semi-table-row-head {
+  border-bottom-color: color-mix(in srgb, var(--brand-primary) 18%, transparent) !important;
+}
+
+/* 下拉菜单选中项猫娘高亮 */
+.semi-select-option-selected {
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
+  color: var(--brand-primary) !important;
+}
+
+.semi-select-option:hover {
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent) !important;
+}
+
+.semi-dropdown-item:hover {
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent) !important;
+}
+
+/* 复选框/开关猫娘粉色 */
+.semi-checkbox-inner-checked,
+.semi-checkbox-inner-halfChecked {
+  background: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+}
+
+.semi-switch-checked {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent)) !important;
+}
+
+/* 进度条/滑块猫娘粉色 */
+.semi-slider-handle {
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 24%, transparent) !important;
+}
+
+.semi-slider-track {
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent)) !important;
+}
+
+.semi-progress-line-bar {
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent)) !important;
+}
+
+/* 通知/提示猫娘风格 */
+.semi-notification {
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 20%, var(--glass-border)) !important;
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--brand-primary) 14%, rgba(0, 0, 0, 0.1)) !important;
+  border-radius: 16px !important;
+}
+
+.semi-toast {
+  border-radius: 14px !important;
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, var(--glass-border)) !important;
+}
+
+/* 空状态猫娘装饰 */
+.semi-empty {
+  position: relative;
+}
+
+.semi-empty::after {
+  content: '(=^・ω・^=)';
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--brand-primary);
+  opacity: 0.35;
+  letter-spacing: 1px;
+}
+
+/* 徽章猫娘粉色 */
+.semi-badge .semi-badge-count {
+  background: linear-gradient(135deg, var(--brand-primary), #ff6b9d) !important;
+  box-shadow: 0 4px 8px color-mix(in srgb, var(--brand-primary) 30%, transparent) !important;
+}
+
+/* 分割线猫娘装饰 */
+.semi-divider {
+  border-color: color-mix(in srgb, var(--brand-primary) 12%, var(--glass-border)) !important;
+}
+
+/* 头像猫娘光环 */
+.semi-avatar {
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.semi-avatar:hover {
+  transform: scale(1.06) translateY(-1px);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--brand-primary) 28%, transparent);
+}
+
+/* 链接猫娘粉色 */
+a:not([class]) {
+  color: var(--brand-primary);
+}
+
+/* 滚动条猫娘粉色 */
+.semi-table-body::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--brand-primary) 30%, transparent) !important;
+  border-radius: 4px !important;
+}
+
+.semi-table-body::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--brand-primary) 50%, transparent) !important;
+}
+
+.semi-sidesheet-body::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--brand-primary) 30%, transparent) !important;
+  border-radius: 4px !important;
+}
+
+.semi-sidesheet-body::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--brand-primary) 50%, transparent) !important;
+}
+
+/* 骨架屏猫娘粉色 */
+.semi-skeleton-paragraph-row,
+.semi-skeleton-avatar,
+.semi-skeleton-image,
+.semi-skeleton-title,
+.semi-skeleton-button {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--brand-primary) 8%, var(--glass-bg)) 0%,
+    color-mix(in srgb, var(--brand-accent) 12%, var(--glass-bg-hover)) 50%,
+    color-mix(in srgb, var(--brand-primary) 8%, var(--glass-bg)) 100%
+  ) !important;
+  background-size: 200% 100% !important;
+}
+
+/* 表单标签猫娘装饰 */
+.semi-form-field-label-text {
+  color: var(--app-text-primary);
+  font-weight: 500;
+}
+
+/* 页脚猫娘氛围 */
+footer {
+  position: relative;
+}
+
+footer::before {
+  content: '🐾 ♡ 🐾';
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  opacity: 0.2;
+  letter-spacing: 8px;
   pointer-events: none;
 }
 

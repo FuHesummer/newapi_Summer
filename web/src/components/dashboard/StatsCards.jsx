@@ -25,16 +25,16 @@ import { useTranslation } from 'react-i18next';
 
 const groupStyleMap = {
   'bg-blue-50': {
-    background: 'linear-gradient(135deg, rgba(125, 211, 252, 0.16), rgba(59, 130, 246, 0.12))',
+    background: 'linear-gradient(135deg, rgba(244, 114, 166, 0.14), rgba(244, 114, 166, 0.08))',
   },
   'bg-green-50': {
-    background: 'linear-gradient(135deg, rgba(110, 231, 183, 0.16), rgba(34, 197, 94, 0.12))',
+    background: 'linear-gradient(135deg, rgba(196, 161, 249, 0.14), rgba(196, 161, 249, 0.08))',
   },
   'bg-yellow-50': {
-    background: 'linear-gradient(135deg, rgba(253, 224, 71, 0.14), rgba(249, 115, 22, 0.12))',
+    background: 'linear-gradient(135deg, rgba(255, 182, 208, 0.16), rgba(244, 114, 166, 0.10))',
   },
   'bg-indigo-50': {
-    background: 'linear-gradient(135deg, rgba(165, 180, 252, 0.16), rgba(99, 102, 241, 0.12))',
+    background: 'linear-gradient(135deg, rgba(224, 192, 255, 0.16), rgba(196, 161, 249, 0.10))',
   },
 };
 
