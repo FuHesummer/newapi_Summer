@@ -74,12 +74,12 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
         unreadKeys={getUnreadKeys()}
       />
 
-      <div className='w-full h-16 px-2 sm:px-3'>
-        <div className='mx-auto h-full w-full max-w-[1320px] flex items-center'>
-          <div className='neko-header-bar relative grid h-[52px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] px-2 sm:px-3 shadow-[var(--glass-shadow)] backdrop-blur-[14px]'>
-            <span className='neko-ear-inner-left' />
-            <span className='neko-ear-inner-right' />
-            <div className='flex items-center'>
+      <div className='w-full px-2 sm:px-3 pt-2'>
+        <div className='mx-auto w-full max-w-[1320px]'>
+          {/* 猫猫头一体式顶栏 */}
+          <div className='neko-head'>
+            {/* 左耳：logo + 站名 */}
+            <div className='neko-ear neko-ear-left'>
               <MobileMenuButton
                 isConsoleRoute={isConsoleRoute}
                 isMobile={isMobile}
@@ -88,7 +88,6 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
                 onToggle={handleMobileMenuToggle}
                 t={t}
               />
-
               <HeaderLogo
                 isMobile={isMobile}
                 isConsoleRoute={isConsoleRoute}
@@ -102,30 +101,42 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
               />
             </div>
 
-            <Navigation
-              mainNavLinks={mainNavLinks}
-              isMobile={isMobile}
-              isLoading={isLoading}
-              userState={userState}
-              pricingRequireAuth={pricingRequireAuth}
-            />
+            {/* 猫脸中央：导航链接 */}
+            <div className='neko-face'>
+              <Navigation
+                mainNavLinks={mainNavLinks}
+                isMobile={isMobile}
+                isLoading={isLoading}
+                userState={userState}
+                pricingRequireAuth={pricingRequireAuth}
+              />
+            </div>
 
-            <ActionButtons
-              isNewYear={isNewYear}
-              unreadCount={unreadCount}
-              onNoticeOpen={handleNoticeOpen}
-              theme={theme}
-              onThemeToggle={handleThemeToggle}
-              currentLang={currentLang}
-              onLanguageChange={handleLanguageChange}
-              userState={userState}
-              isLoading={isLoading}
-              isMobile={isMobile}
-              isSelfUseMode={isSelfUseMode}
-              logout={logout}
-              navigate={navigate}
-              t={t}
-            />
+            {/* 右耳：动作按钮 + 头像 */}
+            <div className='neko-ear neko-ear-right'>
+              <ActionButtons
+                isNewYear={isNewYear}
+                unreadCount={unreadCount}
+                onNoticeOpen={handleNoticeOpen}
+                theme={theme}
+                onThemeToggle={handleThemeToggle}
+                currentLang={currentLang}
+                onLanguageChange={handleLanguageChange}
+                userState={userState}
+                isLoading={isLoading}
+                isMobile={isMobile}
+                isSelfUseMode={isSelfUseMode}
+                logout={logout}
+                navigate={navigate}
+                t={t}
+              />
+            </div>
+          </div>
+          {/* 猫脸装饰：鼻子 + 胡须 */}
+          <div className='neko-face-decor'>
+            <span className='neko-whisker neko-whisker-left' />
+            <span className='neko-nose' />
+            <span className='neko-whisker neko-whisker-right' />
           </div>
         </div>
       </div>
