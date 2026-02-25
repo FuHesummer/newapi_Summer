@@ -142,7 +142,7 @@ const ModelsActions = ({
                 href='https://github.com/basellm/llm-metadata'
                 target='_blank'
                 rel='noreferrer'
-                className='text-blue-600 underline'
+                className='text-pink-500 underline'
               >
                 https://github.com/basellm/llm-metadata
               </a>

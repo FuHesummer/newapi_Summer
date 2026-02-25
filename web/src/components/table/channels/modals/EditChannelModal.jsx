@@ -1773,9 +1773,9 @@ const EditChannelModal = (props) => {
     const optionClassName = [
       'flex items-center gap-3 px-3 py-2 transition-all duration-200 rounded-lg mx-2 my-1',
       focused &&
-        'bg-[color-mix(in_srgb,var(--glass-bg)_84%,rgba(59,130,246,0.20))] shadow-sm',
+        'bg-[color-mix(in_srgb,var(--glass-bg)_84%,rgba(244,114,166,0.20))] shadow-sm',
       selected &&
-        'bg-[color-mix(in_srgb,var(--glass-bg)_82%,rgba(59,130,246,0.28))] text-blue-700 shadow-lg ring-2 ring-blue-200 ring-opacity-50',
+        'bg-[color-mix(in_srgb,var(--glass-bg)_82%,rgba(244,114,166,0.28))] text-pink-700 shadow-lg ring-2 ring-pink-200 ring-opacity-50',
       disabled && 'opacity-50 cursor-not-allowed',
       !disabled &&
         'hover:bg-[color-mix(in_srgb,var(--glass-bg)_82%,transparent)] hover:shadow-md cursor-pointer',
@@ -1803,7 +1803,7 @@ const EditChannelModal = (props) => {
             />
           </div>
           {selected && (
-            <div className='flex-shrink-0 text-blue-600'>
+            <div className='flex-shrink-0 text-pink-500'>
               <svg
                 width='16'
                 height='16'

@@ -93,7 +93,7 @@
   }
 }
 
-/* 代码高亮主题 - 适配Semi Design */
+/* 代码高亮主题 - 猫娘粉色适配 */
 .hljs {
   display: block;
   overflow-x: auto;
@@ -111,7 +111,7 @@
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-subst {
-  color: var(--semi-color-primary);
+  color: var(--brand-primary, var(--semi-color-primary));
   font-weight: bold;
 }
 
@@ -131,7 +131,7 @@
 .hljs-title,
 .hljs-section,
 .hljs-selector-id {
-  color: var(--semi-color-primary);
+  color: var(--brand-primary, var(--semi-color-primary));
   font-weight: bold;
 }
 
@@ -148,7 +148,7 @@
 .hljs-tag,
 .hljs-name,
 .hljs-attribute {
-  color: var(--semi-color-primary);
+  color: var(--brand-primary, var(--semi-color-primary));
   font-weight: normal;
 }
 
@@ -187,14 +187,15 @@
   font-weight: bold;
 }
 
-/* Mermaid容器样式 */
+/* Mermaid容器样式 - 猫娘 */
 .mermaid-container {
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: 12px;
 }
 
 .mermaid-container:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-primary, #f472a6) 14%, rgba(0, 0, 0, 0.08));
+  transform: translateY(-2px);
 }
 
 /* 代码块样式增强 */
@@ -205,8 +206,8 @@ pre {
 }
 
 pre:hover {
-  border-color: var(--semi-color-primary) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: var(--brand-primary, var(--semi-color-primary)) !important;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--brand-primary, #f472a6) 12%, rgba(0, 0, 0, 0.08));
 }
 
 pre:hover .copy-code-button {
@@ -237,8 +238,8 @@ pre:hover .copy-code-button {
 }
 
 .copy-code-button .semi-button:hover {
-  background-color: var(--semi-color-fill-1) !important;
-  border-color: var(--semi-color-primary) !important;
+  background-color: color-mix(in srgb, var(--brand-primary, #f472a6) 12%, var(--semi-color-fill-1)) !important;
+  border-color: var(--brand-primary, var(--semi-color-primary)) !important;
   transform: scale(1.05);
 }
 
@@ -269,9 +270,13 @@ pre:hover .copy-code-button {
   transition: all 0.2s ease;
 }
 
-/* 引用块样式增强 */
+/* 引用块样式增强 - 猫娘粉色 */
 .markdown-body blockquote {
   position: relative;
+  border-left-color: var(--brand-primary, var(--semi-color-primary)) !important;
+  background: color-mix(in srgb, var(--brand-primary, #f472a6) 5%, transparent);
+  border-radius: 0 10px 10px 0;
+  padding: 10px 16px;
 }
 
 .markdown-body blockquote::before {
@@ -280,50 +285,58 @@ pre:hover .copy-code-button {
   left: -8px;
   top: -8px;
   font-size: 24px;
-  color: var(--semi-color-primary);
-  opacity: 0.3;
+  color: var(--brand-primary, var(--semi-color-primary));
+  opacity: 0.35;
 }
 
-/* 列表样式增强 */
+/* 列表样式增强 - 猫娘粉色 */
 .markdown-body ul li::marker {
-  color: var(--semi-color-primary);
+  color: var(--brand-primary, var(--semi-color-primary));
 }
 
 .markdown-body ol li::marker {
-  color: var(--semi-color-primary);
+  color: var(--brand-primary, var(--semi-color-primary));
   font-weight: bold;
 }
 
-/* 分隔线样式 */
+/* 分隔线样式 - 猫娘渐变 */
 .markdown-body hr {
   border: none;
   height: 1px;
   background: linear-gradient(
     to right,
     transparent,
-    var(--semi-color-border),
+    var(--brand-primary, var(--semi-color-border)),
+    var(--brand-accent, var(--semi-color-border)),
     transparent
   );
   margin: 24px 0;
+  opacity: 0.5;
 }
 
-/* 图片样式 */
+/* 图片样式 - 猫娘粉色阴影 */
 .markdown-body img {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--brand-primary, #f472a6) 12%, rgba(0, 0, 0, 0.08));
   margin: 12px 0;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* 内联代码样式 */
+.markdown-body img:hover {
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary, #f472a6) 20%, rgba(0, 0, 0, 0.1));
+  transform: translateY(-2px);
+}
+
+/* 内联代码样式 - 猫娘粉色 */
 .markdown-body code:not(pre code) {
-  background-color: var(--semi-color-fill-1);
+  background-color: color-mix(in srgb, var(--brand-primary, #f472a6) 8%, var(--semi-color-fill-1));
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.9em;
-  color: var(--semi-color-primary);
-  border: 1px solid var(--semi-color-border);
+  color: var(--brand-primary, var(--semi-color-primary));
+  border: 1px solid color-mix(in srgb, var(--brand-primary, #f472a6) 16%, var(--semi-color-border));
 }
 
 /* 标题锚点样式 */
@@ -374,17 +387,17 @@ pre:hover .copy-code-button {
 .markdown-body summary {
   cursor: pointer;
   font-weight: bold;
-  color: var(--semi-color-primary);
+  color: var(--brand-primary, var(--semi-color-primary));
   margin-bottom: 8px;
 }
 
 .markdown-body summary:hover {
-  color: var(--semi-color-primary-hover);
+  color: color-mix(in srgb, var(--brand-primary, var(--semi-color-primary)) 80%, var(--brand-accent, #c4a1f9));
 }
 
-/* 脚注样式 */
+/* 脚注样式 - 猫娘粉色 */
 .markdown-body .footnote-ref {
-  color: var(--semi-color-primary);
+  color: var(--brand-primary, var(--semi-color-primary));
   text-decoration: none;
   font-weight: bold;
 }

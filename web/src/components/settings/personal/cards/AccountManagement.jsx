@@ -90,7 +90,7 @@ const AccountManagement = ({
 
     return (
       <Popover content={popContent} position='top' trigger='hover'>
-        <span className='block max-w-full truncate text-[var(--semi-color-text-1)] hover:text-blue-600 cursor-pointer'>
+        <span className='block max-w-full truncate text-[var(--semi-color-text-1)] hover:text-pink-500 cursor-pointer'>
           {accountId}
         </span>
       </Popover>

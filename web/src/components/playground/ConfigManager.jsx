@@ -209,7 +209,7 @@ const ConfigManager = ({
             theme='borderless'
             type='tertiary'
             size='small'
-            className='!rounded-lg !text-[var(--semi-color-text-1)] hover:!text-blue-600 hover:!bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)]'
+            className='!rounded-lg !text-[var(--semi-color-text-1)] hover:!text-pink-500 hover:!bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)]'
           />
         </Dropdown>
 

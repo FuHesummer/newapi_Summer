@@ -173,7 +173,7 @@ const PasswordResetForm = () => {
                     {t('想起来了？')}{' '}
                     <Link
                       to='/login'
-                      className='text-blue-600 hover:text-blue-800 font-medium'
+                      className='text-pink-500 hover:text-pink-700 font-medium'
                     >
                       {t('登录')}
                     </Link>

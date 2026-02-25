@@ -40,7 +40,7 @@ const pickStrokeColor = (percent) => {
   const p = clampPercent(percent);
   if (p >= 95) return '#ef4444';
   if (p >= 80) return '#f59e0b';
-  return '#3b82f6';
+  return '#f472a6';
 };
 
 const formatDurationSeconds = (seconds, t) => {

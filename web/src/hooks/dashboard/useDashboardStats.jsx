@@ -46,7 +46,7 @@ export const useDashboardStats = (
     () => [
       {
         title: createSectionTitle(Wallet, t('账户数据')),
-        color: 'bg-blue-50',
+        color: 'bg-pink-50',
         items: [
           {
             title: t('当前余额'),
@@ -54,7 +54,7 @@ export const useDashboardStats = (
             icon: <IconMoneyExchangeStroked />,
             avatarColor: 'blue',
             trendData: [],
-            trendColor: '#3b82f6',
+            trendColor: '#f472a6',
           },
           {
             title: t('历史消耗'),
@@ -62,7 +62,7 @@ export const useDashboardStats = (
             icon: <IconHistogram />,
             avatarColor: 'purple',
             trendData: [],
-            trendColor: '#8b5cf6',
+            trendColor: '#d8a0d8',
           },
         ],
       },
@@ -120,7 +120,7 @@ export const useDashboardStats = (
             icon: <IconStopwatchStroked />,
             avatarColor: 'indigo',
             trendData: trendData.rpm,
-            trendColor: '#6366f1',
+            trendColor: '#c4a1f9',
           },
           {
             title: t('平均TPM'),

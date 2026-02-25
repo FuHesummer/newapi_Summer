@@ -60,7 +60,7 @@ const MessageActions = ({
             icon={<RefreshCw size={styleState.isMobile ? 12 : 14} />}
             onClick={() => !shouldDisableActions && onMessageReset(message)}
             disabled={shouldDisableActions}
-            className={`!rounded-full ${shouldDisableActions ? '!text-[var(--semi-color-text-2)] !opacity-50 !cursor-not-allowed' : '!text-[var(--semi-color-text-2)] hover:!text-blue-600 hover:!bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)]'} ${styleState.isMobile ? '!w-6 !h-6' : '!w-7 !h-7'} !p-0 transition-all`}
+            className={`!rounded-full ${shouldDisableActions ? '!text-[var(--semi-color-text-2)] !opacity-50 !cursor-not-allowed' : '!text-[var(--semi-color-text-2)] hover:!text-pink-500 hover:!bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)]'} ${styleState.isMobile ? '!w-6 !h-6' : '!w-7 !h-7'} !p-0 transition-all`}
             aria-label={t('重试')}
           />
         </Tooltip>

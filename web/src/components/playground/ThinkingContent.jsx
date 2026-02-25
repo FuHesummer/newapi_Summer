@@ -76,7 +76,7 @@ const ThinkingContent = ({
         className='flex items-center justify-between p-3 cursor-pointer hover:bg-gradient-to-r hover:from-white/20 hover:to-purple-50/30 transition-all'
         style={{
           background:
-            'linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%)',
+            'linear-gradient(135deg, #8b2252 0%, var(--brand-primary) 50%, var(--brand-accent) 100%)',
           position: 'relative',
         }}
         onClick={() => onToggleReasoningExpansion(message.id)}

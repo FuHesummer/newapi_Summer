@@ -536,7 +536,7 @@ const RegisterForm = () => {
                 <Button
                   theme='solid'
                   type='primary'
-                  className='w-full h-12 flex items-center justify-center !bg-blue-500 !text-[var(--semi-color-white)] !rounded-full hover:!bg-blue-600 transition-colors'
+                  className='w-full h-12 flex items-center justify-center !bg-pink-500 !text-[var(--semi-color-white)] !rounded-full hover:!bg-pink-500 transition-colors'
                   icon={<IconMail size='large' />}
                   onClick={handleEmailRegisterClick}
                   loading={emailRegisterLoading}
@@ -550,7 +550,7 @@ const RegisterForm = () => {
                   {t('已有账户？')}{' '}
                   <Link
                     to='/login'
-                    className='text-blue-600 hover:text-blue-800 font-medium'
+                    className='text-pink-500 hover:text-pink-700 font-medium'
                   >
                     {t('登录')}
                   </Link>
@@ -669,7 +669,7 @@ const RegisterForm = () => {
                               href='/user-agreement'
                               target='_blank'
                               rel='noopener noreferrer'
-                              className='text-blue-600 hover:text-blue-800 mx-1'
+                              className='text-pink-500 hover:text-pink-700 mx-1'
                             >
                               {t('用户协议')}
                             </a>
@@ -682,7 +682,7 @@ const RegisterForm = () => {
                               href='/privacy-policy'
                               target='_blank'
                               rel='noopener noreferrer'
-                              className='text-blue-600 hover:text-blue-800 mx-1'
+                              className='text-pink-500 hover:text-pink-700 mx-1'
                             >
                               {t('隐私政策')}
                             </a>
@@ -735,7 +735,7 @@ const RegisterForm = () => {
                   {t('已有账户？')}{' '}
                   <Link
                     to='/login'
-                    className='text-blue-600 hover:text-blue-800 font-medium'
+                    className='text-pink-500 hover:text-pink-700 font-medium'
                   >
                     {t('登录')}
                   </Link>

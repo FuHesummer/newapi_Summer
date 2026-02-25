@@ -196,7 +196,7 @@ const UpdateConfigModal = ({ visible, onCancel, deployment, onSuccess, t }) => {
     <Modal
       title={
         <div className='flex items-center gap-2'>
-          <FaCog className='text-blue-500' />
+          <FaCog className='text-pink-400' />
           <span>{t('更新容器配置')}</span>
         </div>
       }
@@ -262,7 +262,7 @@ const UpdateConfigModal = ({ visible, onCancel, deployment, onSuccess, t }) => {
             <Collapse.Panel
               header={
                 <div className='flex items-center gap-2'>
-                  <FaDocker className='text-blue-600' />
+                  <FaDocker className='text-pink-500' />
                   <span>{t('镜像配置')}</span>
                 </div>
               }

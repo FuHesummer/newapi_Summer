@@ -614,7 +614,7 @@ const OllamaModelModal = ({
                       <Progress
                         percent={safePercent}
                         showInfo={false}
-                        stroke='#1890ff'
+                        stroke='var(--brand-primary)'
                         size='small'
                       />
                       <div className='flex justify-between mt-1'>

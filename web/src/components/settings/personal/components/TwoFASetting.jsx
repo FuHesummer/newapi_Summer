@@ -503,8 +503,8 @@ const TwoFASetting = ({ t }) => {
                       <QRCodeSVG value={setupData.qr_code_data} size={180} />
                     </div>
                   </div>
-                  <div className='bg-blue-50 dark:bg-blue-900 rounded-lg p-3'>
-                    <Text className='text-blue-800 dark:text-blue-200 text-sm'>
+                  <div className='bg-pink-50 dark:bg-pink-900 rounded-lg p-3'>
+                    <Text className='text-pink-700 dark:text-pink-200 text-sm'>
                       {t('或手动输入密钥：')}
                       <Text code copyable className='ml-2'>
                         {setupData.secret}

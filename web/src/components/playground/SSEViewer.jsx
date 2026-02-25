@@ -218,7 +218,7 @@ const SSEViewer = ({ sseData }) => {
       {/* 头部工具栏 */}
       <div className='flex items-center justify-between p-4 border-b border-[var(--glass-border)] flex-shrink-0'>
         <div className='flex items-center gap-3'>
-          <Zap size={16} className='text-blue-500' />
+          <Zap size={16} className='text-pink-400' />
           <Typography.Text strong>{t('SSE数据流')}</Typography.Text>
           <Badge count={stats.total} type='primary' />
           {stats.errors > 0 && (

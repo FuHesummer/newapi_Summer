@@ -58,7 +58,7 @@ const AnnouncementsPanel = ({
                       legend.color === 'grey'
                         ? '#8b9aa7'
                         : legend.color === 'blue'
-                          ? '#3b82f6'
+                          ? '#f472a6'
                           : legend.color === 'green'
                             ? '#10b981'
                             : legend.color === 'orange'

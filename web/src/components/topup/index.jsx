@@ -423,7 +423,7 @@ const TopUp = () => {
 
               if (!method.color) {
                 if (method.type === 'alipay') {
-                  method.color = 'rgba(var(--semi-blue-5), 1)';
+                  method.color = 'var(--brand-primary)';
                 } else if (method.type === 'wxpay') {
                   method.color = 'rgba(var(--semi-green-5), 1)';
                 } else if (method.type === 'stripe') {

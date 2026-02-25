@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const groupStyleMap = {
-  'bg-blue-50': {
+  'bg-pink-50': {
     background: 'linear-gradient(135deg, rgba(244, 114, 166, 0.14), rgba(244, 114, 166, 0.08))',
   },
   'bg-green-50': {

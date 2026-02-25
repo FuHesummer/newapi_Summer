@@ -81,7 +81,7 @@ const SearchActions = memo(
           icon={<IconCopy />}
           onClick={handleCopyClick}
           disabled={selectedRowKeys.length === 0}
-          className='!bg-blue-500 hover:!bg-blue-600 !text-[var(--semi-color-white)] disabled:!bg-[color-mix(in_srgb,var(--glass-bg)_78%,transparent)] disabled:!text-[var(--semi-color-text-2)]'
+          className='!bg-pink-500 hover:!bg-pink-500 !text-[var(--semi-color-white)] disabled:!bg-[color-mix(in_srgb,var(--glass-bg)_78%,transparent)] disabled:!text-[var(--semi-color-text-2)]'
         >
           {t('复制')}
         </Button>

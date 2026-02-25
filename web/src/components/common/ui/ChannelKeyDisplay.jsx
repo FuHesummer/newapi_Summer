@@ -216,11 +216,11 @@ const ChannelKeyDisplay = ({
         </div>
 
         {isMultipleKeys && (
-          <div className='bg-blue-50 dark:bg-blue-900 rounded-lg p-3'>
+          <div className='bg-pink-50 dark:bg-pink-900 rounded-lg p-3'>
             <Typography.Text
               type='tertiary'
               size='small'
-              className='text-blue-700 dark:text-blue-300'
+              className='text-pink-600 dark:text-pink-300'
             >
               <svg
                 className='w-4 h-4 inline mr-1'

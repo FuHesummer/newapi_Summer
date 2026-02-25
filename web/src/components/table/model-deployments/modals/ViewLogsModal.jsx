@@ -397,7 +397,7 @@ const ViewLogsModal = ({ visible, onCancel, deployment, t }) => {
     <Modal
       title={
         <div className='flex items-center gap-2'>
-          <FaTerminal className='text-blue-500' />
+          <FaTerminal className='text-pink-400' />
           <span>{t('容器日志')}</span>
           <Text type='secondary' size='small'>
             - {deployment?.container_name || deployment?.id}
@@ -608,7 +608,7 @@ const ViewLogsModal = ({ visible, onCancel, deployment, t }) => {
                 ) : containerDetails ? (
                   <div className='grid gap-4 md:grid-cols-2 text-sm'>
                     <div className='flex items-center gap-2'>
-                      <FaInfoCircle className='text-blue-500' />
+                      <FaInfoCircle className='text-pink-400' />
                       <Text type='secondary'>{t('硬件')}</Text>
                       <Text>
                         {containerDetails?.brand_name ||

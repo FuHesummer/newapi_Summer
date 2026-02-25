@@ -54,7 +54,7 @@ const STATUS_TAG_CONFIG = {
   deploying: {
     color: 'blue',
     labelKey: '部署中',
-    icon: <FaSpinner size={12} className='text-blue-600' />,
+    icon: <FaSpinner size={12} className='text-pink-500' />,
   },
   pending: {
     color: 'orange',
@@ -94,7 +94,7 @@ const STATUS_TAG_CONFIG = {
   'deployment requested': {
     color: 'blue',
     labelKey: '部署请求中',
-    icon: <FaSpinner size={12} className='text-blue-600' />,
+    icon: <FaSpinner size={12} className='text-pink-500' />,
   },
   'termination requested': {
     color: 'orange',
@@ -225,7 +225,7 @@ const ContainerNameCell = ({ text, record, t }) => {
       <Typography.Text
         type='secondary'
         size='small'
-        className='text-xs cursor-pointer hover:text-blue-600 transition-colors select-all'
+        className='text-xs cursor-pointer hover:text-pink-500 transition-colors select-all'
         onClick={handleCopyId}
         title={t('点击复制ID')}
       >
@@ -245,7 +245,7 @@ const renderResourceConfig = (resource, t) => {
     <div className='flex flex-col gap-1'>
       {cpu && (
         <div className='flex items-center gap-1 text-xs'>
-          <FaMicrochip className='text-blue-500' />
+          <FaMicrochip className='text-pink-400' />
           <span>CPU: {cpu}</span>
         </div>
       )}
@@ -327,9 +327,9 @@ export const getDeploymentsColumns = ({
           <div
             className='flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide'
             style={{
-              borderColor: 'rgba(59, 130, 246, 0.4)',
-              backgroundColor: 'rgba(59, 130, 246, 0.08)',
-              color: '#2563eb',
+              borderColor: 'rgba(244, 114, 166, 0.4)',
+              backgroundColor: 'rgba(244, 114, 166, 0.08)',
+              color: 'var(--brand-primary)',
             }}
           >
             <FaGlobe className='text-[11px]' />

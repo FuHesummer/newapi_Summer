@@ -327,7 +327,7 @@ export const useTokensData = (openFluentNotification) => {
             {t('名称+密钥')}
           </button>
           <button
-            className='px-3 py-1 bg-blue-500 text-white rounded'
+            className='px-3 py-1 bg-pink-500 text-white rounded'
             onClick={async () => {
               let content = '';
               for (let i = 0; i < selectedKeys.length; i++) {

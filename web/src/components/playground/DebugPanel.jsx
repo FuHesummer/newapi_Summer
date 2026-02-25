@@ -182,7 +182,7 @@ const DebugPanel = ({
                 <Zap size={16} />
                 {t('响应')}
                 {debugData.sseMessages && debugData.sseMessages.length > 0 && (
-                  <span className='px-1.5 py-0.5 text-xs bg-blue-100 text-blue-600 rounded-full'>
+                  <span className='px-1.5 py-0.5 text-xs bg-pink-100 text-pink-500 rounded-full'>
                     SSE ({debugData.sseMessages.length})
                   </span>
                 )}

@@ -54,7 +54,7 @@ const ThemeToggle = ({ theme, onThemeToggle, t }) => {
 
   const getItemClassName = (isSelected) =>
     isSelected
-      ? '!bg-[color-mix(in_srgb,var(--glass-bg)_82%,rgba(59,130,246,0.20))] !font-semibold'
+      ? '!bg-[color-mix(in_srgb,var(--glass-bg)_82%,rgba(244,114,166,0.20))] !font-semibold'
       : 'hover:!bg-[var(--glass-bg-hover)]';
 
   const currentButtonIcon = useMemo(() => {

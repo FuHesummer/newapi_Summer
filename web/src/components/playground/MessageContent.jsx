@@ -228,7 +228,7 @@ const MessageContent = ({
               fontSize: styleState.isMobile ? '14px' : '15px',
               lineHeight: '1.6',
             }}
-            className='!border-blue-200 focus:!border-blue-400 !bg-blue-50/50'
+            className='!border-pink-200 focus:!border-pink-400 !bg-pink-50/50'
           />
           <div className='flex items-center gap-2 w-full'>
             <Button

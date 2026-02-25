@@ -63,7 +63,7 @@ const UserArea = ({
                 onClick={() => {
                   navigate('/console/personal');
                 }}
-                className='!px-3 !py-1.5 !text-sm !text-[var(--semi-color-text-0)] hover:!bg-[color-mix(in_srgb,var(--glass-bg)_84%,rgba(59,130,246,0.16))]'
+                className='!px-3 !py-1.5 !text-sm !text-[var(--semi-color-text-0)] hover:!bg-[color-mix(in_srgb,var(--glass-bg)_84%,rgba(244,114,166,0.16))]'
               >
                 <div className='flex items-center gap-2'>
                   <IconUserSetting
@@ -77,7 +77,7 @@ const UserArea = ({
                 onClick={() => {
                   navigate('/console/token');
                 }}
-                className='!px-3 !py-1.5 !text-sm !text-[var(--semi-color-text-0)] hover:!bg-[color-mix(in_srgb,var(--glass-bg)_84%,rgba(59,130,246,0.16))]'
+                className='!px-3 !py-1.5 !text-sm !text-[var(--semi-color-text-0)] hover:!bg-[color-mix(in_srgb,var(--glass-bg)_84%,rgba(244,114,166,0.16))]'
               >
                 <div className='flex items-center gap-2'>
                   <IconKey
@@ -91,7 +91,7 @@ const UserArea = ({
                 onClick={() => {
                   navigate('/console/topup');
                 }}
-                className='!px-3 !py-1.5 !text-sm !text-[var(--semi-color-text-0)] hover:!bg-[color-mix(in_srgb,var(--glass-bg)_84%,rgba(59,130,246,0.16))]'
+                className='!px-3 !py-1.5 !text-sm !text-[var(--semi-color-text-0)] hover:!bg-[color-mix(in_srgb,var(--glass-bg)_84%,rgba(244,114,166,0.16))]'
               >
                 <div className='flex items-center gap-2'>
                   <IconCreditCard

@@ -55,7 +55,7 @@ const ImageUrlInput = ({
             size={16}
             className={
               imageEnabled && !disabled
-                ? 'text-blue-500'
+                ? 'text-pink-400'
                 : 'text-[var(--semi-color-text-2)]'
             }
           />

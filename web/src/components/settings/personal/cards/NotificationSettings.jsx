@@ -618,7 +618,7 @@ const NotificationSettings = ({
                             href='https://github.com/Finb/Bark'
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='text-blue-500 hover:text-blue-600 font-medium'
+                            className='text-pink-400 hover:text-pink-500 font-medium'
                           >
                             Bark {t('官方文档')}
                           </a>
@@ -719,7 +719,7 @@ const NotificationSettings = ({
                             href='https://gotify.net/'
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='text-blue-500 hover:text-blue-600 font-medium'
+                            className='text-pink-400 hover:text-pink-500 font-medium'
                           >
                             Gotify {t('官方文档')}
                           </a>
@@ -866,7 +866,7 @@ const NotificationSettings = ({
                                 xl={8}
                               >
                                 <Card
-                                  className={`!rounded-xl border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] hover:border-blue-300 transition-all duration-200 ${
+                                  className={`!rounded-xl border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] hover:border-pink-300 transition-all duration-200 ${
                                     sidebarModulesUser[section.key]?.enabled !==
                                     false
                                       ? ''

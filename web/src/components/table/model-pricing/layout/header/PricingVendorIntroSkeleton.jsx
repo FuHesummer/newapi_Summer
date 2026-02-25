@@ -22,9 +22,9 @@ import { Card, Skeleton } from '@douyinfe/semi-ui';
 
 const THEME_COLORS = {
   allVendors: {
-    primary: '37 99 235',
-    background: 'rgba(59, 130, 246, 0.1)',
-    border: 'rgba(59, 130, 246, 0.2)',
+    primary: '244 114 166',
+    background: 'rgba(244, 114, 166, 0.1)',
+    border: 'rgba(244, 114, 166, 0.2)',
   },
   specific: {
     primary: '16 185 129',
