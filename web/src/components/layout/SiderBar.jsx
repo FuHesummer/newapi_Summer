@@ -305,7 +305,7 @@ const SiderBar = ({ onNavigate = () => {} }) => {
 
   // 选中高亮颜色（统一）
   const SELECTED_COLOR = 'var(--semi-color-primary)';
-  const navItemBorderRadius = 10;
+  const navItemBorderRadius = 14;
 
   // 渲染自定义菜单项
   const renderNavItem = (item) => {

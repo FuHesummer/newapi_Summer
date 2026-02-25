@@ -30,10 +30,10 @@ const Navigation = ({
 }) => {
   const renderNavLinks = () => {
     const baseClasses =
-      'flex-shrink-0 flex items-center gap-1 rounded-lg border border-transparent font-semibold transition-all duration-200 ease-in-out';
+      'header-floating-nav-link flex-shrink-0 flex items-center gap-1 rounded-full border border-transparent font-semibold transition-all duration-200 ease-in-out';
     const hoverClasses =
-      'hover:text-semi-color-primary hover:bg-[color-mix(in_srgb,var(--glass-bg)_86%,rgba(59,130,246,0.14))]';
-    const spacingClasses = isMobile ? 'px-2 py-1' : 'px-2.5 py-1.5';
+      'hover:text-semi-color-primary hover:border-[color-mix(in_srgb,var(--glass-border-strong)_72%,transparent)] hover:bg-[color-mix(in_srgb,var(--glass-kawaii-primary)_34%,var(--glass-bg)_66%)]';
+    const spacingClasses = isMobile ? 'px-2.5 py-1' : 'px-3 py-1.5';
 
     const commonLinkClasses = `${baseClasses} ${spacingClasses} ${hoverClasses}`;
 
@@ -71,7 +71,7 @@ const Navigation = ({
   };
 
   return (
-    <nav className='flex min-w-0 items-center justify-center gap-1 lg:gap-1.5 mx-1 md:mx-3 overflow-x-auto whitespace-nowrap scrollbar-hide border-x border-[var(--glass-border)] px-2 md:px-3'>
+    <nav className='header-floating-nav-track flex min-w-0 items-center justify-center gap-1 lg:gap-1.5 mx-1 md:mx-3 overflow-x-auto whitespace-nowrap scrollbar-hide px-2 md:px-3 py-1'>
       <SkeletonWrapper
         loading={isLoading}
         type='navigation'

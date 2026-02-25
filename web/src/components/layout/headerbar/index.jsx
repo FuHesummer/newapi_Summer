@@ -124,8 +124,6 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
               navigate={navigate}
               t={t}
             />
-
-            <div className='pointer-events-none absolute inset-x-4 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--glass-border)] to-transparent' />
           </div>
         </div>
       </div>
