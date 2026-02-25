@@ -120,41 +120,111 @@ body {
 }
 
 .app-sider {
-  height: calc(100vh - 64px);
-  height: calc(100dvh - 64px);
+  height: calc(100vh - 56px);
+  height: calc(100dvh - 56px);
 }
 
-/* ==================== 猫猫身体：一体式玻璃容器 ==================== */
-.neko-body-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  padding: 0 8px 8px;
-}
-
-.neko-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: color-mix(in srgb, var(--glass-bg) 82%, transparent);
+/* ==================== 全页面猫猫头容器 ==================== */
+/* 整个视口就是一只猫头，所有组件都在猫头内部 */
+.neko-fullpage {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: color-mix(in srgb, var(--glass-bg) 72%, transparent);
   backdrop-filter: blur(18px) saturate(160%);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
   border: 1px solid var(--glass-border);
-  border-top: none;
-  border-radius: 0 0 20px 20px;
+  border-radius: 28px;
   box-shadow: var(--glass-shadow);
+  margin: 8px;
   overflow: hidden;
-  min-height: 0;
-  position: relative;
 }
 
-/* 猫尾巴：从 neko-body 右下角自然延伸的弧线 */
-.neko-body::after {
+/* 大猫耳：页面左上角和右上角的圆角凸起 */
+.neko-ear-big {
+  position: fixed;
+  top: -2px;
+  width: 60px;
+  height: 48px;
+  background: color-mix(in srgb, var(--glass-bg) 88%, transparent);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-bottom: none;
+  z-index: 200;
+  transition: height 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.neko-fullpage:hover .neko-ear-big {
+  height: 56px;
+}
+
+.neko-ear-big-left {
+  left: 8px;
+  border-radius: 22px 6px 0 0;
+}
+
+/* 左耳内侧淡粉色渐变（模拟猫耳内部） */
+.neko-ear-big-left::before {
   content: '';
   position: absolute;
-  bottom: 8px;
-  right: -18px;
+  top: 6px;
+  left: 10px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 70%);
+  border-radius: 14px 4px 0 8px;
+  pointer-events: none;
+}
+
+.neko-ear-big-right {
+  right: 8px;
+  border-radius: 6px 22px 0 0;
+}
+
+/* 右耳内侧淡粉色渐变 */
+.neko-ear-big-right::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(200deg, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 70%);
+  border-radius: 4px 14px 8px 0;
+  pointer-events: none;
+}
+
+/* 顶栏在大猫头内部，透明融入 */
+.neko-header-bar {
+  background: color-mix(in srgb, var(--glass-bg) 60%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 60%, transparent);
+}
+
+/* 猫脸装饰：固定在header下方 */
+.neko-face-decor-fixed {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 101;
+}
+
+/* 猫尾巴：从全页面猫头右下角延伸 */
+.neko-tail {
+  position: fixed;
+  bottom: 28px;
+  right: -6px;
   width: 40px;
   height: 80px;
   border: 3px solid transparent;
@@ -165,19 +235,11 @@ body {
   animation: neko-tail-sway 3s ease-in-out infinite;
 }
 
-@keyframes neko-tail-sway {
-  0%, 100% { transform: rotate(0deg) scaleY(1); }
-  25% { transform: rotate(3deg) scaleY(1.02); }
-  50% { transform: rotate(-2deg) scaleY(0.98); }
-  75% { transform: rotate(4deg) scaleY(1.01); }
-}
-
 /* 猫尾尖端圆球 */
-.neko-body::before {
-  content: '';
-  position: absolute;
-  bottom: 6px;
-  right: -22px;
+.neko-tail-tip {
+  position: fixed;
+  bottom: 26px;
+  right: -10px;
   width: 10px;
   height: 10px;
   background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
@@ -188,13 +250,52 @@ body {
   animation: neko-tail-sway 3s ease-in-out infinite;
 }
 
+@keyframes neko-tail-sway {
+  0%, 100% { transform: rotate(0deg) scaleY(1); }
+  25% { transform: rotate(3deg) scaleY(1.02); }
+  50% { transform: rotate(-2deg) scaleY(0.98); }
+  75% { transform: rotate(4deg) scaleY(1.01); }
+}
+
 @media (max-width: 767px) {
-  .neko-body-wrapper {
-    padding: 0 4px 4px;
+  .neko-fullpage {
+    margin: 4px;
+    border-radius: 18px;
   }
 
-  .neko-body {
-    border-radius: 0 0 14px 14px;
+  .neko-ear-big {
+    width: 40px;
+    height: 32px;
+  }
+
+  .neko-fullpage:hover .neko-ear-big {
+    height: 38px;
+  }
+
+  .neko-ear-big-left {
+    left: 4px;
+    border-radius: 16px 4px 0 0;
+  }
+
+  .neko-ear-big-left::before {
+    width: 18px;
+    height: 18px;
+  }
+
+  .neko-ear-big-right {
+    right: 4px;
+    border-radius: 4px 16px 0 0;
+  }
+
+  .neko-ear-big-right::before {
+    width: 18px;
+    height: 18px;
+  }
+
+  .neko-face-decor-fixed {
+    top: 48px;
+    gap: 12px;
+    height: 7px;
   }
 }
 
@@ -1268,107 +1369,7 @@ html.dark .with-pastel-balls::before {
   gap: 0.25rem;
 }
 
-/* ==================== 一体式猫猫头顶栏 ==================== */
-
-/* 猫头整体容器：左右高中间凹，同一材质无缝衔接 */
-.neko-head {
-  display: flex;
-  align-items: flex-end;
-  width: 100%;
-  position: relative;
-}
-
-/* 猫耳（左右共用）：圆角方块向上凸出，磨砂玻璃质感 */
-.neko-ear {
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  height: 64px;
-  min-width: 0;
-  background: color-mix(in srgb, var(--glass-bg) 92%, transparent);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;
-  transition: height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* hover时耳朵微微竖起 */
-.neko-head:hover .neko-ear {
-  height: 68px;
-}
-
-/* 左耳：圆角方块，左上角更圆（像猫耳外轮廓），右侧与脸无缝 */
-.neko-ear-left {
-  border-radius: 18px 4px 0 14px;
-  padding-left: 14px;
-  gap: 4px;
-  border-right: none;
-}
-
-/* 左耳内侧淡粉色渐变（模拟猫耳内部） */
-.neko-ear-left::before {
-  content: '';
-  position: absolute;
-  top: 6px;
-  left: 8px;
-  width: 20px;
-  height: 22px;
-  background: linear-gradient(160deg, color-mix(in srgb, var(--brand-primary) 12%, transparent), transparent 70%);
-  border-radius: 12px 3px 0 8px;
-  pointer-events: none;
-}
-
-/* 右耳：圆角方块，右上角更圆，左侧与脸无缝 */
-.neko-ear-right {
-  border-radius: 4px 18px 14px 0;
-  padding-right: 14px;
-  border-left: none;
-}
-
-/* 右耳内侧淡粉色渐变 */
-.neko-ear-right::before {
-  content: '';
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  width: 20px;
-  height: 22px;
-  background: linear-gradient(200deg, color-mix(in srgb, var(--brand-primary) 12%, transparent), transparent 70%);
-  border-radius: 3px 12px 8px 0;
-  pointer-events: none;
-}
-
-/* 猫脸中央：比耳朵矮，中间凹下去形成猫头轮廓 */
-.neko-face {
-  flex: 1;
-  min-width: 0;
-  height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in srgb, var(--glass-bg) 88%, transparent);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  border-top: 1px solid var(--glass-border);
-  border-bottom: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  position: relative;
-}
-
-/* 猫脸装饰容器：鼻子+胡须 */
-.neko-face-decor {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 18px;
-  height: 10px;
-  position: relative;
-  pointer-events: none;
-}
+/* ==================== 猫脸装饰元素 ==================== */
 
 /* 猫鼻子：圆角小倒三角 */
 .neko-nose {
@@ -1381,7 +1382,7 @@ html.dark .with-pastel-balls::before {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.neko-head:hover ~ .neko-face-decor .neko-nose {
+.neko-fullpage:hover .neko-nose {
   opacity: 0.5;
   transform: scale(1.1);
 }
@@ -1428,55 +1429,13 @@ html.dark .with-pastel-balls::before {
   transform: rotate(-3deg);
 }
 
-.neko-head:hover ~ .neko-face-decor .neko-whisker {
+.neko-fullpage:hover .neko-whisker {
   opacity: 0.26;
   width: 36px;
 }
 
-/* 移动端适配：保持猫头轮廓，比例缩小 */
+/* 移动端适配 */
 @media (max-width: 767px) {
-  .neko-ear {
-    height: 54px;
-    padding: 0 6px;
-  }
-
-  .neko-head:hover .neko-ear {
-    height: 57px;
-  }
-
-  .neko-ear-left {
-    border-radius: 14px 3px 0 10px;
-    padding-left: 8px;
-  }
-
-  .neko-ear-left::before {
-    width: 14px;
-    height: 16px;
-    top: 4px;
-    left: 5px;
-  }
-
-  .neko-ear-right {
-    border-radius: 3px 14px 10px 0;
-    padding-right: 8px;
-  }
-
-  .neko-ear-right::before {
-    width: 14px;
-    height: 16px;
-    top: 4px;
-    right: 5px;
-  }
-
-  .neko-face {
-    height: 42px;
-  }
-
-  .neko-face-decor {
-    height: 7px;
-    gap: 12px;
-  }
-
   .neko-nose {
     width: 7px;
     height: 5px;
@@ -1629,6 +1588,28 @@ html.dark .with-pastel-balls::before {
 .semi-badge .semi-badge-count {
   background: linear-gradient(135deg, var(--brand-primary), #ff6b9d) !important;
   box-shadow: 0 4px 8px color-mix(in srgb, var(--brand-primary) 30%, transparent) !important;
+}
+
+/* Badge dot 对齐修复：确保圆点与文本垂直居中 */
+.semi-badge-dot {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  transform: none !important;
+  flex-shrink: 0;
+  display: inline-block !important;
+  margin-top: 6px;
+}
+
+/* Slash类型Tabs防换行 */
+.semi-tabs-bar-slash {
+  white-space: nowrap !important;
+  flex-wrap: nowrap !important;
+}
+
+.semi-tabs-bar-slash .semi-tabs-tab {
+  white-space: nowrap !important;
+  flex-shrink: 0;
 }
 
 /* 分割线猫娘装饰 */

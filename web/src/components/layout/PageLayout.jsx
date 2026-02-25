@@ -120,105 +120,118 @@ const PageLayout = () => {
   }, [i18n]);
 
   return (
-    <Layout
-      className='app-layout'
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: isMobile ? 'visible' : 'hidden',
-      }}
-    >
-      <Header
+    <div className='neko-fullpage'>
+      {/* 大猫耳：页面顶部左右角 */}
+      <div className='neko-ear-big neko-ear-big-left' />
+      <div className='neko-ear-big neko-ear-big-right' />
+
+      <Layout
+        className='app-layout'
         style={{
-          padding: 0,
-          height: 'auto',
-          lineHeight: 'normal',
-          position: 'fixed',
-          width: '100%',
-          top: 0,
-          zIndex: 100,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: isMobile ? 'visible' : 'hidden',
         }}
       >
-        <HeaderBar
-          onMobileMenuToggle={() => setDrawerOpen((prev) => !prev)}
-          drawerOpen={drawerOpen}
-        />
-      </Header>
-      {/* 猫猫身体：侧边栏+内容区的一体式玻璃容器 */}
-      <div className='neko-body-wrapper'>
-        <div className='neko-body'>
-          <Layout
-            style={{
-              overflow: isMobile ? 'visible' : 'auto',
-              display: 'flex',
-              flexDirection: 'column',
-              background: 'transparent',
-              flex: 1,
-              minHeight: 0,
-            }}
-          >
-            {showSider && (
-              <Sider
-                className='app-sider'
-                style={{
-                  position: 'fixed',
-                  left: 0,
-                  top: '64px',
-                  zIndex: 99,
-                  border: 'none',
-                  paddingRight: '0',
-                  width: 'var(--sidebar-current-width)',
-                  background: 'transparent',
-                }}
-              >
-                <SiderBar
-                  onNavigate={() => {
-                    if (isMobile) setDrawerOpen(false);
-                  }}
-                />
-              </Sider>
-            )}
-            <Layout
+        <Header
+          style={{
+            padding: 0,
+            height: 'auto',
+            lineHeight: 'normal',
+            position: 'fixed',
+            width: '100%',
+            top: 0,
+            zIndex: 100,
+          }}
+        >
+          <HeaderBar
+            onMobileMenuToggle={() => setDrawerOpen((prev) => !prev)}
+            drawerOpen={drawerOpen}
+          />
+        </Header>
+        {/* 猫脸装饰：鼻子 + 胡须 */}
+        <div className='neko-face-decor-fixed'>
+          <span className='neko-whisker neko-whisker-left' />
+          <span className='neko-nose' />
+          <span className='neko-whisker neko-whisker-right' />
+        </div>
+
+        <Layout
+          style={{
+            overflow: isMobile ? 'visible' : 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            background: 'transparent',
+            flex: 1,
+            minHeight: 0,
+          }}
+        >
+          {showSider && (
+            <Sider
+              className='app-sider'
               style={{
-                marginLeft: isMobile
-                  ? '0'
-                  : showSider
-                    ? 'var(--sidebar-current-width)'
-                    : '0',
-                flex: '1 1 auto',
-                display: 'flex',
-                flexDirection: 'column',
+                position: 'fixed',
+                left: 0,
+                top: '64px',
+                zIndex: 99,
+                border: 'none',
+                paddingRight: '0',
+                width: 'var(--sidebar-current-width)',
                 background: 'transparent',
               }}
             >
-              <Content
+              <SiderBar
+                onNavigate={() => {
+                  if (isMobile) setDrawerOpen(false);
+                }}
+              />
+            </Sider>
+          )}
+          <Layout
+            style={{
+              marginLeft: isMobile
+                ? '0'
+                : showSider
+                  ? 'var(--sidebar-current-width)'
+                  : '0',
+              flex: '1 1 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              background: 'transparent',
+            }}
+          >
+            <Content
+              style={{
+                flex: '1 0 auto',
+                overflowY: isMobile ? 'visible' : 'hidden',
+                WebkitOverflowScrolling: 'touch',
+                padding: shouldInnerPadding ? (isMobile ? '10px' : '24px') : '0',
+                position: 'relative',
+                background: 'transparent',
+              }}
+            >
+              <App />
+            </Content>
+            {!shouldHideFooter && (
+              <Layout.Footer
                 style={{
-                  flex: '1 0 auto',
-                  overflowY: isMobile ? 'visible' : 'hidden',
-                  WebkitOverflowScrolling: 'touch',
-                  padding: shouldInnerPadding ? (isMobile ? '10px' : '24px') : '0',
-                  position: 'relative',
-                  background: 'transparent',
+                  flex: '0 0 auto',
+                  width: '100%',
                 }}
               >
-                <App />
-              </Content>
-              {!shouldHideFooter && (
-                <Layout.Footer
-                  style={{
-                    flex: '0 0 auto',
-                    width: '100%',
-                  }}
-                >
-                  <FooterBar />
-                </Layout.Footer>
-              )}
-            </Layout>
+                <FooterBar />
+              </Layout.Footer>
+            )}
           </Layout>
-        </div>
-      </div>
+        </Layout>
+      </Layout>
+
+      {/* 猫尾巴 */}
+      <div className='neko-tail' />
+      <div className='neko-tail-tip' />
+
       <ToastContainer />
-    </Layout>
+    </div>
   );
 };
 

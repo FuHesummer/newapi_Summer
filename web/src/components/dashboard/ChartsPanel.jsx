@@ -41,20 +41,23 @@ const ChartsPanel = ({
       className={`!rounded-2xl ${hasApiInfoPanel ? 'lg:col-span-3' : ''}`}
       title={
         <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between w-full gap-3'>
-          <div className={FLEX_CENTER_GAP2}>
+          <div className={FLEX_CENTER_GAP2} style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>
             <PieChart size={16} />
             {t('模型数据分析')}
           </div>
-          <Tabs
-            type='slash'
-            activeKey={activeChartTab}
-            onChange={setActiveChartTab}
-          >
-            <TabPane tab={<span>{t('消耗分布')}</span>} itemKey='1' />
-            <TabPane tab={<span>{t('消耗趋势')}</span>} itemKey='2' />
-            <TabPane tab={<span>{t('调用次数分布')}</span>} itemKey='3' />
-            <TabPane tab={<span>{t('调用次数排行')}</span>} itemKey='4' />
-          </Tabs>
+          <div style={{ overflow: 'auto', flexShrink: 1, minWidth: 0 }}>
+            <Tabs
+              type='slash'
+              activeKey={activeChartTab}
+              onChange={setActiveChartTab}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              <TabPane tab={<span>{t('消耗分布')}</span>} itemKey='1' />
+              <TabPane tab={<span>{t('消耗趋势')}</span>} itemKey='2' />
+              <TabPane tab={<span>{t('调用次数分布')}</span>} itemKey='3' />
+              <TabPane tab={<span>{t('调用次数排行')}</span>} itemKey='4' />
+            </Tabs>
+          </div>
         </div>
       }
       bodyStyle={{ padding: 0 }}
