@@ -19,44 +19,44 @@
   --sidebar-width-collapsed: 60px;
   --sidebar-current-width: var(--sidebar-width);
 
-  --app-bg-primary: #edf2ff;
-  --app-bg-secondary: #f6f9ff;
-  --app-bg-tertiary: #e8f7ff;
+  --app-bg-primary: #fff5f8;
+  --app-bg-secondary: #fff0f5;
+  --app-bg-tertiary: #fce8f0;
   --app-text-primary: rgba(15, 23, 42, 0.92);
   --app-text-secondary: rgba(30, 41, 59, 0.72);
 
-  --glass-bg: rgba(255, 255, 255, 0.62);
-  --glass-bg-hover: rgba(255, 255, 255, 0.78);
-  --glass-border: rgba(148, 163, 184, 0.35);
-  --glass-border-strong: rgba(124, 140, 255, 0.45);
-  --glass-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
-  --glass-shadow-strong: 0 18px 40px rgba(15, 23, 42, 0.18);
+  --glass-bg: rgba(255, 255, 255, 0.68);
+  --glass-bg-hover: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(236, 180, 200, 0.35);
+  --glass-border-strong: rgba(244, 114, 162, 0.45);
+  --glass-shadow: 0 12px 32px rgba(244, 114, 162, 0.10);
+  --glass-shadow-strong: 0 18px 40px rgba(244, 114, 162, 0.16);
 
-  --brand-primary: #7c8cff;
-  --brand-accent: #5eead4;
+  --brand-primary: #f472a6;
+  --brand-accent: #c4a1f9;
   --glass-kawaii-primary: color-mix(in srgb, var(--brand-primary) 24%, transparent);
   --glass-kawaii-accent: color-mix(in srgb, var(--brand-accent) 22%, transparent);
-  --glass-float-shadow: 0 14px 30px color-mix(in srgb, var(--brand-primary) 14%, rgba(15, 23, 42, 0.12));
-  --glass-float-shadow-strong: 0 18px 36px color-mix(in srgb, var(--brand-primary) 20%, rgba(15, 23, 42, 0.18));
+  --glass-float-shadow: 0 14px 30px color-mix(in srgb, var(--brand-primary) 16%, rgba(244, 114, 162, 0.10));
+  --glass-float-shadow-strong: 0 18px 36px color-mix(in srgb, var(--brand-primary) 24%, rgba(244, 114, 162, 0.16));
 }
 
 html.dark {
-  --app-bg-primary: #0b1020;
-  --app-bg-secondary: #111a33;
-  --app-bg-tertiary: #1a2342;
+  --app-bg-primary: #1a0a14;
+  --app-bg-secondary: #1f1018;
+  --app-bg-tertiary: #2a1420;
   --app-text-primary: rgba(255, 255, 255, 0.92);
   --app-text-secondary: rgba(255, 255, 255, 0.68);
 
   --glass-bg: rgba(255, 255, 255, 0.08);
   --glass-bg-hover: rgba(255, 255, 255, 0.12);
-  --glass-border: rgba(255, 255, 255, 0.18);
-  --glass-border-strong: rgba(124, 140, 255, 0.6);
-  --glass-shadow: 0 12px 36px rgba(2, 6, 23, 0.45);
-  --glass-shadow-strong: 0 20px 48px rgba(2, 6, 23, 0.62);
+  --glass-border: rgba(244, 180, 200, 0.18);
+  --glass-border-strong: rgba(244, 114, 162, 0.55);
+  --glass-shadow: 0 12px 36px rgba(20, 4, 12, 0.45);
+  --glass-shadow-strong: 0 20px 48px rgba(20, 4, 12, 0.62);
   --glass-kawaii-primary: color-mix(in srgb, var(--brand-primary) 34%, transparent);
   --glass-kawaii-accent: color-mix(in srgb, var(--brand-accent) 30%, transparent);
-  --glass-float-shadow: 0 14px 30px color-mix(in srgb, var(--brand-primary) 22%, rgba(2, 6, 23, 0.35));
-  --glass-float-shadow-strong: 0 20px 42px color-mix(in srgb, var(--brand-primary) 28%, rgba(2, 6, 23, 0.48));
+  --glass-float-shadow: 0 14px 30px color-mix(in srgb, var(--brand-primary) 22%, rgba(20, 4, 12, 0.35));
+  --glass-float-shadow-strong: 0 20px 42px color-mix(in srgb, var(--brand-primary) 28%, rgba(20, 4, 12, 0.48));
 }
 
 body.sidebar-collapsed {
@@ -891,8 +891,8 @@ code {
 }
 
 .blur-ball-indigo {
-  background: #6366f1;
-  /* indigo-500 */
+  background: #f472a6;
+  /* neko pink */
   top: 40px;
   left: 50%;
   transform: translateX(-50%);
@@ -900,8 +900,8 @@ code {
 }
 
 .blur-ball-teal {
-  background: #14b8a6;
-  /* teal-400 */
+  background: #c4a1f9;
+  /* lavender */
   top: 200px;
   left: 30%;
   opacity: 0.4;
@@ -922,14 +922,14 @@ html:not(.dark) .blur-ball-teal {
   position: relative;
   overflow: hidden;
   /* 默认变量（明亮模式） */
-  --pb1: #ffd1dc;
-  /* 粉 */
+  --pb1: #ffc0d6;
+  /* 樱花粉 */
   --pb2: #e5d4ff;
   /* 薰衣草 */
-  --pb3: #d1fff6;
-  /* 薄荷 */
-  --pb4: #ffe5d9;
-  /* 桃 */
+  --pb3: #ffd6e8;
+  /* 浅桃粉 */
+  --pb4: #f0d0ff;
+  /* 淡紫 */
   --pb-opacity: 0.55;
   --pb-blur: 60px;
 }
@@ -955,15 +955,15 @@ html:not(.dark) .blur-ball-teal {
 
 /* 暗黑模式下更柔和的色彩和透明度 */
 html.dark .with-pastel-balls {
-  /* 使用与明亮模式一致的“刚才那组”马卡龙色，但整体更柔和 */
-  --pb1: #ffd1dc;
-  /* 粉 */
+  /* 使用与明亮模式一致的猫娘粉色系，但整体更柔和 */
+  --pb1: #ffc0d6;
+  /* 樱花粉 */
   --pb2: #e5d4ff;
   /* 薰衣草 */
-  --pb3: #d1fff6;
-  /* 薄荷 */
-  --pb4: #ffe5d9;
-  /* 桃 */
+  --pb3: #ffd6e8;
+  /* 浅桃粉 */
+  --pb4: #f0d0ff;
+  /* 淡紫 */
   --pb-opacity: 0.36;
   --pb-blur: 65px;
 }
@@ -1104,8 +1104,8 @@ html.dark .with-pastel-balls::before {
 .semi-button.semi-button-primary {
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--brand-primary) 90%, white) 0%,
-    color-mix(in srgb, var(--brand-accent) 75%, white) 100%
+    color-mix(in srgb, var(--brand-primary) 92%, white) 0%,
+    color-mix(in srgb, var(--brand-accent) 78%, var(--brand-primary)) 100%
   ) !important;
   border-color: transparent !important;
   color: #fff !important;
@@ -1113,7 +1113,7 @@ html.dark .with-pastel-balls::before {
 
 .semi-button.semi-button-primary:hover {
   filter: brightness(1.05);
-  box-shadow: 0 12px 24px rgba(124, 140, 255, 0.32);
+  box-shadow: 0 12px 24px rgba(244, 114, 162, 0.32);
 }
 
 .semi-input-wrapper,
