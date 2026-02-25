@@ -211,7 +211,7 @@ body {
   pointer-events: none;
 }
 
-/* 猫脸中央：比耳朵矮，中间凹下去形成猫头轮廓 */
+/* 猫脸中央：猫耳之间的透明导航区域（视觉上在猫头外面） */
 .neko-face {
   flex: 1;
   min-width: 0;
@@ -219,10 +219,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, var(--glass-bg) 50%, transparent);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 50%, transparent);
+  background: transparent;
   position: relative;
 }
 
@@ -237,7 +234,7 @@ body {
   pointer-events: none;
 }
 
-/* 猫尾巴：从全页面猫头右下角延伸 */
+/* 猫尾巴：默认隐藏，hover时显示 */
 .neko-tail {
   position: fixed;
   bottom: 28px;
@@ -250,9 +247,11 @@ body {
   pointer-events: none;
   z-index: 10;
   animation: neko-tail-sway 3s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
-/* 猫尾尖端圆球 */
+/* 猫尾尖端圆球：默认隐藏 */
 .neko-tail-tip {
   position: fixed;
   bottom: 26px;
@@ -261,10 +260,20 @@ body {
   height: 10px;
   background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
   border-radius: 50%;
-  opacity: 0.35;
+  opacity: 0;
   pointer-events: none;
   z-index: 11;
   animation: neko-tail-sway 3s ease-in-out infinite;
+  transition: opacity 0.4s ease;
+}
+
+/* hover时猫尾出现 */
+.neko-fullpage:hover .neko-tail {
+  opacity: 1;
+}
+
+.neko-fullpage:hover .neko-tail-tip {
+  opacity: 0.35;
 }
 
 @keyframes neko-tail-sway {
@@ -1282,19 +1291,30 @@ html.dark .with-pastel-balls::before {
 
 /* ==================== semi-ui 组件自定义样式 ==================== */
 .semi-card {
-  background: var(--glass-bg) !important;
-  border: 1px solid var(--glass-border) !important;
-  box-shadow: var(--glass-shadow) !important;
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   transform: translateY(-0.5px);
   transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .semi-card:hover {
-  background: var(--glass-bg-hover) !important;
-  box-shadow: var(--glass-shadow-strong) !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08) !important;
   transform: translateY(-2px);
+}
+
+html.dark .semi-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.dark .semi-card:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
 }
 
 .semi-card-header,
@@ -1576,6 +1596,11 @@ html.dark .with-pastel-balls::before {
   background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent)) !important;
 }
 
+/* Switch 开关：确保内容不溢出 */
+.semi-switch {
+  overflow: hidden !important;
+}
+
 /* 进度条/滑块猫娘粉色 */
 .semi-slider-handle {
   border-color: var(--brand-primary) !important;
@@ -1633,6 +1658,12 @@ html.dark .with-pastel-balls::before {
 .semi-tabs-bar-slash .semi-tabs-tab {
   white-space: nowrap !important;
   flex-shrink: 0;
+}
+
+/* Slash类型Tabs禁用猫耳装饰（避免/跳行） */
+.semi-tabs-bar-slash .semi-tabs-tab-active::before,
+.semi-tabs-bar-slash .semi-tabs-tab-active::after {
+  display: none !important;
 }
 
 /* 分割线猫娘装饰 */
@@ -2821,10 +2852,6 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 }
 
 /* ---------- Switch 开关：猫爪肉球圆点 ---------- */
-.semi-switch-knob {
-  position: relative;
-}
-
 .semi-switch-checked .semi-switch-knob::after {
   content: '';
   position: absolute;
