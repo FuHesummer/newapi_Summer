@@ -1176,6 +1176,152 @@ html.dark .with-pastel-balls::before {
   gap: 0.25rem;
 }
 
+/* ==================== 猫娘装饰元素 ==================== */
+
+/* 顶部导航栏猫耳 */
+.neko-header-bar {
+  position: relative;
+}
+
+.neko-header-bar::before,
+.neko-header-bar::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 3px 12px 0 0;
+  z-index: 51;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.neko-header-bar::before {
+  left: 38px;
+  background: linear-gradient(145deg, #ffb6d0 0%, #ffd6e8 100%);
+  border: 1.5px solid rgba(244, 114, 162, 0.35);
+  border-bottom: none;
+  transform: rotate(-22deg);
+}
+
+.neko-header-bar::after {
+  right: 38px;
+  background: linear-gradient(215deg, #ffb6d0 0%, #ffd6e8 100%);
+  border: 1.5px solid rgba(244, 114, 162, 0.35);
+  border-bottom: none;
+  transform: rotate(22deg);
+}
+
+.neko-header-bar:hover::before {
+  transform: rotate(-28deg) translateY(-2px);
+}
+
+.neko-header-bar:hover::after {
+  transform: rotate(28deg) translateY(-2px);
+}
+
+/* 猫耳内部粉色三角 */
+.neko-ear-inner-left,
+.neko-ear-inner-right {
+  position: absolute;
+  top: -6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px 6px 0 0;
+  z-index: 52;
+  pointer-events: none;
+  background: linear-gradient(145deg, #f9a8c9 0%, #f472a6 100%);
+  opacity: 0.6;
+}
+
+.neko-ear-inner-left {
+  left: 44px;
+  transform: rotate(-22deg);
+}
+
+.neko-ear-inner-right {
+  right: 44px;
+  transform: rotate(22deg);
+}
+
+/* 暗色模式猫耳 */
+html.dark .neko-header-bar::before {
+  background: linear-gradient(145deg, #5a2040 0%, #3d1530 100%);
+  border-color: rgba(244, 114, 162, 0.45);
+}
+
+html.dark .neko-header-bar::after {
+  background: linear-gradient(215deg, #5a2040 0%, #3d1530 100%);
+  border-color: rgba(244, 114, 162, 0.45);
+}
+
+html.dark .neko-ear-inner-left,
+html.dark .neko-ear-inner-right {
+  background: linear-gradient(145deg, #f472a6 0%, #c4508a 100%);
+  opacity: 0.5;
+}
+
+/* 猫爪肉球按钮光标 */
+.semi-button,
+.header-floating-nav-link,
+.header-floating-action-btn,
+.sidebar-nav-item,
+.sidebar-collapse-button {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cellipse cx='12' cy='15' rx='5' ry='4' fill='%23ffb6d0'/%3E%3Ccircle cx='7' cy='9' r='2.5' fill='%23ffb6d0'/%3E%3Ccircle cx='12' cy='7' r='2.5' fill='%23ffb6d0'/%3E%3Ccircle cx='17' cy='9' r='2.5' fill='%23ffb6d0'/%3E%3C/svg%3E") 12 12, pointer;
+}
+
+/* 侧边栏底部猫爪装饰 */
+.sidebar-collapse-button::before {
+  content: '🐾';
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  opacity: 0.3;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-collapse-button:hover::before {
+  opacity: 0.6;
+}
+
+/* 侧边栏分组标签猫娘装饰符 */
+.sidebar-group-label::before {
+  content: '♡';
+  margin-right: 4px;
+  color: var(--brand-primary);
+  opacity: 0.5;
+  font-size: 10px;
+}
+
+/* 侧边栏分隔线猫爪脚印 */
+.sidebar-divider::after {
+  content: '·  ˙ ˙  ·';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  color: var(--brand-primary);
+  opacity: 0.25;
+  letter-spacing: 2px;
+}
+
+/* 猫尾巴装饰：侧边栏底部 */
+.sidebar-container::after {
+  content: '';
+  position: absolute;
+  bottom: 48px;
+  right: -4px;
+  width: 8px;
+  height: 40px;
+  background: linear-gradient(180deg, var(--brand-primary), transparent);
+  border-radius: 4px;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
 /* ==================== 自定义圆角样式 ==================== */
 .semi-radio,
 .semi-tagInput,
@@ -1196,5 +1342,5 @@ html.dark .with-pastel-balls::before {
 .semi-dropdown,
 .semi-popover-content,
 .semi-tooltip-content {
-  border-radius: 10px !important;
+  border-radius: 14px !important;
 }

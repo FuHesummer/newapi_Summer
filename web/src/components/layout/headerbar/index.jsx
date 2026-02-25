@@ -76,7 +76,9 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
 
       <div className='w-full h-16 px-2 sm:px-3'>
         <div className='mx-auto h-full w-full max-w-[1320px] flex items-center'>
-          <div className='relative grid h-[52px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] px-2 sm:px-3 shadow-[var(--glass-shadow)] backdrop-blur-[14px]'>
+          <div className='neko-header-bar relative grid h-[52px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] px-2 sm:px-3 shadow-[var(--glass-shadow)] backdrop-blur-[14px]'>
+            <span className='neko-ear-inner-left' />
+            <span className='neko-ear-inner-right' />
             <div className='flex items-center'>
               <MobileMenuButton
                 isConsoleRoute={isConsoleRoute}
