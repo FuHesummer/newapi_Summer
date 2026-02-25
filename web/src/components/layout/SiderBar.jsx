@@ -388,12 +388,7 @@ const SiderBar = ({ onNavigate = () => {} }) => {
   };
 
   return (
-    <div
-      className='sidebar-container'
-      style={{
-        width: 'var(--sidebar-current-width)',
-      }}
-    >
+    <div className='sidebar-container'>
       <SkeletonWrapper
         loading={showSkeleton}
         type='sidebar'
