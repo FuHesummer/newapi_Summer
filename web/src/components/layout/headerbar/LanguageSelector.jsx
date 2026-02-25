@@ -78,7 +78,7 @@ const LanguageSelector = ({ currentLang, onLanguageChange, t }) => {
         aria-label={t('common.changeLanguage')}
         theme='borderless'
         type='tertiary'
-        className='!p-1.5 !text-current !rounded-full !bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] hover:!bg-[var(--glass-bg-hover)] focus:!bg-[var(--glass-bg-hover)]'
+        className='header-floating-action-btn !p-1.5 !text-current !rounded-full !bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] hover:!bg-[var(--glass-bg-hover)] focus:!bg-[var(--glass-bg-hover)]'
       />
     </Dropdown>
   );

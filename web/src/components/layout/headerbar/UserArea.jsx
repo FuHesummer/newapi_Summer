@@ -119,7 +119,7 @@ const UserArea = ({
           <Button
             theme='borderless'
             type='tertiary'
-            className='flex items-center gap-1.5 !p-1 !rounded-full !bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] hover:!bg-[var(--glass-bg-hover)]'
+            className='header-floating-action-btn flex items-center gap-1.5 !p-1 !rounded-full !bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] hover:!bg-[var(--glass-bg-hover)]'
           >
             <Avatar
               size='extra-small'
@@ -148,10 +148,10 @@ const UserArea = ({
       'flex items-center justify-center !py-[10px] !px-1.5';
 
     const loginButtonSpecificStyling =
-      '!bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] hover:!bg-[var(--glass-bg-hover)] transition-colors';
+      'header-floating-action-btn !bg-[color-mix(in_srgb,var(--glass-bg)_90%,transparent)] hover:!bg-[var(--glass-bg-hover)] transition-colors';
     let loginButtonClasses = `${commonSizingAndLayoutClass} ${loginButtonSpecificStyling}`;
 
-    let registerButtonClasses = `${commonSizingAndLayoutClass}`;
+    let registerButtonClasses = `header-floating-action-btn ${commonSizingAndLayoutClass}`;
 
     const loginButtonTextSpanClass =
       '!text-xs !text-[var(--semi-color-text-1)] !p-1.5';
