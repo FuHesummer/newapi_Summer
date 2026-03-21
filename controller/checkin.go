@@ -32,12 +32,16 @@ func GetCheckinStatus(c *gin.Context) {
 		return
 	}
 
+	// 获取用户分组，返回分组级签到额度范围
+	userGroup, _ := model.GetUserGroup(userId, false)
+	minQuota, maxQuota := operation_setting.GetCheckinQuotaRangeForGroup(userGroup)
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data": gin.H{
 			"enabled":   setting.Enabled,
-			"min_quota": setting.MinQuota,
-			"max_quota": setting.MaxQuota,
+			"min_quota": minQuota,
+			"max_quota": maxQuota,
 			"stats":     stats,
 		},
 	})
@@ -52,8 +56,9 @@ func DoCheckin(c *gin.Context) {
 	}
 
 	userId := c.GetInt("id")
+	userGroup, _ := model.GetUserGroup(userId, false)
 
-	checkin, err := model.UserCheckin(userId)
+	checkin, err := model.UserCheckin(userId, userGroup)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

@@ -99,6 +99,8 @@ const SystemSetting = () => {
     LinuxDOClientId: '',
     LinuxDOClientSecret: '',
     LinuxDOMinimumTrustLevel: '',
+    'linuxdo_group_mapping.enabled': false,
+    'linuxdo_group_mapping.trust_level_map': '{}',
     ServerAddress: '',
     // SSRF防护配置
     'fetch_setting.enable_ssrf_protection': true,
@@ -119,6 +121,14 @@ const SystemSetting = () => {
   const [showPasswordLoginConfirmModal, setShowPasswordLoginConfirmModal] =
     useState(false);
   const [linuxDOOAuthEnabled, setLinuxDOOAuthEnabled] = useState(false);
+  const [linuxDOAutoGroupEnabled, setLinuxDOAutoGroupEnabled] = useState(false);
+  const [trustLevelMap, setTrustLevelMap] = useState({
+    '0': 'linuxdo_tl0',
+    '1': 'linuxdo_tl1',
+    '2': 'linuxdo_tl2',
+    '3': 'linuxdo_tl3',
+    '4': 'linuxdo_tl4',
+  });
   const [emailToAdd, setEmailToAdd] = useState('');
   const [domainFilterMode, setDomainFilterMode] = useState(true);
   const [ipFilterMode, setIpFilterMode] = useState(true);
@@ -183,6 +193,7 @@ const SystemSetting = () => {
           case 'EmailAliasRestrictionEnabled':
           case 'SMTPSSLEnabled':
           case 'LinuxDOOAuthEnabled':
+          case 'linuxdo_group_mapping.enabled':
           case 'discord.enabled':
           case 'oidc.enabled':
           case 'passkey.enabled':
@@ -208,6 +219,13 @@ const SystemSetting = () => {
           case 'MinTopUp':
             item.value = parseFloat(item.value);
             break;
+          case 'linuxdo_group_mapping.trust_level_map':
+            try {
+              item.value = typeof item.value === 'string' ? item.value : JSON.stringify(item.value);
+            } catch (e) {
+              item.value = '{}';
+            }
+            break;
           default:
             break;
         }
@@ -215,6 +233,22 @@ const SystemSetting = () => {
       });
       setInputs(newInputs);
       setOriginInputs(newInputs);
+      // 同步 LinuxDO auto group 状态
+      if (typeof newInputs['linuxdo_group_mapping.enabled'] !== 'undefined') {
+        setLinuxDOAutoGroupEnabled(!!newInputs['linuxdo_group_mapping.enabled']);
+      }
+      if (newInputs['linuxdo_group_mapping.trust_level_map']) {
+        try {
+          const map = typeof newInputs['linuxdo_group_mapping.trust_level_map'] === 'string'
+            ? JSON.parse(newInputs['linuxdo_group_mapping.trust_level_map'])
+            : newInputs['linuxdo_group_mapping.trust_level_map'];
+          if (map && typeof map === 'object') {
+            setTrustLevelMap(map);
+          }
+        } catch (e) {
+          // ignore parse error
+        }
+      }
       // 同步模式布尔到本地状态
       if (
         typeof newInputs['fetch_setting.domain_filter_mode'] !== 'undefined'
@@ -629,6 +663,22 @@ const SystemSetting = () => {
       options.push({
         key: 'LinuxDOMinimumTrustLevel',
         value: inputs.LinuxDOMinimumTrustLevel,
+      });
+    }
+
+    // LinuxDO 自动分组配置
+    const currentAutoGroupEnabled = linuxDOAutoGroupEnabled;
+    if (originInputs['linuxdo_group_mapping.enabled'] !== currentAutoGroupEnabled) {
+      options.push({
+        key: 'linuxdo_group_mapping.enabled',
+        value: String(currentAutoGroupEnabled),
+      });
+    }
+    const currentTrustLevelMap = JSON.stringify(trustLevelMap);
+    if (originInputs['linuxdo_group_mapping.trust_level_map'] !== currentTrustLevelMap) {
+      options.push({
+        key: 'linuxdo_group_mapping.trust_level_map',
+        value: currentTrustLevelMap,
       });
     }
 
@@ -1532,6 +1582,67 @@ const SystemSetting = () => {
                   <Button onClick={submitLinuxDOOAuth}>
                     {t('保存 Linux DO OAuth 设置')}
                   </Button>
+                </Form.Section>
+
+                <Form.Section text={t('LinuxDO 等级自动分组')}>
+                  <Banner
+                    type='info'
+                    description={t('启用后，LinuxDO 用户登录时将根据其 Trust Level 自动分配到对应的用户分组。管理员手动设置的分组不会被覆盖。')}
+                    style={{ marginBottom: 16 }}
+                  />
+                  <Form.Switch
+                    field='linuxdo_group_mapping.enabled'
+                    label={t('启用 LinuxDO 等级自动分组')}
+                    checked={linuxDOAutoGroupEnabled}
+                    onChange={(value) => setLinuxDOAutoGroupEnabled(value)}
+                  />
+                  <div style={{ marginTop: 16, opacity: linuxDOAutoGroupEnabled ? 1 : 0.5, pointerEvents: linuxDOAutoGroupEnabled ? 'auto' : 'none' }}>
+                    <Text strong style={{ marginBottom: 8, display: 'block' }}>{t('等级映射配置')}</Text>
+                    <Text type='tertiary' size='small' style={{ marginBottom: 12, display: 'block' }}>
+                      {t('设置每个 Trust Level 对应的用户分组名称。请确保在「分组倍率」页面中也添加了这些分组。')}
+                    </Text>
+                    {['0', '1', '2', '3', '4'].map((level) => (
+                      <Row
+                        key={level}
+                        gutter={16}
+                        style={{ marginBottom: 8, alignItems: 'center' }}
+                      >
+                        <Col span={6}>
+                          <Text>Trust Level {level}</Text>
+                        </Col>
+                        <Col span={18}>
+                          <Form.Input
+                            field={`_trust_level_${level}`}
+                            label=''
+                            noLabel
+                            placeholder={`linuxdo_tl${level}`}
+                            value={trustLevelMap[level] || ''}
+                            onChange={(value) => {
+                              setTrustLevelMap((prev) => ({
+                                ...prev,
+                                [level]: value,
+                              }));
+                            }}
+                          />
+                        </Col>
+                      </Row>
+                    ))}
+                  </div>
+                  <Banner
+                    type='warning'
+                    description={
+                      <span>
+                        {t('配置完等级映射后，还需完成：')}
+                        <br />
+                        {t('1. 在「分组倍率」页面添加对应分组并设置倍率')}
+                        <br />
+                        {t('2. 在「渠道管理」中将渠道的分组设置为包含这些分组')}
+                        <br />
+                        {t('3. 在「运营设置 > 签到」中为不同分组配置签到额度')}
+                      </span>
+                    }
+                    style={{ marginTop: 16 }}
+                  />
                 </Form.Section>
               </Card>
 
