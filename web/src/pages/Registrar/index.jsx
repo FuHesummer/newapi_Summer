@@ -12,12 +12,105 @@ import {
   Modal,
   InputNumber,
   Select,
+  Descriptions,
+  Collapse,
+  Empty,
 } from '@douyinfe/semi-ui';
 import { IconRefresh, IconUpload } from '@douyinfe/semi-icons';
 import { API, showError, showSuccess, showWarning } from '../../helpers';
 import { useTranslation } from 'react-i18next';
 
 const { Text, Title } = Typography;
+
+const PROVIDER_CONFIG = {
+  exa: { type: 58, label: 'Exa Search', color: 'blue' },
+  tavily: { type: 59, label: 'Tavily Search', color: 'green' },
+  augment: { type: 60, label: 'Augment Code', color: 'purple' },
+};
+
+function KeyPoolCard({ provider, pool, t, showWaterline }) {
+  const config = PROVIDER_CONFIG[provider];
+  if (!config) return null;
+
+  const channelCount = pool?.channel_count || 0;
+
+  return (
+    <Card
+      style={{ marginBottom: 16 }}
+      title={
+        <Space>
+          <Tag color={config.color} size='large'>
+            {config.label}
+          </Tag>
+          <Tag size='large'>
+            {t('可用 Key')}: {pool?.active_keys || 0}
+          </Tag>
+          {showWaterline && pool?.min_keys > 0 && (
+            <Text type='tertiary'>
+              / {t('水位线')}: {pool.min_keys}
+            </Text>
+          )}
+          {pool?.below_waterline && (
+            <Tag color='red' size='small'>
+              {t('低于水位线')}
+            </Tag>
+          )}
+        </Space>
+      }
+    >
+      {channelCount === 0 ? (
+        <Empty
+          description={t('暂无渠道')}
+          style={{ padding: '20px 0' }}
+        />
+      ) : (
+        <Collapse>
+          {(pool?.channels || []).map((ch) => (
+            <Collapse.Panel
+              key={ch.channel_id}
+              header={
+                <Space>
+                  <Text strong>{ch.channel_name || `Channel #${ch.channel_id}`}</Text>
+                  <Tag color={ch.status === 1 ? 'green' : 'red'} size='small'>
+                    {ch.status === 1 ? t('启用') : t('禁用')}
+                  </Tag>
+                  <Tag>{ch.key_count} keys</Tag>
+                </Space>
+              }
+              itemKey={String(ch.channel_id)}
+            >
+              {ch.keys && ch.keys.length > 0 ? (
+                <Table
+                  dataSource={ch.keys.map((k, i) => ({ key: i, key_val: k }))}
+                  pagination={false}
+                  size='small'
+                  bordered
+                  columns={[
+                    {
+                      title: '#',
+                      width: 50,
+                      render: (_, __, idx) => idx + 1,
+                    },
+                    {
+                      title: 'Key',
+                      render: (_, record) => (
+                        <Text code style={{ fontSize: 12 }}>
+                          {record.key_val}
+                        </Text>
+                      ),
+                    },
+                  ]}
+                />
+              ) : (
+                <Text type='tertiary'>{t('暂无 Key')}</Text>
+              )}
+            </Collapse.Panel>
+          ))}
+        </Collapse>
+      )}
+    </Card>
+  );
+}
 
 export default function RegistrarPage() {
   const { t } = useTranslation();
@@ -139,76 +232,137 @@ export default function RegistrarPage() {
     },
   ];
 
+  const totalKeys =
+    (status?.exa?.active_keys || 0) +
+    (status?.tavily?.active_keys || 0) +
+    (status?.augment?.active_keys || 0);
+
   return (
     <Spin spinning={loading}>
-      <div style={{ padding: '20px', maxWidth: 900 }}>
-        <Title heading={4} style={{ marginBottom: 20 }}>
-          {t('注册机管理')}
-        </Title>
-
-        {/* 水位线状态 */}
-        <Card
-          title={t('Tavily Key 池状态')}
-          style={{ marginBottom: 20 }}
-          headerExtraContent={
+      <div style={{ padding: '20px', maxWidth: 960 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 20,
+          }}
+        >
+          <Title heading={4} style={{ margin: 0 }}>
+            {t('注册机管理')}
+          </Title>
+          <Space>
+            <Button
+              icon={<IconUpload />}
+              onClick={() => setShowImport(true)}
+            >
+              {t('导入 Key')}
+            </Button>
             <Button
               icon={<IconRefresh />}
-              size='small'
               onClick={loadStatus}
             >
               {t('刷新')}
             </Button>
-          }
-        >
-          {status ? (
-            <div>
-              <Space style={{ marginBottom: 16 }}>
-                <Text strong>{t('可用 Key')}:</Text>
-                <Tag
-                  color={
-                    status.tavily?.below_waterline ? 'red' : 'green'
-                  }
-                  size='large'
-                >
-                  {status.tavily?.active_keys || 0}
-                </Tag>
-                <Text type='tertiary'>
-                  / {t('水位线')}: {status.tavily?.min_keys || 5}
-                </Text>
-                {status.tavily?.below_waterline && (
-                  <Tag color='red'>{t('低于水位线')}</Tag>
-                )}
-              </Space>
+          </Space>
+        </div>
 
-              <div style={{ marginTop: 16 }}>
-                <Space>
-                  <InputNumber
-                    min={1}
-                    max={10}
-                    value={registerCount}
-                    onChange={(v) => setRegisterCount(v)}
-                    style={{ width: 80 }}
-                  />
-                  <Button
-                    type='primary'
-                    loading={registerLoading}
-                    onClick={handleTriggerRegister}
-                    disabled={!status.enabled}
-                  >
-                    {t('手动注册 Tavily')}
-                  </Button>
-                  {!status.enabled && (
-                    <Text type='warning'>
-                      {t('注册机未启用，请在系统设置中开启')}
-                    </Text>
-                  )}
-                </Space>
-              </div>
-            </div>
-          ) : (
-            <Text type='tertiary'>{t('加载中...')}</Text>
-          )}
+        {/* 总览 */}
+        {status && (
+          <Card style={{ marginBottom: 20 }}>
+            <Descriptions
+              row
+              size='small'
+              data={[
+                {
+                  key: t('总 Key 数'),
+                  value: <Tag size='large' color='blue'>{totalKeys}</Tag>,
+                },
+                {
+                  key: 'Exa',
+                  value: <Tag color='blue'>{status.exa?.active_keys || 0}</Tag>,
+                },
+                {
+                  key: 'Tavily',
+                  value: (
+                    <Space>
+                      <Tag color={status.tavily?.below_waterline ? 'red' : 'green'}>
+                        {status.tavily?.active_keys || 0}
+                      </Tag>
+                      <Text type='tertiary' size='small'>
+                        / {t('水位线')}: {status.tavily?.min_keys || 5}
+                      </Text>
+                    </Space>
+                  ),
+                },
+                {
+                  key: 'Augment',
+                  value: <Tag color='purple'>{status.augment?.active_keys || 0}</Tag>,
+                },
+                {
+                  key: t('注册机状态'),
+                  value: status.enabled ? (
+                    <Tag color='green'>{t('已启用')}</Tag>
+                  ) : (
+                    <Tag color='grey'>{t('未启用')}</Tag>
+                  ),
+                },
+              ]}
+            />
+          </Card>
+        )}
+
+        {/* Tavily 注册操作 */}
+        <Card
+          style={{ marginBottom: 20 }}
+          title={t('手动注册 Tavily')}
+        >
+          <Space>
+            <InputNumber
+              min={1}
+              max={10}
+              value={registerCount}
+              onChange={(v) => setRegisterCount(v)}
+              style={{ width: 80 }}
+            />
+            <Button
+              type='primary'
+              loading={registerLoading}
+              onClick={handleTriggerRegister}
+              disabled={!status?.enabled}
+            >
+              {t('手动注册 Tavily')}
+            </Button>
+            {status && !status.enabled && (
+              <Text type='warning'>
+                {t('注册机未启用，请在系统设置中开启')}
+              </Text>
+            )}
+          </Space>
+          <div style={{ marginTop: 8 }}>
+            <Text type='tertiary' size='small'>
+              {t('Exa 和 Augment 只能手动注册后在此导入 Key。Tavily 支持自动注册。')}
+            </Text>
+          </div>
         </Card>
+
+        {/* 三种渠道 Key 池 */}
+        <KeyPoolCard
+          provider='tavily'
+          pool={status?.tavily}
+          t={t}
+          showWaterline
+        />
+        <KeyPoolCard
+          provider='exa'
+          pool={status?.exa}
+          t={t}
+        />
+        <KeyPoolCard
+          provider='augment'
+          pool={status?.augment}
+          t={t}
+        />
 
         {/* 域名熔断状态 */}
         <Card
@@ -230,23 +384,6 @@ export default function RegistrarPage() {
               )}
             />
           )}
-        </Card>
-
-        {/* 批量导入 Key */}
-        <Card title={t('批量导入 Key')}>
-          <Banner
-            type='info'
-            description={t(
-              'Exa 和 Augment 只能手动注册后在此导入 Key。Tavily 支持自动注册。'
-            )}
-            style={{ marginBottom: 16 }}
-          />
-          <Button
-            icon={<IconUpload />}
-            onClick={() => setShowImport(true)}
-          >
-            {t('导入 Key')}
-          </Button>
         </Card>
 
         {/* 导入弹窗 */}

@@ -74,12 +74,87 @@ func TriggerRegistration(c *gin.Context) {
 	}
 }
 
+// channelKeyPool 某个渠道的 Key 池信息
+type channelKeyPool struct {
+	ChannelID   int      `json:"channel_id"`
+	ChannelName string   `json:"channel_name"`
+	KeyCount    int      `json:"key_count"`
+	Keys        []string `json:"keys"` // 脱敏后的 key 列表
+	Status      int      `json:"status"`
+}
+
+// providerKeyPool 某类型的全部 Key 池汇总
+type providerKeyPool struct {
+	ActiveKeys     int              `json:"active_keys"`
+	ChannelCount   int              `json:"channel_count"`
+	Channels       []channelKeyPool `json:"channels"`
+	MinKeys        int              `json:"min_keys,omitempty"`
+	BelowWaterline bool             `json:"below_waterline,omitempty"`
+}
+
+// maskKey 对 API Key 脱敏显示，保留前6后4
+func maskKey(key string) string {
+	key = strings.TrimSpace(key)
+	if len(key) <= 10 {
+		return key[:1] + "***" + key[len(key)-1:]
+	}
+	return key[:6] + "***" + key[len(key)-4:]
+}
+
+// buildProviderPool 构建某类型渠道的 Key 池汇总
+func buildProviderPool(channelType int) providerKeyPool {
+	channels, err := model.GetChannelsByType(0, 100, false, channelType)
+	if err != nil {
+		return providerKeyPool{}
+	}
+
+	pool := providerKeyPool{
+		ChannelCount: len(channels),
+		Channels:     make([]channelKeyPool, 0, len(channels)),
+	}
+
+	for _, ch := range channels {
+		fullCh, err := model.GetChannelById(ch.Id, true)
+		if err != nil {
+			continue
+		}
+
+		var keys []string
+		var maskedKeys []string
+		if fullCh.Key != "" {
+			raw := strings.Split(fullCh.Key, "\n")
+			for _, k := range raw {
+				k = strings.TrimSpace(k)
+				if k != "" {
+					keys = append(keys, k)
+					maskedKeys = append(maskedKeys, maskKey(k))
+				}
+			}
+		}
+
+		pool.ActiveKeys += len(keys)
+		pool.Channels = append(pool.Channels, channelKeyPool{
+			ChannelID:   ch.Id,
+			ChannelName: ch.Name,
+			KeyCount:    len(keys),
+			Keys:        maskedKeys,
+			Status:      ch.Status,
+		})
+	}
+
+	return pool
+}
+
 // GetRegistrarStatus 获取水位线状态
 func GetRegistrarStatus(c *gin.Context) {
 	cfg := setting.GetRegistrarSetting()
 
-	// 统计各类型 Channel 的可用 Key 数
-	tavilyKeys := countActiveKeys(59)
+	tavilyPool := buildProviderPool(59)
+	tavilyPool.MinKeys = cfg.TavilyMinKeys
+	tavilyPool.BelowWaterline = tavilyPool.ActiveKeys < cfg.TavilyMinKeys
+
+	exaPool := buildProviderPool(58)
+	augmentPool := buildProviderPool(60)
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
@@ -87,11 +162,9 @@ func GetRegistrarStatus(c *gin.Context) {
 			"enabled":        cfg.Enabled,
 			"sidecar_url":    cfg.SidecarURL,
 			"auto_replenish": cfg.AutoReplenish,
-			"tavily": gin.H{
-				"active_keys": tavilyKeys,
-				"min_keys":    cfg.TavilyMinKeys,
-				"below_waterline": tavilyKeys < cfg.TavilyMinKeys,
-			},
+			"tavily":         tavilyPool,
+			"exa":            exaPool,
+			"augment":        augmentPool,
 		},
 	})
 }
@@ -171,25 +244,3 @@ func appendKeyToChannel(channelType int, key string) error {
 	return model.DB.Model(&model.Channel{}).Where("id = ?", ch.Id).Update("key", existingKey).Error
 }
 
-// countActiveKeys 统计某类型 Channel 的活跃 Key 数
-func countActiveKeys(channelType int) int {
-	channels, err := model.GetChannelsByType(0, 100, false, channelType)
-	if err != nil {
-		return 0
-	}
-	count := 0
-	for _, ch := range channels {
-		// GetChannelsByType omits key, need to fetch individually
-		fullCh, err := model.GetChannelById(ch.Id, true)
-		if err != nil || fullCh.Key == "" {
-			continue
-		}
-		keys := strings.Split(fullCh.Key, "\n")
-		for _, k := range keys {
-			if strings.TrimSpace(k) != "" {
-				count++
-			}
-		}
-	}
-	return count
-}
