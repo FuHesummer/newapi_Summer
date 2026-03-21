@@ -398,8 +398,8 @@ func applyLinuxDOAutoGroup(c *gin.Context, user *model.User, oauthUser *oauth.OA
 		return
 	}
 
-	// 如果当前 Group 不是 LinuxDO 自动分配的（管理员手动设置的），不覆盖
-	if user.Group != "default" && !setting.IsLinuxDOAutoGroup(user.Group) {
+	// 如果当前 Group 不是 LinuxDO 管辖范围内的（管理员手动设置的非 linuxdo 分组），不覆盖
+	if user.Group != "default" && !setting.IsLinuxDOManagedGroup(user.Group) {
 		return
 	}
 

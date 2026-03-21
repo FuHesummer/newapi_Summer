@@ -176,6 +176,10 @@ func Register(c *gin.Context) {
 		InviterId:   inviterId,
 		Role:        common.RoleCommonUser, // 明确设置角色为普通用户
 	}
+	// 未绑定 LinuxDO 的注册用户使用 LinuxDO 默认分组（最低等级）
+	if setting.IsLinuxDOAutoGroupEnabled() {
+		cleanUser.Group = setting.GetLinuxDODefaultGroup()
+	}
 	if common.EmailVerificationEnabled {
 		cleanUser.Email = user.Email
 	}
@@ -825,6 +829,12 @@ func CreateUser(c *gin.Context) {
 		Password:    user.Password,
 		DisplayName: user.DisplayName,
 		Role:        user.Role, // 保持管理员设置的角色
+	}
+	// 管理员手动创建用户时，如果指定了分组则使用，否则用 LinuxDO 默认分组
+	if user.Group != "" {
+		cleanUser.Group = user.Group
+	} else if setting.IsLinuxDOAutoGroupEnabled() {
+		cleanUser.Group = setting.GetLinuxDODefaultGroup()
 	}
 	if err := cleanUser.Insert(0); err != nil {
 		common.ApiError(c, err)

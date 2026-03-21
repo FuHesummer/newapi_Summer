@@ -101,6 +101,8 @@ const SystemSetting = () => {
     LinuxDOMinimumTrustLevel: '',
     'linuxdo_group_mapping.enabled': false,
     'linuxdo_group_mapping.trust_level_map': '{}',
+    'linuxdo_group_mapping.default_group': 'linuxdo_tl0',
+    'linuxdo_group_mapping.lock_group': true,
     ServerAddress: '',
     // SSRF防护配置
     'fetch_setting.enable_ssrf_protection': true,
@@ -129,6 +131,8 @@ const SystemSetting = () => {
     '3': 'linuxdo_tl3',
     '4': 'linuxdo_tl4',
   });
+  const [linuxDODefaultGroup, setLinuxDODefaultGroup] = useState('linuxdo_tl0');
+  const [linuxDOLockGroup, setLinuxDOLockGroup] = useState(true);
   const [emailToAdd, setEmailToAdd] = useState('');
   const [domainFilterMode, setDomainFilterMode] = useState(true);
   const [ipFilterMode, setIpFilterMode] = useState(true);
@@ -194,6 +198,7 @@ const SystemSetting = () => {
           case 'SMTPSSLEnabled':
           case 'LinuxDOOAuthEnabled':
           case 'linuxdo_group_mapping.enabled':
+          case 'linuxdo_group_mapping.lock_group':
           case 'discord.enabled':
           case 'oidc.enabled':
           case 'passkey.enabled':
@@ -236,6 +241,12 @@ const SystemSetting = () => {
       // 同步 LinuxDO auto group 状态
       if (typeof newInputs['linuxdo_group_mapping.enabled'] !== 'undefined') {
         setLinuxDOAutoGroupEnabled(!!newInputs['linuxdo_group_mapping.enabled']);
+      }
+      if (typeof newInputs['linuxdo_group_mapping.lock_group'] !== 'undefined') {
+        setLinuxDOLockGroup(!!newInputs['linuxdo_group_mapping.lock_group']);
+      }
+      if (newInputs['linuxdo_group_mapping.default_group']) {
+        setLinuxDODefaultGroup(newInputs['linuxdo_group_mapping.default_group']);
       }
       if (newInputs['linuxdo_group_mapping.trust_level_map']) {
         try {
@@ -679,6 +690,20 @@ const SystemSetting = () => {
       options.push({
         key: 'linuxdo_group_mapping.trust_level_map',
         value: currentTrustLevelMap,
+      });
+    }
+    // 默认分组
+    if (originInputs['linuxdo_group_mapping.default_group'] !== linuxDODefaultGroup) {
+      options.push({
+        key: 'linuxdo_group_mapping.default_group',
+        value: linuxDODefaultGroup,
+      });
+    }
+    // 锁定分组
+    if (originInputs['linuxdo_group_mapping.lock_group'] !== linuxDOLockGroup) {
+      options.push({
+        key: 'linuxdo_group_mapping.lock_group',
+        value: String(linuxDOLockGroup),
       });
     }
 
@@ -1627,6 +1652,27 @@ const SystemSetting = () => {
                         </Col>
                       </Row>
                     ))}
+                    <Row gutter={16} style={{ marginTop: 16 }}>
+                      <Col span={12}>
+                        <Form.Input
+                          field='linuxdo_group_mapping.default_group'
+                          label={t('未绑定 LinuxDO 的默认分组')}
+                          placeholder='linuxdo_tl0'
+                          value={linuxDODefaultGroup}
+                          onChange={(value) => setLinuxDODefaultGroup(value)}
+                          extraText={t('手动创建或密码注册的用户将分配到此分组（最低等级）')}
+                        />
+                      </Col>
+                      <Col span={12}>
+                        <Form.Switch
+                          field='linuxdo_group_mapping.lock_group'
+                          label={t('锁定用户分组')}
+                          checked={linuxDOLockGroup}
+                          onChange={(value) => setLinuxDOLockGroup(value)}
+                          extraText={t('开启后用户不能在令牌中选择其他分组，管理员手动改的分组优先')}
+                        />
+                      </Col>
+                    </Row>
                   </div>
                   <Banner
                     type='warning'

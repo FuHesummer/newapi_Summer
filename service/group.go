@@ -8,8 +8,8 @@ import (
 )
 
 func GetUserUsableGroups(userGroup string) map[string]string {
-	// 如果用户是 LinuxDO 自动分组，严格锁定只能使用该分组
-	if setting.IsLinuxDOAutoGroupEnabled() && setting.IsLinuxDOAutoGroup(userGroup) {
+	// 如果启用了 LinuxDO 分组锁定，且该用户在 LinuxDO 管辖范围内，严格锁定
+	if setting.IsLinuxDOGroupLocked() && setting.IsLinuxDOManagedGroup(userGroup) {
 		return map[string]string{
 			userGroup: "LinuxDO " + userGroup,
 		}

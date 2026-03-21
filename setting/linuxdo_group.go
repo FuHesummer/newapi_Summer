@@ -11,6 +11,8 @@ import (
 type LinuxDOGroupMapping struct {
 	Enabled       bool              `json:"enabled"`         // 是否启用自动分组
 	TrustLevelMap map[string]string `json:"trust_level_map"` // trust_level → group 映射，如 {"0":"linuxdo_tl0","1":"linuxdo_tl1",...}
+	DefaultGroup  string            `json:"default_group"`   // 未绑定 LinuxDO 的用户默认分组（手动创建/密码注册的用户）
+	LockGroup     bool              `json:"lock_group"`      // 是否锁定用户分组（用户不能在令牌中选择其他分组）
 }
 
 // 默认配置
@@ -23,6 +25,8 @@ var linuxdoGroupMapping = LinuxDOGroupMapping{
 		"3": "linuxdo_tl3",
 		"4": "linuxdo_tl4",
 	},
+	DefaultGroup: "linuxdo_tl0",
+	LockGroup:    true,
 }
 
 func init() {
@@ -37,6 +41,19 @@ func GetLinuxDOGroupMapping() *LinuxDOGroupMapping {
 // IsLinuxDOAutoGroupEnabled 是否启用 LinuxDO 等级自动分组
 func IsLinuxDOAutoGroupEnabled() bool {
 	return linuxdoGroupMapping.Enabled
+}
+
+// IsLinuxDOGroupLocked 是否锁定用户分组（不允许用户在令牌中选择其他分组）
+func IsLinuxDOGroupLocked() bool {
+	return linuxdoGroupMapping.Enabled && linuxdoGroupMapping.LockGroup
+}
+
+// GetLinuxDODefaultGroup 获取未绑定 LinuxDO 的用户的默认分组
+func GetLinuxDODefaultGroup() string {
+	if linuxdoGroupMapping.DefaultGroup == "" {
+		return "linuxdo_tl0"
+	}
+	return linuxdoGroupMapping.DefaultGroup
 }
 
 // GetGroupForTrustLevel 根据 trust_level 获取对应的 Group 名称
@@ -57,6 +74,18 @@ func IsLinuxDOAutoGroup(group string) bool {
 		if g == group {
 			return true
 		}
+	}
+	return false
+}
+
+// IsLinuxDOManagedGroup 判断 group 是否在 LinuxDO 系统管辖范围内
+// 包括：TrustLevelMap 中的分组 + DefaultGroup
+func IsLinuxDOManagedGroup(group string) bool {
+	if IsLinuxDOAutoGroup(group) {
+		return true
+	}
+	if group == linuxdoGroupMapping.DefaultGroup {
+		return true
 	}
 	return false
 }
