@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/QuantumNous/new-api/common"
 	"github.com/QuantumNous/new-api/model"
@@ -37,8 +38,17 @@ func SearchAPIRelay(c *gin.Context) {
 	}
 	defer c.Request.Body.Close()
 
-	// 构建上游 URL
-	upstreamURL := channelBaseUrl + c.Request.URL.Path
+	// 构建上游 URL — 去掉路由前缀 (/exa, /tavily, /augment)
+	requestPath := c.Request.URL.Path
+	switch {
+	case strings.HasPrefix(requestPath, "/exa"):
+		requestPath = strings.TrimPrefix(requestPath, "/exa")
+	case strings.HasPrefix(requestPath, "/tavily"):
+		requestPath = strings.TrimPrefix(requestPath, "/tavily")
+	case strings.HasPrefix(requestPath, "/augment"):
+		requestPath = strings.TrimPrefix(requestPath, "/augment")
+	}
+	upstreamURL := channelBaseUrl + requestPath
 
 	// 构建上游请求
 	req, err := http.NewRequestWithContext(c.Request.Context(), "POST", upstreamURL, io.NopCloser(io.Reader(nil)))
