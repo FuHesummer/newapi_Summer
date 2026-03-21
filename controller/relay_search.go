@@ -17,11 +17,11 @@ import (
 func SearchAPIRelay(c *gin.Context) {
 	channelType := c.GetInt("channel_type")
 	channelId := c.GetInt("channel_id")
-	channelBaseUrl := c.GetString("channel_base_url")
-	apiKey := c.GetString("api_key")
+	channelBaseUrl := c.GetString("base_url")
+	apiKey := c.GetString("channel_key")
 	userId := c.GetInt("id")
 	tokenId := c.GetInt("token_id")
-	tokenName := c.GetString("token_name")
+	tokenName := c.GetString("token_key")
 	group := c.GetString("group")
 
 	if channelBaseUrl == "" || apiKey == "" {
@@ -105,10 +105,10 @@ func SearchAPIRelay(c *gin.Context) {
 
 // AugmentAPIRelay Augment 专用 Controller（含 SSE 流式和脱敏）
 func AugmentAPIRelay(c *gin.Context) {
-	channelBaseUrl := c.GetString("channel_base_url")
-	apiKey := c.GetString("api_key")
+	channelBaseUrl := c.GetString("base_url")
+	apiKey := c.GetString("channel_key")
 	userId := c.GetInt("id")
-	tokenName := c.GetString("token_name")
+	tokenName := c.GetString("token_key")
 	channelId := c.GetInt("channel_id")
 
 	if channelBaseUrl == "" || apiKey == "" {
