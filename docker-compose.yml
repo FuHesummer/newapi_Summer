@@ -57,6 +57,18 @@ services:
       timeout: 10s
       retries: 3
 
+# Tavily registrar sidecar (optional, uncomment to enable)
+#  registrar:
+#    build: ./registrar
+#    container_name: registrar
+#    restart: unless-stopped
+#    environment:
+#      DUCKMAIL_BASE_URL: https://sfj.blogsummer.cn
+#      DUCKMAIL_API_KEY: dk_b3932aec8f2e4d8199f963de2091d4c3
+#      REGISTRATION_PROXY: ""  # Optional: socks5://... or http://...
+#    # ports:
+#    #   - "8081:8081"  # Uncomment for debugging only
+
   redis:
     image: redis:latest
     container_name: redis

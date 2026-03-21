@@ -189,6 +189,21 @@ export const CHANNEL_OPTIONS = [
     color: 'blue',
     label: 'Codex (OpenAI OAuth)',
   },
+  {
+    value: 58,
+    color: 'teal',
+    label: 'Exa Search',
+  },
+  {
+    value: 59,
+    color: 'orange',
+    label: 'Tavily Search',
+  },
+  {
+    value: 60,
+    color: 'purple',
+    label: 'Augment Code',
+  },
 ];
 
 export const MODEL_TABLE_PAGE_SIZE = 10;
