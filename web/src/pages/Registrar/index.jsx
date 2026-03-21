@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Button,
   Card,
-  Form,
   Typography,
   Banner,
   Table,
@@ -15,6 +14,7 @@ import {
   Descriptions,
   Collapse,
   Empty,
+  TextArea,
 } from '@douyinfe/semi-ui';
 import { IconRefresh, IconUpload } from '@douyinfe/semi-icons';
 import { API, showError, showSuccess, showWarning } from '../../helpers';
@@ -411,10 +411,7 @@ export default function RegistrarPage() {
           </div>
           <div>
             <Text strong>{t('Key 列表（一行一个）')}</Text>
-            <Form.TextArea
-              field='_import_keys'
-              label=''
-              noLabel
+            <TextArea
               placeholder={t('粘贴 Key，一行一个')}
               value={importKeys}
               onChange={(v) => setImportKeys(v)}
