@@ -8,6 +8,7 @@ import (
 
 	"github.com/QuantumNous/new-api/common"
 	"github.com/QuantumNous/new-api/logger"
+	"github.com/QuantumNous/new-api/setting/operation_setting"
 	"github.com/QuantumNous/new-api/types"
 
 	"github.com/gin-gonic/gin"
@@ -95,9 +96,11 @@ func RecordErrorLog(c *gin.Context, userId int, channelId int, modelName string,
 	username := c.GetString("username")
 	requestId := c.GetString(common.RequestIdKey)
 	otherStr := common.MapToJsonStr(other)
-	// 判断是否需要记录 IP
+	// 判断是否需要记录 IP（管理员全局开关优先）
 	needRecordIp := false
-	if settingMap, err := GetUserSetting(userId, false); err == nil {
+	if operation_setting.IsRecordIpLogEnabled() {
+		needRecordIp = true
+	} else if settingMap, err := GetUserSetting(userId, false); err == nil {
 		if settingMap.RecordIpLog {
 			needRecordIp = true
 		}
@@ -156,9 +159,11 @@ func RecordConsumeLog(c *gin.Context, userId int, params RecordConsumeLogParams)
 	username := c.GetString("username")
 	requestId := c.GetString(common.RequestIdKey)
 	otherStr := common.MapToJsonStr(params.Other)
-	// 判断是否需要记录 IP
+	// 判断是否需要记录 IP（管理员全局开关优先）
 	needRecordIp := false
-	if settingMap, err := GetUserSetting(userId, false); err == nil {
+	if operation_setting.IsRecordIpLogEnabled() {
+		needRecordIp = true
+	} else if settingMap, err := GetUserSetting(userId, false); err == nil {
 		if settingMap.RecordIpLog {
 			needRecordIp = true
 		}

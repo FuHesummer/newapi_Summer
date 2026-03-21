@@ -8,6 +8,13 @@ import (
 )
 
 func GetUserUsableGroups(userGroup string) map[string]string {
+	// 如果用户是 LinuxDO 自动分组，严格锁定只能使用该分组
+	if setting.IsLinuxDOAutoGroupEnabled() && setting.IsLinuxDOAutoGroup(userGroup) {
+		return map[string]string{
+			userGroup: "LinuxDO " + userGroup,
+		}
+	}
+
 	groupsCopy := setting.GetUserUsableGroupsCopy()
 	if userGroup != "" {
 		specialSettings, b := ratio_setting.GetGroupRatioSetting().GroupSpecialUsableGroup.Get(userGroup)
