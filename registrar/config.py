@@ -1,0 +1,11 @@
+import os
+
+DUCKMAIL_BASE_URL = os.getenv("DUCKMAIL_BASE_URL", "https://sfj.blogsummer.cn")
+DUCKMAIL_API_KEY = os.getenv("DUCKMAIL_API_KEY", "dk_b3932aec8f2e4d8199f963de2091d4c3")
+REGISTRATION_PROXY = os.getenv("REGISTRATION_PROXY", "")
+TAVILY_SIGNUP_URL = os.getenv("TAVILY_SIGNUP_URL", "https://app.tavily.com")
+COOLDOWN_BASE = int(os.getenv("COOLDOWN_BASE", "45"))
+COOLDOWN_JITTER = int(os.getenv("COOLDOWN_JITTER", "15"))
+BREAKER_FAIL_THRESHOLD = int(os.getenv("BREAKER_FAIL_THRESHOLD", "3"))
+BREAKER_WINDOW_SECONDS = int(os.getenv("BREAKER_WINDOW_SECONDS", "300"))
+BREAKER_OPEN_SECONDS = int(os.getenv("BREAKER_OPEN_SECONDS", "600"))

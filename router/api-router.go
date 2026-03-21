@@ -131,6 +131,16 @@ func SetApiRouter(router *gin.Engine) {
 			}
 		}
 
+		// Registrar management (root only)
+		registrarRoute := apiRouter.Group("/registrar")
+		registrarRoute.Use(middleware.RootAuth())
+		{
+			registrarRoute.POST("/trigger", controller.TriggerRegistration)
+			registrarRoute.GET("/status", controller.GetRegistrarStatus)
+			registrarRoute.POST("/import", controller.ImportKeys)
+			registrarRoute.GET("/domains", controller.GetDomainStatus)
+		}
+
 		// Subscription billing (plans, purchase, admin management)
 		subscriptionRoute := apiRouter.Group("/subscription")
 		subscriptionRoute.Use(middleware.UserAuth())

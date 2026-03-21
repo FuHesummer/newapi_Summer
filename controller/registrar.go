@@ -1,0 +1,195 @@
+package controller
+
+import (
+	"fmt"
+	"net/http"
+	"strings"
+
+	"github.com/QuantumNous/new-api/common"
+	"github.com/QuantumNous/new-api/model"
+	"github.com/QuantumNous/new-api/pkg/registrar"
+	"github.com/QuantumNous/new-api/setting"
+	"github.com/gin-gonic/gin"
+)
+
+// TriggerRegistration 手动触发注册
+func TriggerRegistration(c *gin.Context) {
+	if !setting.IsRegistrarEnabled() {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "注册机未启用"})
+		return
+	}
+
+	var req struct {
+		Provider string `json:"provider"` // "tavily"
+		Count    int    `json:"count"`
+		Proxy    string `json:"proxy"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		common.ApiErrorMsg(c, "参数错误")
+		return
+	}
+	if req.Count <= 0 {
+		req.Count = 1
+	}
+	if req.Count > 10 {
+		req.Count = 10
+	}
+
+	cfg := setting.GetRegistrarSetting()
+	proxy := req.Proxy
+	if proxy == "" {
+		proxy = cfg.RegistrationProxy
+	}
+
+	client := registrar.NewClient(cfg.SidecarURL)
+
+	switch req.Provider {
+	case "tavily":
+		result, err := client.RegisterTavily(req.Count, proxy)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+			return
+		}
+
+		// 将成功的 Key 自动写入 Tavily Channel
+		importedCount := 0
+		for _, key := range result.Keys {
+			if key.APIKey != "" {
+				if err := appendKeyToChannel(59, key.APIKey); err != nil { // 59 = ChannelTypeTavily
+					common.SysLog(fmt.Sprintf("Failed to import key %s: %s", key.APIKey[:10], err.Error()))
+				} else {
+					importedCount++
+				}
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success":       true,
+			"message":       fmt.Sprintf("注册 %d 个，成功 %d 个，已导入 %d 个 Key", result.Total, result.Successful, importedCount),
+			"data":          result,
+			"imported_count": importedCount,
+		})
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "不支持的 provider: " + req.Provider})
+	}
+}
+
+// GetRegistrarStatus 获取水位线状态
+func GetRegistrarStatus(c *gin.Context) {
+	cfg := setting.GetRegistrarSetting()
+
+	// 统计各类型 Channel 的可用 Key 数
+	tavilyKeys := countActiveKeys(59)
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"enabled":        cfg.Enabled,
+			"sidecar_url":    cfg.SidecarURL,
+			"auto_replenish": cfg.AutoReplenish,
+			"tavily": gin.H{
+				"active_keys": tavilyKeys,
+				"min_keys":    cfg.TavilyMinKeys,
+				"below_waterline": tavilyKeys < cfg.TavilyMinKeys,
+			},
+		},
+	})
+}
+
+// ImportKeys 批量导入 Key
+func ImportKeys(c *gin.Context) {
+	var req struct {
+		ChannelType int    `json:"channel_type"` // 58=Exa, 59=Tavily, 60=Augment
+		Keys        string `json:"keys"`         // 一行一个
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		common.ApiErrorMsg(c, "参数错误")
+		return
+	}
+
+	keys := strings.Split(strings.TrimSpace(req.Keys), "\n")
+	imported := 0
+	for _, key := range keys {
+		key = strings.TrimSpace(key)
+		if key == "" {
+			continue
+		}
+		if err := appendKeyToChannel(req.ChannelType, key); err != nil {
+			common.SysLog(fmt.Sprintf("Failed to import key: %s", err.Error()))
+		} else {
+			imported++
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": fmt.Sprintf("成功导入 %d 个 Key", imported),
+		"data":    imported,
+	})
+}
+
+// GetDomainStatus 获取域名熔断状态
+func GetDomainStatus(c *gin.Context) {
+	if !setting.IsRegistrarEnabled() {
+		c.JSON(http.StatusOK, gin.H{"success": true, "data": []interface{}{}})
+		return
+	}
+
+	cfg := setting.GetRegistrarSetting()
+	client := registrar.NewClient(cfg.SidecarURL)
+
+	domains, err := client.GetDomainStatus()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": domains})
+}
+
+// appendKeyToChannel 将 Key 追加到指定类型的第一个 Channel
+func appendKeyToChannel(channelType int, key string) error {
+	channels, err := model.GetChannelsByType(0, 1, false, channelType)
+	if err != nil || len(channels) == 0 {
+		return fmt.Errorf("no channel found for type %d", channelType)
+	}
+
+	ch := channels[0]
+	// 重新查一次带 Key 的完整数据
+	fullCh, err := model.GetChannelById(ch.Id, true)
+	if err != nil {
+		return err
+	}
+
+	existingKey := fullCh.Key
+	if existingKey == "" {
+		existingKey = key
+	} else {
+		existingKey = existingKey + "\n" + key
+	}
+
+	return model.DB.Model(&model.Channel{}).Where("id = ?", ch.Id).Update("key", existingKey).Error
+}
+
+// countActiveKeys 统计某类型 Channel 的活跃 Key 数
+func countActiveKeys(channelType int) int {
+	channels, err := model.GetChannelsByType(0, 100, false, channelType)
+	if err != nil {
+		return 0
+	}
+	count := 0
+	for _, ch := range channels {
+		// GetChannelsByType omits key, need to fetch individually
+		fullCh, err := model.GetChannelById(ch.Id, true)
+		if err != nil || fullCh.Key == "" {
+			continue
+		}
+		keys := strings.Split(fullCh.Key, "\n")
+		for _, k := range keys {
+			if strings.TrimSpace(k) != "" {
+				count++
+			}
+		}
+	}
+	return count
+}
