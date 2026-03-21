@@ -853,6 +853,30 @@ type ManageRequest struct {
 	Action string `json:"action"`
 }
 
+// BatchSetGroupByRemark 按备注关键字批量设置用户分组
+func BatchSetGroupByRemark(c *gin.Context) {
+	var req struct {
+		Remark string `json:"remark"` // 备注关键字（精确匹配）
+		Group  string `json:"group"`  // 目标分组
+	}
+	if err := c.ShouldBindJSON(&req); err != nil || req.Remark == "" || req.Group == "" {
+		common.ApiErrorI18n(c, i18n.MsgInvalidParams)
+		return
+	}
+
+	count, err := model.BatchUpdateGroupByRemark(req.Remark, req.Group)
+	if err != nil {
+		common.ApiError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": fmt.Sprintf("已将 %d 个备注为「%s」的用户分组设置为「%s」", count, req.Remark, req.Group),
+		"data":    count,
+	})
+}
+
 // ManageUser Only admin user can do this
 func ManageUser(c *gin.Context) {
 	var req ManageRequest
