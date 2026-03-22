@@ -1,50 +1,31 @@
 """下载 Camoufox 浏览器二进制文件（支持 GitHub 代理加速）"""
-import camoufox.pkgman as pm
 from camoufox.__main__ import CamoufoxUpdate
 
-# Patch 1: 替换 webdl 下载函数
-original_webdl = pm.webdl
+# 在 CamoufoxUpdate 实例创建后，直接替换 self.url 里的 github.com
+_original_install = CamoufoxUpdate.install
 
-def patched_webdl(url, **kwargs):
-    """通过代理下载 GitHub Release 文件"""
-    if 'github.com' in url:
-        proxies = [
-            ('ghgo.xyz', url.replace('https://github.com', 'https://ghgo.xyz/https://github.com')),
-            ('ghfast.top', url.replace('https://github.com', 'https://ghfast.top/https://github.com')),
-        ]
-        for name, proxy_url in proxies:
-            print(f'[fetch_camoufox] Trying {name}: {proxy_url}', flush=True)
-            try:
-                return original_webdl(proxy_url, **kwargs)
-            except Exception as e:
-                print(f'[fetch_camoufox] {name} failed: {e}', flush=True)
-        print(f'[fetch_camoufox] All proxies failed, trying direct: {url}', flush=True)
-    return original_webdl(url, **kwargs)
-
-pm.webdl = patched_webdl
-
-# Patch 2: 替换 download_file 方法，拦截 URL 在更上层
-original_download_file = pm.CamoufoxFetcher.download_file
-
-def patched_download_file(self, temp_file, url):
-    """在 download_file 层面替换 GitHub URL"""
-    if 'github.com' in url:
-        proxy_url = url.replace('https://github.com', 'https://ghgo.xyz/https://github.com')
-        print(f'[fetch_camoufox] Intercepted download_file, using proxy: {proxy_url}', flush=True)
+def _patched_install(self):
+    """替换下载 URL 为代理地址"""
+    if hasattr(self, 'url') and self.url and 'github.com' in self.url:
+        original_url = self.url
+        self.url = original_url.replace('https://github.com', 'https://ghgo.xyz/https://github.com')
+        print(f'[fetch_camoufox] Proxy URL: {self.url}', flush=True)
         try:
-            return original_download_file(self, temp_file, proxy_url)
+            return _original_install(self)
         except Exception as e:
-            print(f'[fetch_camoufox] Proxy failed ({e}), trying ghfast.top...', flush=True)
-            proxy_url2 = url.replace('https://github.com', 'https://ghfast.top/https://github.com')
+            print(f'[fetch_camoufox] ghgo.xyz failed: {e}', flush=True)
+            self.url = original_url.replace('https://github.com', 'https://ghfast.top/https://github.com')
+            print(f'[fetch_camoufox] Trying ghfast.top: {self.url}', flush=True)
             try:
-                return original_download_file(self, temp_file, proxy_url2)
+                return _original_install(self)
             except Exception as e2:
-                print(f'[fetch_camoufox] All proxies failed, direct download: {url}', flush=True)
-                return original_download_file(self, temp_file, url)
-    return original_download_file(self, temp_file, url)
+                print(f'[fetch_camoufox] ghfast.top failed: {e2}', flush=True)
+                self.url = original_url
+                print(f'[fetch_camoufox] Direct: {self.url}', flush=True)
+                return _original_install(self)
+    return _original_install(self)
 
-pm.CamoufoxFetcher.download_file = patched_download_file
+CamoufoxUpdate.install = _patched_install
 
-# 执行下载
 CamoufoxUpdate().update()
 print('[fetch_camoufox] Done!', flush=True)
