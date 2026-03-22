@@ -1,22 +1,22 @@
 #!/bin/bash
-# New-API + Registrar 一键部署脚本 (bridge 网络)
+# New-API + Registrar 一键部署脚本 (自定义 bridge 网络，容器名互通)
 # 用法: bash deploy.sh
 # 可选环境变量:
 #   NEW_API_IMAGE    - new-api 镜像 (默认: ghcr.io/fuhesummer/newapi_summer:test)
-#   PORT             - new-api 端口 (默认: 3000)
+#   PORT             - new-api 宿主机端口 (默认: 50000)
 #   ENABLE_REGISTRAR - 是否启用注册机 (默认: true)
 
 set -e
 
 # ========== 配置 ==========
 IMAGE="${NEW_API_IMAGE:-ghcr.io/fuhesummer/newapi_summer:test}"
-PORT="${PORT:-3000}"
+PORT="${PORT:-50000}"
 ENABLE_REGISTRAR="${ENABLE_REGISTRAR:-true}"
-PROXY="${REGISTRATION_PROXY:-}"
 DATA_DIR="$(pwd)/newapi-data"
 REPO_URL="https://github.com/FuHesummer/newapi_Summer.git"
 REPO_BRANCH="${REPO_BRANCH:-test}"
 REPO_DIR="$(pwd)/newapi-source"
+NETWORK="newapi-net"
 
 # ========== 颜色 ==========
 GREEN='\033[0;32m'
@@ -32,6 +32,14 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 info "清理旧容器..."
 docker rm -f new-api redis registrar 2>/dev/null || true
 
+# ========== 创建网络 ==========
+if ! docker network inspect "$NETWORK" >/dev/null 2>&1; then
+  info "创建 Docker 网络: $NETWORK"
+  docker network create "$NETWORK"
+else
+  info "使用已有 Docker 网络: $NETWORK"
+fi
+
 # ========== 创建数据目录 ==========
 mkdir -p "$DATA_DIR/data" "$DATA_DIR/logs"
 
@@ -43,22 +51,22 @@ docker pull "$IMAGE"
 info "启动 Redis..."
 docker run -d \
   --name redis \
+  --network "$NETWORK" \
   --restart always \
   redis:latest
 
-# 获取 Redis 容器 IP
-REDIS_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redis)
-info "Redis IP: $REDIS_IP"
+info "Redis 已启动 (网络: $NETWORK, 地址: redis:6379)"
 
 # ========== 启动 New-API ==========
-info "启动 New-API (端口: $PORT)..."
+info "启动 New-API (宿主机端口: $PORT -> 容器端口: 3000)..."
 docker run -d \
   --name new-api \
-  -p "${PORT}:50000" \
+  --network "$NETWORK" \
+  -p "${PORT}:3000" \
   -v "$DATA_DIR/data:/data" \
   -v "$DATA_DIR/logs:/app/logs" \
   -e TZ=Asia/Shanghai \
-  -e "REDIS_CONN_STRING=redis://${REDIS_IP}:6379" \
+  -e "REDIS_CONN_STRING=redis://redis:6379" \
   -e BATCH_UPDATE_ENABLED=true \
   -e ERROR_LOG_ENABLED=true \
   --restart always \
@@ -102,10 +110,9 @@ if [ "$ENABLE_REGISTRAR" = "true" ]; then
     docker build -t registrar:latest "$REGISTRAR_DIR"
 
     info "启动注册机..."
-    # 注意：注册机浏览器（Camoufox）不走代理，直接访问目标网站
-    # REGISTRATION_PROXY 环境变量留空即可，Camoufox 不支持 SOCKS 代理
     docker run -d \
       --name registrar \
+      --network "$NETWORK" \
       -e DUCKMAIL_BASE_URL=https://sfj.blogsummer.cn \
       -e DUCKMAIL_API_KEY=dk_b3932aec8f2e4d8199f963de2091d4c3 \
       -e REGISTRATION_PROXY= \
@@ -113,8 +120,7 @@ if [ "$ENABLE_REGISTRAR" = "true" ]; then
       --restart unless-stopped \
       registrar:latest
 
-    REGISTRAR_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' registrar)
-    info "注册机已启动 (IP: $REGISTRAR_IP, 地址: http://${REGISTRAR_IP}:8081)"
+    info "注册机已启动 (网络: $NETWORK, 地址: http://registrar:8081)"
   else
     warn "未找到 registrar/Dockerfile，跳过注册机部署"
   fi
@@ -131,10 +137,6 @@ for i in $(seq 1 30); do
   sleep 1
 done
 
-# ========== 获取所有容器 IP ==========
-NEWAPI_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' new-api 2>/dev/null || echo "N/A")
-REGISTRAR_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' registrar 2>/dev/null || echo "N/A")
-
 # ========== 完成 ==========
 echo ""
 echo "==========================================="
@@ -143,16 +145,16 @@ echo "==========================================="
 echo ""
 echo "  New-API:    http://localhost:${PORT}"
 echo "  数据目录:   $DATA_DIR"
+echo "  网络:       $NETWORK"
 echo ""
-echo "  Bridge 网络 IP:"
-echo "    new-api:    $NEWAPI_IP"
-echo "    redis:      $REDIS_IP"
+echo "  容器互通地址 (同一 $NETWORK 网络内可直接用容器名访问):"
+echo "    new-api:    http://new-api:3000"
+echo "    redis:      redis://redis:6379"
 if [ "$ENABLE_REGISTRAR" = "true" ] && docker ps --format '{{.Names}}' | grep -q registrar; then
-  echo "    registrar:  $REGISTRAR_IP"
+  echo "    registrar:  http://registrar:8081"
   echo ""
   echo "  注册机配置:"
-  echo "    new-api 中设置 Sidecar URL 为: http://${REGISTRAR_IP}:8081"
-  echo "    注意: Camoufox 浏览器不走代理，直接访问目标网站"
+  echo "    new-api 中设置 Sidecar URL 为: http://registrar:8081"
 fi
 echo ""
 echo "  容器状态:"
