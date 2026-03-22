@@ -25,34 +25,9 @@ COPY requirements.txt .
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Camoufox 从 GitHub Release 下载浏览器二进制，国内服务器需要代理加速
-# 通过 ghgo.xyz 或 ghfast.top 代理 GitHub
-RUN python -c "
-import camoufox.pkgman as pm
-import os
-
-# 替换 GitHub URL 为代理 URL
-original_webdl = pm.webdl
-def patched_webdl(url, **kwargs):
-    if 'github.com' in url:
-        proxy_url = url.replace('https://github.com', 'https://ghgo.xyz/https://github.com')
-        print(f'Using proxy: {proxy_url}')
-        try:
-            return original_webdl(proxy_url, **kwargs)
-        except Exception as e:
-            print(f'Proxy failed ({e}), trying ghfast.top...')
-            proxy_url2 = url.replace('https://github.com', 'https://ghfast.top/https://github.com')
-            try:
-                return original_webdl(proxy_url2, **kwargs)
-            except Exception:
-                print('All proxies failed, trying direct...')
-                return original_webdl(url, **kwargs)
-    return original_webdl(url, **kwargs)
-
-pm.webdl = patched_webdl
-from camoufox.__main__ import CamoufoxUpdate
-CamoufoxUpdate().update()
-"
+# 下载 Camoufox 浏览器（使用 GitHub 代理加速）
+COPY fetch_camoufox.py .
+RUN python fetch_camoufox.py && rm -f fetch_camoufox.py
 
 COPY . .
 
