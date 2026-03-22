@@ -12,7 +12,7 @@ set -e
 IMAGE="${NEW_API_IMAGE:-ghcr.io/fuhesummer/newapi_summer:test}"
 PORT="${PORT:-50000}"
 ENABLE_REGISTRAR="${ENABLE_REGISTRAR:-true}"
-PROXY="http://13541996986Tc:@172.17.0.5:2260"
+PROXY="${REGISTRATION_PROXY:-}"
 DATA_DIR="$(pwd)/newapi-data"
 REPO_URL="https://github.com/FuHesummer/newapi_Summer.git"
 REPO_BRANCH="${REPO_BRANCH:-test}"
@@ -96,13 +96,15 @@ if [ "$ENABLE_REGISTRAR" = "true" ]; then
     info "构建注册机镜像 (源码: $REGISTRAR_DIR)..."
     docker build -t registrar:latest "$REGISTRAR_DIR"
 
-    info "注册机代理: $PROXY (仅 Playwright 走代理，邮箱 API 直连)"
     info "启动注册机..."
+    # 注意：注册机浏览器（Camoufox）不走代理，直接访问目标网站
+    # REGISTRATION_PROXY 环境变量留空即可，Camoufox 不支持 SOCKS 代理
     docker run -d \
       --name registrar \
       -e DUCKMAIL_BASE_URL=https://sfj.blogsummer.cn \
       -e DUCKMAIL_API_KEY=dk_b3932aec8f2e4d8199f963de2091d4c3 \
-      -e "REGISTRATION_PROXY=$PROXY" \
+      -e REGISTRATION_PROXY= \
+      -e REGISTER_HEADLESS=true \
       --restart unless-stopped \
       registrar:latest
 
@@ -145,7 +147,7 @@ if [ "$ENABLE_REGISTRAR" = "true" ] && docker ps --format '{{.Names}}' | grep -q
   echo ""
   echo "  注册机配置:"
   echo "    new-api 中设置 Sidecar URL 为: http://${REGISTRAR_IP}:8081"
-  echo "    代理: $PROXY (仅浏览器注册走代理，邮箱API直连)"
+  echo "    注意: Camoufox 浏览器不走代理，直接访问目标网站"
 fi
 echo ""
 echo "  容器状态:"

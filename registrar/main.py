@@ -59,12 +59,19 @@ async def register_exa(req: ExaRegisterRequest):
 # ── Tavily 注册（Google OAuth） ──
 
 class TavilyGoogleRegisterRequest(BaseModel):
-    accounts: str  # 多行文本：email|password|recovery|2fa|region
+    accounts: str = ""  # 多行文本：email|password|recovery|2fa|region
+    count: int = 0      # 兼容旧的 count 模式（但 Tavily 需要 Google 账号，此字段被忽略）
     proxy: str | None = None
 
 
 @app.post("/register/tavily")
 async def register_tavily(req: TavilyGoogleRegisterRequest):
+    # Tavily 只支持 Google OAuth 模式，必须提供 accounts
+    if not req.accounts or not req.accounts.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Tavily 注册需要提供 Google 账号（accounts 参数），格式：email|password|recovery|2fa|region，每行一个"
+        )
     try:
         results = await tavily_registrar.register_with_google_accounts(
             accounts_text=req.accounts, proxy=req.proxy,
