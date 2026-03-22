@@ -14,6 +14,9 @@ PORT="${PORT:-50000}"
 ENABLE_REGISTRAR="${ENABLE_REGISTRAR:-true}"
 PROXY="http://13541996986Tc:@172.17.0.5:2260"
 DATA_DIR="$(pwd)/newapi-data"
+REPO_URL="https://github.com/FuHesummer/newapi_Summer.git"
+REPO_BRANCH="${REPO_BRANCH:-test}"
+REPO_DIR="$(pwd)/newapi-source"
 
 # ========== 颜色 ==========
 GREEN='\033[0;32m'
@@ -65,14 +68,32 @@ docker run -d \
 # ========== 启动注册机 ==========
 if [ "$ENABLE_REGISTRAR" = "true" ]; then
   REGISTRAR_DIR=""
-  if [ -d "./registrar" ]; then
+
+  # 优先使用从 GitHub 同步的源码
+  if [ -d "$REPO_DIR/registrar" ]; then
+    info "从 GitHub 仓库同步注册机源码..."
+    cd "$REPO_DIR"
+    git fetch origin "$REPO_BRANCH" 2>/dev/null || true
+    git checkout "$REPO_BRANCH" 2>/dev/null || true
+    git reset --hard "origin/$REPO_BRANCH" 2>/dev/null || true
+    cd - > /dev/null
+    REGISTRAR_DIR="$REPO_DIR/registrar"
+    info "注册机源码已同步到最新 ($REPO_BRANCH 分支)"
+  elif [ -d "./registrar" ]; then
     REGISTRAR_DIR="./registrar"
   elif [ -d "$(dirname "$0")/registrar" ]; then
     REGISTRAR_DIR="$(dirname "$0")/registrar"
+  else
+    # 首次部署：从 GitHub 克隆源码
+    info "首次部署，从 GitHub 克隆注册机源码..."
+    git clone --branch "$REPO_BRANCH" --depth 1 "$REPO_URL" "$REPO_DIR" 2>/dev/null || true
+    if [ -d "$REPO_DIR/registrar" ]; then
+      REGISTRAR_DIR="$REPO_DIR/registrar"
+    fi
   fi
 
   if [ -n "$REGISTRAR_DIR" ]; then
-    info "构建注册机镜像..."
+    info "构建注册机镜像 (源码: $REGISTRAR_DIR)..."
     docker build -t registrar:latest "$REGISTRAR_DIR"
 
     info "注册机代理: $PROXY (仅 Playwright 走代理，邮箱 API 直连)"
