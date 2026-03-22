@@ -50,11 +50,62 @@ func NewClient(baseURL string) *Client {
 	}
 }
 
-// RegisterTavily 调用 sidecar 注册 Tavily 账号
+// RegisterTavily 调用 sidecar 注册 Tavily 账号（旧的 count 模式）
 func (c *Client) RegisterTavily(count int, proxy string) (*RegisterResponse, error) {
 	body := fmt.Sprintf(`{"count":%d,"proxy":"%s"}`, count, proxy)
 	resp, err := c.HTTPClient.Post(
 		c.BaseURL+"/register/tavily",
+		"application/json",
+		bytes.NewReader([]byte(body)),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("sidecar request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	var result RegisterResponse
+	if err := common.DecodeJson(resp.Body, &result); err != nil {
+		return nil, fmt.Errorf("sidecar response decode failed: %w", err)
+	}
+	return &result, nil
+}
+
+// RegisterTavilyWithAccounts 调用 sidecar 使用 Google 账号批量注册 Tavily
+func (c *Client) RegisterTavilyWithAccounts(accounts string, proxy string) (*RegisterResponse, error) {
+	reqBody := struct {
+		Accounts string `json:"accounts"`
+		Proxy    string `json:"proxy,omitempty"`
+	}{
+		Accounts: accounts,
+		Proxy:    proxy,
+	}
+	bodyBytes, err := common.Marshal(reqBody)
+	if err != nil {
+		return nil, fmt.Errorf("marshal request failed: %w", err)
+	}
+
+	resp, err := c.HTTPClient.Post(
+		c.BaseURL+"/register/tavily",
+		"application/json",
+		bytes.NewReader(bodyBytes),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("sidecar request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	var result RegisterResponse
+	if err := common.DecodeJson(resp.Body, &result); err != nil {
+		return nil, fmt.Errorf("sidecar response decode failed: %w", err)
+	}
+	return &result, nil
+}
+
+// RegisterExa 调用 sidecar 注册 Exa 账号
+func (c *Client) RegisterExa(count int, proxy string) (*RegisterResponse, error) {
+	body := fmt.Sprintf(`{"count":%d,"proxy":"%s"}`, count, proxy)
+	resp, err := c.HTTPClient.Post(
+		c.BaseURL+"/register/exa",
 		"application/json",
 		bytes.NewReader([]byte(body)),
 	)

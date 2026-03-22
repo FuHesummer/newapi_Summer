@@ -20,9 +20,10 @@ func TriggerRegistration(c *gin.Context) {
 	}
 
 	var req struct {
-		Provider string `json:"provider"` // "tavily"
+		Provider string `json:"provider"` // "tavily" or "exa"
 		Count    int    `json:"count"`
 		Proxy    string `json:"proxy"`
+		Accounts string `json:"accounts"` // Tavily Google 账号批量导入（email|password|recovery|2fa|region 格式，多行）
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		common.ApiErrorMsg(c, "参数错误")
@@ -45,7 +46,16 @@ func TriggerRegistration(c *gin.Context) {
 
 	switch req.Provider {
 	case "tavily":
-		result, err := client.RegisterTavily(req.Count, proxy)
+		var result *registrar.RegisterResponse
+		var err error
+
+		if req.Accounts != "" {
+			// 使用 Google 账号批量注册模式
+			result, err = client.RegisterTavilyWithAccounts(req.Accounts, proxy)
+		} else {
+			// 旧模式：自动注册（需要 sidecar 已有账号池）
+			result, err = client.RegisterTavily(req.Count, proxy)
+		}
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 			return
@@ -56,6 +66,31 @@ func TriggerRegistration(c *gin.Context) {
 		for _, key := range result.Keys {
 			if key.APIKey != "" {
 				if err := appendKeyToChannel(59, key.APIKey); err != nil { // 59 = ChannelTypeTavily
+					common.SysLog(fmt.Sprintf("Failed to import key %s: %s", key.APIKey[:10], err.Error()))
+				} else {
+					importedCount++
+				}
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success":       true,
+			"message":       fmt.Sprintf("注册 %d 个，成功 %d 个，已导入 %d 个 Key", result.Total, result.Successful, importedCount),
+			"data":          result,
+			"imported_count": importedCount,
+		})
+	case "exa":
+		result, err := client.RegisterExa(req.Count, proxy)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+			return
+		}
+
+		// 将成功的 Key 自动写入 Exa Channel
+		importedCount := 0
+		for _, key := range result.Keys {
+			if key.APIKey != "" {
+				if err := appendKeyToChannel(58, key.APIKey); err != nil { // 58 = ChannelTypeExa
 					common.SysLog(fmt.Sprintf("Failed to import key %s: %s", key.APIKey[:10], err.Error()))
 				} else {
 					importedCount++
@@ -154,6 +189,9 @@ func GetRegistrarStatus(c *gin.Context) {
 	tavilyPool.BelowWaterline = tavilyPool.ActiveKeys < cfg.TavilyMinKeys
 
 	exaPool := buildProviderPool(58)
+	exaPool.MinKeys = cfg.ExaMinKeys
+	exaPool.BelowWaterline = exaPool.ActiveKeys < cfg.ExaMinKeys
+
 	augmentPool := buildProviderPool(60)
 
 	c.JSON(http.StatusOK, gin.H{

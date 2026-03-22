@@ -133,10 +133,20 @@ export default function RegistrarPage() {
     enabled: false,
     sidecar_url: 'http://registrar:8081',
     tavily_min_keys: 5,
+    exa_min_keys: 5,
     check_interval_min: 30,
     registration_proxy: '',
     auto_replenish: false,
   });
+
+  // Tavily 批量 Google 账号注册
+  const [showTavilyAccounts, setShowTavilyAccounts] = useState(false);
+  const [tavilyAccounts, setTavilyAccounts] = useState('');
+  const [tavilyAccountsLoading, setTavilyAccountsLoading] = useState(false);
+
+  // Exa 手动注册
+  const [exaRegisterLoading, setExaRegisterLoading] = useState(false);
+  const [exaRegisterCount, setExaRegisterCount] = useState(1);
 
   const loadStatus = async () => {
     setLoading(true);
@@ -170,6 +180,7 @@ export default function RegistrarPage() {
           enabled: optMap['registrar_setting.enabled'] === 'true',
           sidecar_url: optMap['registrar_setting.sidecar_url'] || prev.sidecar_url,
           tavily_min_keys: parseInt(optMap['registrar_setting.tavily_min_keys']) || prev.tavily_min_keys,
+          exa_min_keys: parseInt(optMap['registrar_setting.exa_min_keys']) || prev.exa_min_keys,
           check_interval_min: parseInt(optMap['registrar_setting.check_interval_min']) || prev.check_interval_min,
           registration_proxy: optMap['registrar_setting.registration_proxy'] || '',
           auto_replenish: optMap['registrar_setting.auto_replenish'] === 'true',
@@ -204,6 +215,52 @@ export default function RegistrarPage() {
     setRegisterLoading(false);
   };
 
+  // Tavily 批量 Google 账号注册
+  const handleTavilyAccountsRegister = async () => {
+    if (!tavilyAccounts.trim()) {
+      showWarning(t('请输入 Google 账号'));
+      return;
+    }
+    setTavilyAccountsLoading(true);
+    try {
+      const res = await API.post('/api/registrar/trigger', {
+        provider: 'tavily',
+        accounts: tavilyAccounts.trim(),
+      });
+      if (res.data.success) {
+        showSuccess(res.data.message);
+        setShowTavilyAccounts(false);
+        setTavilyAccounts('');
+        loadStatus();
+      } else {
+        showError(res.data.message);
+      }
+    } catch (e) {
+      showError(t('注册失败'));
+    }
+    setTavilyAccountsLoading(false);
+  };
+
+  // Exa 手动注册
+  const handleExaRegister = async () => {
+    setExaRegisterLoading(true);
+    try {
+      const res = await API.post('/api/registrar/trigger', {
+        provider: 'exa',
+        count: exaRegisterCount,
+      });
+      if (res.data.success) {
+        showSuccess(res.data.message);
+        loadStatus();
+      } else {
+        showError(res.data.message);
+      }
+    } catch (e) {
+      showError(t('注册失败'));
+    }
+    setExaRegisterLoading(false);
+  };
+
   const handleImport = async () => {
     if (!importKeys.trim()) {
       showWarning(t('请输入 Key'));
@@ -236,6 +293,7 @@ export default function RegistrarPage() {
         'registrar_setting.enabled': String(settings.enabled),
         'registrar_setting.sidecar_url': settings.sidecar_url,
         'registrar_setting.tavily_min_keys': String(settings.tavily_min_keys),
+        'registrar_setting.exa_min_keys': String(settings.exa_min_keys),
         'registrar_setting.check_interval_min': String(settings.check_interval_min),
         'registrar_setting.registration_proxy': settings.registration_proxy,
         'registrar_setting.auto_replenish': String(settings.auto_replenish),
@@ -345,7 +403,16 @@ export default function RegistrarPage() {
                 },
                 {
                   key: 'Exa',
-                  value: <Tag color='blue'>{status.exa?.active_keys || 0}</Tag>,
+                  value: (
+                    <Space>
+                      <Tag color={status.exa?.below_waterline ? 'red' : 'blue'}>
+                        {status.exa?.active_keys || 0}
+                      </Tag>
+                      <Text type='tertiary' size='small'>
+                        / {t('水位线')}: {status.exa?.min_keys || 5}
+                      </Text>
+                    </Space>
+                  ),
                 },
                 {
                   key: 'Tavily',
@@ -380,9 +447,9 @@ export default function RegistrarPage() {
         {/* Tavily 注册操作 */}
         <Card
           style={{ marginBottom: 20 }}
-          title={t('手动注册 Tavily')}
+          title={t('Tavily 注册')}
         >
-          <Space>
+          <Space style={{ marginBottom: 12 }}>
             <InputNumber
               min={1}
               max={10}
@@ -396,7 +463,14 @@ export default function RegistrarPage() {
               onClick={handleTriggerRegister}
               disabled={!status?.enabled}
             >
-              {t('手动注册 Tavily')}
+              {t('自动注册 Tavily')}
+            </Button>
+            <Button
+              type='secondary'
+              onClick={() => setShowTavilyAccounts(true)}
+              disabled={!status?.enabled}
+            >
+              {t('批量导入 Google 账号注册')}
             </Button>
             {status && !status.enabled && (
               <Text type='warning'>
@@ -404,9 +478,38 @@ export default function RegistrarPage() {
               </Text>
             )}
           </Space>
+          <div>
+            <Text type='tertiary' size='small'>
+              {t('自动注册使用 sidecar 已有的账号池。批量导入支持 email|password|recovery|2fa|region 格式的 Google 账号。')}
+            </Text>
+          </div>
+        </Card>
+
+        {/* Exa 注册操作 */}
+        <Card
+          style={{ marginBottom: 20 }}
+          title={t('Exa 注册')}
+        >
+          <Space>
+            <InputNumber
+              min={1}
+              max={10}
+              value={exaRegisterCount}
+              onChange={(v) => setExaRegisterCount(v)}
+              style={{ width: 80 }}
+            />
+            <Button
+              type='primary'
+              loading={exaRegisterLoading}
+              onClick={handleExaRegister}
+              disabled={!status?.enabled}
+            >
+              {t('自动注册 Exa')}
+            </Button>
+          </Space>
           <div style={{ marginTop: 8 }}>
             <Text type='tertiary' size='small'>
-              {t('Exa 和 Augment 只能手动注册后在此导入 Key。Tavily 支持自动注册。')}
+              {t('Exa 使用 DuckMail 临时邮箱 OTP 验证自动注册。')}
             </Text>
           </div>
         </Card>
@@ -422,6 +525,7 @@ export default function RegistrarPage() {
           provider='exa'
           pool={status?.exa}
           t={t}
+          showWaterline
         />
         <KeyPoolCard
           provider='augment'
@@ -499,6 +603,18 @@ export default function RegistrarPage() {
             </div>
 
             <div>
+              <Text strong>{t('Exa 水位线')}</Text>
+              <InputNumber
+                value={settings.exa_min_keys}
+                onChange={(v) => setSettings({ ...settings, exa_min_keys: v })}
+                min={0}
+                max={100}
+                style={{ width: '100%', marginTop: 4 }}
+              />
+              <Text type='tertiary' size='small'>{t('Exa Key 数量低于此值时触发告警')}</Text>
+            </div>
+
+            <div>
               <Text strong>{t('检查间隔（分钟）')}</Text>
               <InputNumber
                 value={settings.check_interval_min}
@@ -566,6 +682,40 @@ export default function RegistrarPage() {
               autosize={{ minRows: 5, maxRows: 10 }}
               style={{ marginTop: 4 }}
             />
+          </div>
+        </Modal>
+
+        {/* Tavily 批量 Google 账号注册弹窗 */}
+        <Modal
+          title={t('批量导入 Google 账号注册 Tavily')}
+          visible={showTavilyAccounts}
+          onOk={handleTavilyAccountsRegister}
+          onCancel={() => setShowTavilyAccounts(false)}
+          confirmLoading={tavilyAccountsLoading}
+          maskClosable={false}
+          centered
+          okText={t('开始注册')}
+          width={600}
+        >
+          <div style={{ marginBottom: 12 }}>
+            <Banner
+              type='info'
+              description={t('每行一个 Google 账号，格式：email|password|recovery_email|2fa_secret|region')}
+              style={{ marginBottom: 12 }}
+            />
+          </div>
+          <div>
+            <Text strong>{t('Google 账号列表')}</Text>
+            <TextArea
+              placeholder={`PecheVoelkel@gmail.com|mpf9vnhzojh|bndy.15021998@outlook.com|u5jj6pp2wbocxug3fbvddwxdbm5irdzl|United States`}
+              value={tavilyAccounts}
+              onChange={(v) => setTavilyAccounts(v)}
+              autosize={{ minRows: 5, maxRows: 15 }}
+              style={{ marginTop: 4, fontFamily: 'monospace', fontSize: 12 }}
+            />
+            <Text type='tertiary' size='small' style={{ marginTop: 4 }}>
+              {t('注册过程需要较长时间（每个账号约 30-60 秒），请耐心等待。')}
+            </Text>
           </div>
         </Modal>
       </div>
