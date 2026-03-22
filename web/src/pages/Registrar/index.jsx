@@ -15,8 +15,10 @@ import {
   Collapse,
   Empty,
   TextArea,
+  Input,
+  Switch,
 } from '@douyinfe/semi-ui';
-import { IconRefresh, IconUpload } from '@douyinfe/semi-icons';
+import { IconRefresh, IconUpload, IconSetting } from '@douyinfe/semi-icons';
 import { API, showError, showSuccess, showWarning } from '../../helpers';
 import { useTranslation } from 'react-i18next';
 
@@ -124,12 +126,33 @@ export default function RegistrarPage() {
   const [registerLoading, setRegisterLoading] = useState(false);
   const [registerCount, setRegisterCount] = useState(1);
 
+  // 注册机设置
+  const [showSettings, setShowSettings] = useState(false);
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [settings, setSettings] = useState({
+    enabled: false,
+    sidecar_url: 'http://registrar:8081',
+    tavily_min_keys: 5,
+    check_interval_min: 30,
+    registration_proxy: '',
+    auto_replenish: false,
+  });
+
   const loadStatus = async () => {
     setLoading(true);
     try {
       const res = await API.get('/api/registrar/status');
       if (res.data.success) {
         setStatus(res.data.data);
+        // 从 status 回填设置
+        const d = res.data.data;
+        setSettings((prev) => ({
+          ...prev,
+          enabled: d.enabled || false,
+          sidecar_url: d.sidecar_url || prev.sidecar_url,
+          auto_replenish: d.auto_replenish || false,
+          tavily_min_keys: d.tavily?.min_keys || prev.tavily_min_keys,
+        }));
       }
     } catch (e) {
       // ignore
@@ -194,6 +217,26 @@ export default function RegistrarPage() {
     setImportLoading(false);
   };
 
+  const handleSaveSettings = async () => {
+    setSettingsLoading(true);
+    try {
+      const res = await API.put('/api/option/', {
+        key: 'registrar_setting',
+        value: JSON.stringify(settings),
+      });
+      if (res.data.success) {
+        showSuccess(t('保存成功'));
+        setShowSettings(false);
+        loadStatus();
+      } else {
+        showError(res.data.message || t('保存失败'));
+      }
+    } catch (e) {
+      showError(t('保存失败'));
+    }
+    setSettingsLoading(false);
+  };
+
   const domainColumns = [
     {
       title: t('域名'),
@@ -252,6 +295,12 @@ export default function RegistrarPage() {
             {t('注册机管理')}
           </Title>
           <Space>
+            <Button
+              icon={<IconSetting />}
+              onClick={() => setShowSettings(true)}
+            >
+              {t('注册机设置')}
+            </Button>
             <Button
               icon={<IconUpload />}
               onClick={() => setShowImport(true)}
@@ -385,6 +434,89 @@ export default function RegistrarPage() {
             />
           )}
         </Card>
+
+        {/* 注册机设置弹窗 */}
+        <Modal
+          title={t('注册机设置')}
+          visible={showSettings}
+          onOk={handleSaveSettings}
+          onCancel={() => setShowSettings(false)}
+          confirmLoading={settingsLoading}
+          maskClosable={false}
+          centered
+          okText={t('保存')}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <Text strong>{t('启用注册机')}</Text>
+                <br />
+                <Text type='tertiary' size='small'>{t('开启后可使用自动注册和手动触发注册功能')}</Text>
+              </div>
+              <Switch
+                checked={settings.enabled}
+                onChange={(v) => setSettings({ ...settings, enabled: v })}
+              />
+            </div>
+
+            <div>
+              <Text strong>Sidecar URL</Text>
+              <Input
+                value={settings.sidecar_url}
+                onChange={(v) => setSettings({ ...settings, sidecar_url: v })}
+                placeholder='http://registrar:8081'
+                style={{ marginTop: 4 }}
+              />
+              <Text type='tertiary' size='small'>{t('注册机 Sidecar 容器的内部地址')}</Text>
+            </div>
+
+            <div>
+              <Text strong>{t('Tavily 水位线')}</Text>
+              <InputNumber
+                value={settings.tavily_min_keys}
+                onChange={(v) => setSettings({ ...settings, tavily_min_keys: v })}
+                min={0}
+                max={100}
+                style={{ width: '100%', marginTop: 4 }}
+              />
+              <Text type='tertiary' size='small'>{t('Tavily Key 数量低于此值时触发告警')}</Text>
+            </div>
+
+            <div>
+              <Text strong>{t('检查间隔（分钟）')}</Text>
+              <InputNumber
+                value={settings.check_interval_min}
+                onChange={(v) => setSettings({ ...settings, check_interval_min: v })}
+                min={1}
+                max={1440}
+                style={{ width: '100%', marginTop: 4 }}
+              />
+            </div>
+
+            <div>
+              <Text strong>{t('注册代理')}</Text>
+              <Input
+                value={settings.registration_proxy}
+                onChange={(v) => setSettings({ ...settings, registration_proxy: v })}
+                placeholder='socks5://127.0.0.1:1080'
+                style={{ marginTop: 4 }}
+              />
+              <Text type='tertiary' size='small'>{t('仅 Playwright 浏览器注册走代理，邮箱 API 直连')}</Text>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <Text strong>{t('自动补号')}</Text>
+                <br />
+                <Text type='tertiary' size='small'>{t('低于水位线时自动注册新账号')}</Text>
+              </div>
+              <Switch
+                checked={settings.auto_replenish}
+                onChange={(v) => setSettings({ ...settings, auto_replenish: v })}
+              />
+            </div>
+          </div>
+        </Modal>
 
         {/* 导入弹窗 */}
         <Modal
