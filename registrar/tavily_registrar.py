@@ -1,12 +1,16 @@
 import asyncio
+import re
 import random
 import logging
 from playwright.async_api import async_playwright
 from duckmail_client import DuckMailClient
 from domain_breaker import DomainBreaker
-from config import TAVILY_SIGNUP_URL, REGISTRATION_PROXY, COOLDOWN_BASE, COOLDOWN_JITTER
+from config import REGISTRATION_PROXY, COOLDOWN_BASE, COOLDOWN_JITTER
 
 logger = logging.getLogger(__name__)
+
+# Auth0 sign-in entry — Playwright will click "Sign up" from here
+TAVILY_SIGNIN_URL = "https://app.tavily.com/sign-in"
 
 
 class TavilyRegistrar:
@@ -16,6 +20,25 @@ class TavilyRegistrar:
         self.mail = DuckMailClient()
         self.breaker = breaker
 
+    # ------------------------------------------------------------------
+    # Internal: wait for Cloudflare Turnstile to resolve (invisible mode)
+    # ------------------------------------------------------------------
+    async def _wait_turnstile(self, page, timeout: int = 30):
+        """Poll hidden captcha input until Turnstile fills it (max *timeout*s)."""
+        for _ in range(timeout * 2):
+            val = await page.evaluate(
+                '() => { const el = document.querySelector(\'input[name="captcha"]\'); return el ? el.value : ""; }'
+            )
+            if val:
+                logger.info("Turnstile captcha resolved")
+                return True
+            await asyncio.sleep(0.5)
+        logger.warning("Turnstile captcha not resolved within timeout — continuing anyway")
+        return False
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
     async def register(self, proxy: str | None = None) -> dict | None:
         proxy = proxy or REGISTRATION_PROXY or None
 
@@ -44,93 +67,99 @@ class TavilyRegistrar:
                     browser_args["proxy"] = {"server": proxy}
 
                 browser = await p.chromium.launch(headless=True, **browser_args)
-                context = await browser.new_context()
+                context = await browser.new_context(
+                    user_agent=(
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/131.0.0.0 Safari/537.36"
+                    )
+                )
                 page = await context.new_page()
 
-                # 3. 打开 Tavily 注册页面
-                await page.goto(TAVILY_SIGNUP_URL, wait_until="networkidle", timeout=30000)
-                await asyncio.sleep(2)
+                # ── Step 1: Open sign-in page (redirects to auth.tavily.com) ──
+                logger.info("Navigating to Tavily sign-in page …")
+                await page.goto(TAVILY_SIGNIN_URL, wait_until="domcontentloaded", timeout=60000)
+                # Wait for Auth0 login form to render
+                await page.wait_for_selector('input#email, input[name="email"]', timeout=30000)
+                logger.info(f"Login page loaded: {page.url}")
 
-                # 4. 查找并点击 Sign Up 链接
-                signup_link = page.locator('a:has-text("Sign up"), a:has-text("sign up"), a:has-text("Register")')
-                if await signup_link.count() > 0:
-                    await signup_link.first.click()
-                    await asyncio.sleep(2)
+                # ── Step 2: Click "Sign up" link ──
+                signup_link = page.locator('a:has-text("Sign up")')
+                await signup_link.wait_for(timeout=10000)
+                await signup_link.click()
+                logger.info("Clicked 'Sign up' link")
 
-                # 5. 填写邮箱
-                email_input = page.locator('input[name="email"], input[type="email"], input[id*="email"]')
-                await email_input.first.fill(email)
+                # Wait for signup form
+                await page.wait_for_selector('input#email, input[name="email"]', timeout=15000)
+                await asyncio.sleep(1)
+                logger.info(f"Signup page loaded: {page.url}")
+
+                # ── Step 3: Wait for Turnstile to resolve ──
+                await self._wait_turnstile(page, timeout=30)
+
+                # ── Step 4: Fill email ──
+                email_input = page.locator('input#email, input[name="email"]')
+                await email_input.fill(email)
+                logger.info(f"Filled email: {email}")
                 await asyncio.sleep(0.5)
 
-                # 提交邮箱（Auth0 identifier-first 流程）
-                submit_btn = page.locator('button[type="submit"], button:has-text("Continue"), button:has-text("Next")')
-                if await submit_btn.count() > 0:
-                    await submit_btn.first.click()
-                    await asyncio.sleep(2)
+                # ── Step 5: Click Continue ──
+                continue_btn = page.locator('button[type="submit"], button:has-text("Continue")')
+                await continue_btn.first.click()
+                logger.info("Clicked Continue on email step")
 
-                # 6. 填写密码（Auth0 第二步）
+                # ── Step 6: Password step (Auth0 identifier-first) ──
                 password_input = page.locator('input[name="password"], input[type="password"]')
-                if await password_input.count() > 0:
+                try:
+                    await password_input.first.wait_for(timeout=15000)
                     await password_input.first.fill(password)
+                    logger.info("Filled password")
                     await asyncio.sleep(0.5)
 
-                    submit_btn2 = page.locator('button[type="submit"], button:has-text("Continue"), button:has-text("Sign up")')
-                    if await submit_btn2.count() > 0:
-                        await submit_btn2.first.click()
-                        await asyncio.sleep(3)
+                    submit_btn = page.locator('button[type="submit"], button:has-text("Continue"), button:has-text("Sign up")')
+                    await submit_btn.first.click()
+                    logger.info("Submitted signup form")
+                    await asyncio.sleep(3)
+                except Exception:
+                    logger.info("No password step — may be passwordless / OTP flow")
 
-                # 7. 等待验证邮件
-                logger.info(f"Waiting for verification email for {email}...")
-                code = await self.mail.poll_for_code(mail_token, timeout=240, interval=5)
+                # ── Step 7: Wait for verification email ──
+                logger.info(f"Waiting for verification email for {email} …")
+                code = await self.mail.poll_for_code(mail_token, timeout=300, interval=5)
 
                 if not code:
                     self.breaker.record_failure(domain)
                     raise Exception(f"Timeout waiting for verification email for {email}")
 
-                logger.info(f"Got verification code/link: {code[:50]}...")
+                logger.info(f"Got verification code/link: {code[:80]}…")
 
-                # 8. 处理验证
+                # ── Step 8: Handle verification ──
                 if code.startswith("http"):
-                    # 验证链接
-                    await page.goto(code, wait_until="networkidle", timeout=30000)
+                    await page.goto(code, wait_until="domcontentloaded", timeout=60000)
+                    await asyncio.sleep(5)
                 else:
-                    # OTP 验证码
-                    otp_input = page.locator('input[name="code"], input[id*="code"], input[type="text"]')
-                    if await otp_input.count() > 0:
-                        await otp_input.first.fill(code)
-                        verify_btn = page.locator('button[type="submit"], button:has-text("Verify"), button:has-text("Continue")')
-                        if await verify_btn.count() > 0:
-                            await verify_btn.first.click()
-                            await asyncio.sleep(3)
-
-                # 9. 等待登录完成，提取 API Key
-                await asyncio.sleep(5)
-
-                # 尝试从页面提取 API Key (tvly-...)
-                api_key = None
-                page_content = await page.content()
-
-                import re
-                key_match = re.search(r'tvly-[A-Za-z0-9]{20,}', page_content)
-                if key_match:
-                    api_key = key_match.group(0)
-                else:
-                    # 尝试导航到 API keys 页面
+                    otp_input = page.locator(
+                        'input[name="code"], input[id*="code"], input[inputmode="numeric"], input[type="text"]'
+                    )
                     try:
-                        await page.goto("https://app.tavily.com/home", wait_until="networkidle", timeout=15000)
-                        await asyncio.sleep(3)
-                        page_content = await page.content()
-                        key_match = re.search(r'tvly-[A-Za-z0-9]{20,}', page_content)
-                        if key_match:
-                            api_key = key_match.group(0)
-                    except Exception:
-                        pass
+                        await otp_input.first.wait_for(timeout=10000)
+                        await otp_input.first.fill(code)
+                        verify_btn = page.locator(
+                            'button[type="submit"], button:has-text("Verify"), button:has-text("Continue")'
+                        )
+                        await verify_btn.first.click()
+                        await asyncio.sleep(5)
+                    except Exception as e:
+                        logger.warning(f"OTP input not found, skipping: {e}")
+
+                # ── Step 9: Extract API Key ──
+                api_key = await self._extract_api_key(page)
 
                 await browser.close()
 
                 if api_key:
                     self.breaker.record_success(domain)
-                    logger.info(f"Successfully registered Tavily account: {email}, key: {api_key[:15]}...")
+                    logger.info(f"Successfully registered Tavily: {email}, key: {api_key[:15]}…")
                     return {
                         "email": email,
                         "api_key": api_key,
@@ -144,8 +173,37 @@ class TavilyRegistrar:
             logger.error(f"Registration failed for {email}: {e}")
             raise
         finally:
-            # 清理临时邮箱
             await self.mail.cleanup(mail_account_id, mail_token)
+
+    # ------------------------------------------------------------------
+    # Extract tvly-* key from page or navigate to dashboard
+    # ------------------------------------------------------------------
+    async def _extract_api_key(self, page) -> str | None:
+        for attempt in range(3):
+            content = await page.content()
+            match = re.search(r'tvly-[A-Za-z0-9]{20,}', content)
+            if match:
+                return match.group(0)
+
+            # Try navigating to dashboard / API keys page
+            targets = [
+                "https://app.tavily.com/home",
+                "https://app.tavily.com/dashboard",
+            ]
+            for url in targets:
+                try:
+                    await page.goto(url, wait_until="domcontentloaded", timeout=15000)
+                    await asyncio.sleep(3)
+                    content = await page.content()
+                    match = re.search(r'tvly-[A-Za-z0-9]{20,}', content)
+                    if match:
+                        return match.group(0)
+                except Exception:
+                    continue
+
+            await asyncio.sleep(3)
+
+        return None
 
     async def batch_register(self, count: int = 1, proxy: str | None = None) -> list[dict]:
         results = []
