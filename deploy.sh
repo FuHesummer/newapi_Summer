@@ -10,7 +10,7 @@ set -e
 
 # ========== 配置 ==========
 IMAGE="${NEW_API_IMAGE:-ghcr.io/fuhesummer/newapi_summer:test}"
-PORT="${PORT:-50000}"
+PORT="${PORT:-3000}"
 ENABLE_REGISTRAR="${ENABLE_REGISTRAR:-true}"
 PROXY="${REGISTRATION_PROXY:-}"
 DATA_DIR="$(pwd)/newapi-data"
@@ -69,26 +69,31 @@ docker run -d \
 if [ "$ENABLE_REGISTRAR" = "true" ]; then
   REGISTRAR_DIR=""
 
-  # 优先使用从 GitHub 同步的源码
-  if [ -d "$REPO_DIR/registrar" ]; then
-    info "从 GitHub 仓库同步注册机源码..."
+  # 始终从 GitHub 同步最新注册机源码
+  if [ -d "$REPO_DIR/.git" ]; then
+    # 已有仓库，拉取最新
+    info "同步注册机源码 (git pull)..."
     cd "$REPO_DIR"
     git fetch origin "$REPO_BRANCH" 2>/dev/null || true
     git checkout "$REPO_BRANCH" 2>/dev/null || true
     git reset --hard "origin/$REPO_BRANCH" 2>/dev/null || true
     cd - > /dev/null
-    REGISTRAR_DIR="$REPO_DIR/registrar"
     info "注册机源码已同步到最新 ($REPO_BRANCH 分支)"
-  elif [ -d "./registrar" ]; then
-    REGISTRAR_DIR="./registrar"
-  elif [ -d "$(dirname "$0")/registrar" ]; then
-    REGISTRAR_DIR="$(dirname "$0")/registrar"
   else
-    # 首次部署：从 GitHub 克隆源码
+    # 首次部署：从 GitHub 克隆
     info "首次部署，从 GitHub 克隆注册机源码..."
-    git clone --branch "$REPO_BRANCH" --depth 1 "$REPO_URL" "$REPO_DIR" 2>/dev/null || true
-    if [ -d "$REPO_DIR/registrar" ]; then
-      REGISTRAR_DIR="$REPO_DIR/registrar"
+    rm -rf "$REPO_DIR"
+    git clone --branch "$REPO_BRANCH" --depth 1 "$REPO_URL" "$REPO_DIR" || error "克隆仓库失败"
+    info "注册机源码克隆完成"
+  fi
+
+  # 使用同步后的源码目录
+  if [ -d "$REPO_DIR/registrar" ] && [ -f "$REPO_DIR/registrar/Dockerfile" ]; then
+    REGISTRAR_DIR="$REPO_DIR/registrar"
+  else
+    warn "GitHub 仓库中未找到 registrar/Dockerfile，检查本地目录..."
+    if [ -d "./registrar" ] && [ -f "./registrar/Dockerfile" ]; then
+      REGISTRAR_DIR="./registrar"
     fi
   fi
 
@@ -111,7 +116,7 @@ if [ "$ENABLE_REGISTRAR" = "true" ]; then
     REGISTRAR_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' registrar)
     info "注册机已启动 (IP: $REGISTRAR_IP, 地址: http://${REGISTRAR_IP}:8081)"
   else
-    warn "未找到 registrar/ 目录，跳过注册机部署"
+    warn "未找到 registrar/Dockerfile，跳过注册机部署"
   fi
 else
   info "跳过注册机 (ENABLE_REGISTRAR=false)"
