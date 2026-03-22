@@ -13,7 +13,8 @@ IMAGE="${NEW_API_IMAGE:-ghcr.io/fuhesummer/newapi_summer:test}"
 PORT="${PORT:-50000}"
 ENABLE_REGISTRAR="${ENABLE_REGISTRAR:-true}"
 DATA_DIR="$(pwd)/newapi-data"
-REPO_URL="https://github.com/FuHesummer/newapi_Summer.git"
+REPO_URL_ORIGIN="https://github.com/FuHesummer/newapi_Summer.git"
+REPO_URL_MIRROR="https://ghgo.xyz/https://github.com/FuHesummer/newapi_Summer.git"
 REPO_BRANCH="${REPO_BRANCH:-test}"
 REPO_DIR="$(pwd)/newapi-source"
 
@@ -67,19 +68,32 @@ docker run -d \
 if [ "$ENABLE_REGISTRAR" = "true" ]; then
   REGISTRAR_DIR=""
 
-  # 始终从 GitHub 同步最新注册机源码
+  # 始终从 GitHub 同步最新注册机源码（使用加速镜像）
   if [ -d "$REPO_DIR/.git" ]; then
-    info "同步注册机源码 (git pull)..."
+    info "同步注册机源码 (git pull via mirror)..."
     cd "$REPO_DIR"
-    git fetch origin "$REPO_BRANCH" 2>/dev/null || true
+    # 设置 remote 为镜像地址加速拉取
+    git remote set-url origin "$REPO_URL_MIRROR" 2>/dev/null || true
+    git fetch origin "$REPO_BRANCH" || {
+      warn "镜像拉取失败，尝试直连 GitHub..."
+      git remote set-url origin "$REPO_URL_ORIGIN"
+      git fetch origin "$REPO_BRANCH" || error "源码同步失败"
+    }
     git checkout "$REPO_BRANCH" 2>/dev/null || true
-    git reset --hard "origin/$REPO_BRANCH" 2>/dev/null || true
+    git reset --hard "origin/$REPO_BRANCH"
     cd - > /dev/null
     info "注册机源码已同步到最新 ($REPO_BRANCH 分支)"
   else
-    info "首次部署，从 GitHub 克隆注册机源码..."
+    info "首次部署，从 GitHub 克隆注册机源码 (via mirror)..."
     rm -rf "$REPO_DIR"
-    git clone --branch "$REPO_BRANCH" --depth 1 "$REPO_URL" "$REPO_DIR" || error "克隆仓库失败"
+    git clone --branch "$REPO_BRANCH" --depth 1 "$REPO_URL_MIRROR" "$REPO_DIR" || {
+      warn "镜像克隆失败，尝试直连 GitHub..."
+      git clone --branch "$REPO_BRANCH" --depth 1 "$REPO_URL_ORIGIN" "$REPO_DIR" || error "克隆仓库失败"
+    }
+    # 把 remote 改回原始地址，方便后续 fetch
+    cd "$REPO_DIR"
+    git remote set-url origin "$REPO_URL_MIRROR"
+    cd - > /dev/null
     info "注册机源码克隆完成"
   fi
 
