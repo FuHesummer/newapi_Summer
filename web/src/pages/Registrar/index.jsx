@@ -144,15 +144,6 @@ export default function RegistrarPage() {
       const res = await API.get('/api/registrar/status');
       if (res.data.success) {
         setStatus(res.data.data);
-        // 从 status 回填设置
-        const d = res.data.data;
-        setSettings((prev) => ({
-          ...prev,
-          enabled: d.enabled || false,
-          sidecar_url: d.sidecar_url || prev.sidecar_url,
-          auto_replenish: d.auto_replenish || false,
-          tavily_min_keys: d.tavily?.min_keys || prev.tavily_min_keys,
-        }));
       }
     } catch (e) {
       // ignore
@@ -162,6 +153,27 @@ export default function RegistrarPage() {
       const res = await API.get('/api/registrar/domains');
       if (res.data.success) {
         setDomains(res.data.data || []);
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    // 加载注册机设置
+    try {
+      const res = await API.get('/api/option/');
+      if (res.data.success && Array.isArray(res.data.data)) {
+        const optMap = {};
+        res.data.data.forEach((opt) => {
+          optMap[opt.key] = opt.value;
+        });
+        setSettings((prev) => ({
+          enabled: optMap['registrar_setting.enabled'] === 'true',
+          sidecar_url: optMap['registrar_setting.sidecar_url'] || prev.sidecar_url,
+          tavily_min_keys: parseInt(optMap['registrar_setting.tavily_min_keys']) || prev.tavily_min_keys,
+          check_interval_min: parseInt(optMap['registrar_setting.check_interval_min']) || prev.check_interval_min,
+          registration_proxy: optMap['registrar_setting.registration_proxy'] || '',
+          auto_replenish: optMap['registrar_setting.auto_replenish'] === 'true',
+        }));
       }
     } catch (e) {
       // ignore
@@ -220,17 +232,21 @@ export default function RegistrarPage() {
   const handleSaveSettings = async () => {
     setSettingsLoading(true);
     try {
-      const res = await API.put('/api/option/', {
-        key: 'registrar_setting',
-        value: JSON.stringify(settings),
-      });
-      if (res.data.success) {
-        showSuccess(t('保存成功'));
-        setShowSettings(false);
-        loadStatus();
-      } else {
-        showError(res.data.message || t('保存失败'));
-      }
+      const fields = {
+        'registrar_setting.enabled': String(settings.enabled),
+        'registrar_setting.sidecar_url': settings.sidecar_url,
+        'registrar_setting.tavily_min_keys': String(settings.tavily_min_keys),
+        'registrar_setting.check_interval_min': String(settings.check_interval_min),
+        'registrar_setting.registration_proxy': settings.registration_proxy,
+        'registrar_setting.auto_replenish': String(settings.auto_replenish),
+      };
+      const requests = Object.entries(fields).map(([key, value]) =>
+        API.put('/api/option/', { key, value })
+      );
+      await Promise.all(requests);
+      showSuccess(t('保存成功'));
+      setShowSettings(false);
+      loadStatus();
     } catch (e) {
       showError(t('保存失败'));
     }
