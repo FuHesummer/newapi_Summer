@@ -124,8 +124,59 @@ def register_ace_with_email(email: str, get_code_fn=None,
                 logger.error(f"Email input failed: {e}")
                 return None
 
-            # ── Step 3: 点击 Continue ──
-            logger.info("Step 3: Clicking Continue...")
+            # ── Step 3: 处理 Cloudflare Turnstile ──
+            logger.info("Step 3: Handling Turnstile verification...")
+            try:
+                # Turnstile checkbox 在 iframe 中
+                turnstile_frame = None
+                for frame in page.frames:
+                    if "challenges.cloudflare.com" in frame.url:
+                        turnstile_frame = frame
+                        break
+
+                if turnstile_frame:
+                    logger.info("Found Turnstile iframe, clicking checkbox...")
+                    try:
+                        checkbox = turnstile_frame.wait_for_selector(
+                            'input[type="checkbox"], .ctp-checkbox-label, #challenge-stage',
+                            timeout=5000,
+                        )
+                        if checkbox:
+                            checkbox.click()
+                            time.sleep(3)
+                    except Exception:
+                        # 有时直接点 iframe 区域即可
+                        turnstile_frame.click("body")
+                        time.sleep(3)
+
+                    # 等待 Turnstile 验证完成（checkbox 变绿 / 消失）
+                    for _ in range(10):
+                        try:
+                            # 检查是否已验证（隐藏的 response input 有值）
+                            response = page.evaluate("""() => {
+                                const el = document.querySelector('[name="cf-turnstile-response"], input[name*="turnstile"]');
+                                return el ? el.value : '';
+                            }""")
+                            if response:
+                                logger.info("Turnstile verified!")
+                                break
+                        except Exception:
+                            pass
+                        time.sleep(1)
+                else:
+                    logger.info("No Turnstile iframe found, proceeding...")
+                    # 也可能是直接嵌入的 widget，尝试点击
+                    turnstile_div = page.query_selector('[class*="turnstile"], [class*="cf-"], iframe[src*="turnstile"]')
+                    if turnstile_div:
+                        turnstile_div.click()
+                        time.sleep(3)
+            except Exception as e:
+                logger.warning(f"Turnstile handling: {e}")
+
+            time.sleep(1)
+
+            # ── Step 4: 点击 Continue ──
+            logger.info("Step 4: Clicking Continue...")
             try:
                 continue_btn = page.wait_for_selector(
                     'button:text-is("Continue"), button[type="submit"]',
@@ -136,13 +187,14 @@ def register_ace_with_email(email: str, get_code_fn=None,
                 page.keyboard.press("Enter")
             time.sleep(3)
 
-            # ── Step 4: 等待验证码页面 ──
-            logger.info("Step 4: Waiting for OTP page...")
+            # ── Step 5: 等待验证码页面 ──
+            logger.info("Step 5: Waiting for OTP page...")
             try:
                 page.wait_for_selector(
                     'input[placeholder*="code" i], '
                     'input[aria-label*="code" i], '
-                    'input[inputmode="numeric"]',
+                    'input[inputmode="numeric"], '
+                    'input[name*="code" i]',
                     timeout=30000,
                 )
                 logger.info("OTP input page loaded")
@@ -154,9 +206,9 @@ def register_ace_with_email(email: str, get_code_fn=None,
                     logger.error(f"OTP page not loaded, current URL: {page.url}")
                     return None
 
-            # ── Step 5: 获取 OTP 验证码 ──
+            # ── Step 6: 获取 OTP 验证码 ──
             if "login" in page.url:
-                logger.info("Step 5: Waiting for OTP email...")
+                logger.info("Step 6: Waiting for OTP email...")
                 if not get_code_fn:
                     logger.error("No get_code_fn provided")
                     return None
@@ -167,8 +219,8 @@ def register_ace_with_email(email: str, get_code_fn=None,
                     return None
                 logger.info(f"Got OTP: {code}")
 
-                # ── Step 6: 填写验证码 ──
-                logger.info("Step 6: Filling OTP code...")
+                # ── Step 7: 填写验证码 ──
+                logger.info("Step 7: Filling OTP code...")
                 code_input = page.query_selector(
                     'input[placeholder*="code" i], '
                     'input[aria-label*="code" i], '
@@ -181,8 +233,8 @@ def register_ace_with_email(email: str, get_code_fn=None,
                     return None
                 time.sleep(0.5)
 
-                # ── Step 7: 点击 Continue ──
-                logger.info("Step 7: Clicking Continue to verify...")
+                # ── Step 8: 点击 Continue 验证 ──
+                logger.info("Step 8: Clicking Continue to verify...")
                 try:
                     btn = page.query_selector(
                         'button:text-is("Continue"), button[type="submit"]'
@@ -197,21 +249,29 @@ def register_ace_with_email(email: str, get_code_fn=None,
                 # 等待跳转到 dashboard
                 time.sleep(5)
 
-            # ── Step 8: 确认已登录 ──
-            logger.info(f"Step 8: Post-login URL: {page.url[:80]}")
+            # ── Step 9: 确认已登录，等待完整 OAuth 回调 ──
+            logger.info(f"Step 9: Post-login URL: {page.url[:80]}")
 
-            # 等待 app 页面加载
-            try:
-                page.wait_for_url("**/app.augmentcode.com/**", timeout=30000)
-                logger.info("ACE dashboard loaded")
-            except Exception:
-                logger.warning(f"Dashboard redirect timeout, URL: {page.url}")
-                # 尝试手动导航
+            # 等待 OAuth 回调链完成：auth.augmentcode.com → app.augmentcode.com/auth/callback → app.augmentcode.com
+            for attempt in range(6):
+                current = page.url
+                if "app.augmentcode.com" in current and "auth/callback" not in current and "login" not in current:
+                    logger.info("ACE dashboard loaded")
+                    break
+                logger.info(f"Waiting for OAuth callback... ({current[:60]})")
+                time.sleep(5)
+            else:
+                # 手动导航
+                logger.warning("OAuth callback chain slow, navigating manually...")
                 try:
-                    page.goto(ACE_DASHBOARD_URL, wait_until="domcontentloaded", timeout=15000)
-                    time.sleep(3)
+                    page.goto(ACE_DASHBOARD_URL, wait_until="domcontentloaded", timeout=30000)
+                    time.sleep(5)
                 except Exception:
                     pass
+
+            logger.info(f"Dashboard URL: {page.url[:80]}")
+            # 再等 SPA 完全加载（Auth0 SPA SDK 会异步获取 token）
+            time.sleep(5)
 
             # ── Step 9: 提取 API Token ──
             # ACE 的 token 通过 Service Accounts 创建
@@ -371,39 +431,92 @@ def _create_service_account_token(page) -> str | None:
 
 
 def _extract_session_token(page) -> str | None:
-    """从浏览器 session/cookie 中提取 access token"""
+    """从浏览器 session/cookie/localStorage 中提取 Augment accessToken。
+
+    acemcp-relay 需要的 AUGMENT_API_TOKEN 是 Augment 的 accessToken，
+    通过 auggie CLI `auggie token print` 可以拿到：
+    {"accessToken": "ABC-XYZ-123", "tenantURL": "https://..."}
+
+    这个 token 在 Auth0 OAuth 完成后存在 localStorage 或通过 token endpoint 获取。
+    """
     try:
-        # 方法1：从 localStorage 获取
+        # 方法1：从 localStorage 获取 Auth0 缓存的 token
         token = page.evaluate("""() => {
-            // Auth0 在 localStorage 中存储 session
+            // Auth0 SPA SDK 在 localStorage 中存 token
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 const val = localStorage.getItem(key);
-                if (key && (key.includes('auth0') || key.includes('token') || key.includes('session'))) {
+                // Auth0 通常用 @@auth0spajs@@ 前缀
+                if (key && (key.includes('auth0') || key.includes('augment') || key.includes('token'))) {
                     try {
                         const obj = JSON.parse(val);
+                        // Auth0 SPA cache 结构: {body: {access_token: "...", ...}}
+                        if (obj.body && obj.body.access_token) return obj.body.access_token;
                         if (obj.accessToken) return obj.accessToken;
                         if (obj.access_token) return obj.access_token;
+                        // 递归查找
+                        const str = JSON.stringify(obj);
+                        const m = str.match(/"access_token":"([^"]+)"/);
+                        if (m) return m[1];
+                    } catch (e) {}
+                }
+            }
+            // sessionStorage 也检查
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                const val = sessionStorage.getItem(key);
+                if (key && (key.includes('auth0') || key.includes('augment') || key.includes('token'))) {
+                    try {
+                        const obj = JSON.parse(val);
                         if (obj.body && obj.body.access_token) return obj.body.access_token;
-                    } catch (e) {
-                        if (val && val.length > 20 && !val.includes(' ')) return val;
-                    }
+                        if (obj.accessToken) return obj.accessToken;
+                        if (obj.access_token) return obj.access_token;
+                    } catch (e) {}
                 }
             }
             return null;
         }""")
 
         if token:
-            logger.info("Got token from localStorage")
+            logger.info(f"Got accessToken from storage ({len(token)} chars)")
             return token
 
-        # 方法2：从 cookie 获取
+        # 方法2：通过拦截网络请求从 API 调用中获取 token
+        # 导航到一个需要认证的页面，触发 token refresh
+        token = page.evaluate("""() => {
+            return new Promise((resolve) => {
+                const origFetch = window.fetch;
+                window.fetch = function(...args) {
+                    const result = origFetch.apply(this, args);
+                    result.then(resp => {
+                        const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+                        if (url.includes('token') || url.includes('oauth')) {
+                            resp.clone().json().then(data => {
+                                if (data.access_token) resolve(data.access_token);
+                            }).catch(() => {});
+                        }
+                    }).catch(() => {});
+                    return result;
+                };
+                // 触发一个需要 token 的请求
+                setTimeout(() => resolve(null), 10000);
+            });
+        }""")
+
+        if token:
+            logger.info(f"Got accessToken from fetch intercept ({len(token)} chars)")
+            return token
+
+        # 方法3：从 cookie 中获取（fallback）
         cookies = page.context.cookies()
         for c in cookies:
-            if 'token' in c['name'].lower() or 'session' in c['name'].lower():
-                if len(c['value']) > 20:
-                    logger.info(f"Got token from cookie: {c['name']}")
-                    return c['value']
+            name = c['name'].lower()
+            val = c['value']
+            # Augment 可能用 appSession / _session 等 cookie
+            if ('token' in name or 'session' in name or 'auth' in name) and len(val) > 50:
+                # 尝试解码（可能是 base64 的 JWT 或 session 数据）
+                logger.info(f"Got token from cookie: {c['name']} ({len(val)} chars)")
+                return val
 
     except Exception as e:
         logger.warning(f"Session token extraction failed: {e}")

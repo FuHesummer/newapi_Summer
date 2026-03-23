@@ -43,12 +43,12 @@ var endpointMapping = map[string]string{
 var interceptedEndpoints = map[string]bool{
 	"/augment/record-request-events": true,
 	"/augment/report-error":          true,
+	"/augment/prompt-enhancer":       true, // 提示词增强会扣额度，拦截
 }
 
 // SSE 流式端点
 var sseEndpoints = map[string]bool{
-	"/augment/chat-stream":     true,
-	"/augment/prompt-enhancer": true,
+	"/augment/chat-stream": true,
 }
 
 func GetRandomUA() string {
