@@ -121,7 +121,7 @@ def _verify_api_key(api_key: str) -> bool:
 
 
 def register_exa(email: str, password: str, get_code_fn=None,
-                 headless: bool = True) -> str | None:
+                 headless: bool = True, proxy: str | None = None) -> str | None:
     """
     使用 Camoufox 浏览器完成 Exa 注册。
 
@@ -130,18 +130,26 @@ def register_exa(email: str, password: str, get_code_fn=None,
         password: 未使用（Exa 为纯 OTP 验证，无密码）
         get_code_fn: 获取邮箱验证码的回调函数 (email) -> str
         headless: 是否无头模式
+        proxy: 代理地址，如 socks5://127.0.0.1:1080
 
     Returns:
         api_key 或 None
     """
     logger.info(f"Starting Exa registration: {email}")
 
+    # 构建 Camoufox 代理配置
+    proxy_cfg = None
+    if proxy:
+        proxy_cfg = {"server": proxy}
+        logger.info(f"Using proxy: {proxy}")
+
     try:
         # 在函数内部导入 Camoufox，确保在独立进程中使用
         from camoufox.sync_api import Camoufox
         from camoufox import DefaultAddons
 
-        with Camoufox(headless=headless, exclude_addons=[DefaultAddons.UBO]) as browser:
+        with Camoufox(headless=headless, exclude_addons=[DefaultAddons.UBO],
+                      proxy=proxy_cfg) as browser:
             page = browser.new_page()
 
             # Step 1: 打开 Exa 登录页
@@ -357,7 +365,7 @@ class ExaRegistrar:
             api_key = await asyncio.get_event_loop().run_in_executor(
                 None,
                 _run_sync_in_clean_thread,
-                register_exa, email, password, get_code_fn, REGISTER_HEADLESS
+                register_exa, email, password, get_code_fn, REGISTER_HEADLESS, proxy
             )
 
             if api_key:

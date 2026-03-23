@@ -268,13 +268,15 @@ def _extract_api_key(page, timeout: int = 20) -> str | None:
 
 
 def register_tavily_with_google(account: dict,
-                                headless: bool = True) -> dict | None:
+                                headless: bool = True,
+                                proxy: str | None = None) -> dict | None:
     """
     使用 Google 账号通过 OAuth 注册/登录 Tavily，提取 API Key。
 
     Args:
         account: {"email", "password", "totp_secret", ...}
         headless: 是否无头模式
+        proxy: 代理地址，如 socks5://127.0.0.1:1080
 
     Returns:
         {"email": ..., "api_key": ..., "provider": "tavily"} 或 None
@@ -285,11 +287,18 @@ def register_tavily_with_google(account: dict,
 
     logger.info(f"Starting Tavily registration via Google: {email}")
 
+    # 构建 Camoufox 代理配置
+    proxy_cfg = None
+    if proxy:
+        proxy_cfg = {"server": proxy}
+        logger.info(f"Using proxy: {proxy}")
+
     try:
         from camoufox.sync_api import Camoufox
         from camoufox import DefaultAddons
 
-        with Camoufox(headless=headless, exclude_addons=[DefaultAddons.UBO]) as browser:
+        with Camoufox(headless=headless, exclude_addons=[DefaultAddons.UBO],
+                      proxy=proxy_cfg) as browser:
             page = browser.new_page()
 
             # ── Step 1: 打开 Tavily sign-in 页面 ──
@@ -663,7 +672,7 @@ class TavilyRegistrar:
                     None,
                     _run_sync_in_clean_thread,
                     register_tavily_with_google,
-                    account, REGISTER_HEADLESS,
+                    account, REGISTER_HEADLESS, proxy,
                 )
                 if result:
                     results.append(result)
