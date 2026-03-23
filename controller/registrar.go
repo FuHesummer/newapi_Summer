@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/QuantumNous/new-api/common"
+	"github.com/QuantumNous/new-api/constant"
 	"github.com/QuantumNous/new-api/model"
 	"github.com/QuantumNous/new-api/pkg/registrar"
 	"github.com/QuantumNous/new-api/setting"
@@ -258,11 +260,43 @@ func GetDomainStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": domains})
 }
 
+// channelTypeModels 各渠道类型对应的模型列表
+var channelTypeModels = map[int]string{
+	constant.ChannelTypeExa:     "exa-search,exa-contents,exa-find-similar,exa-answer",
+	constant.ChannelTypeTavily:  "tavily-search,tavily-extract,tavily-crawl,tavily-map",
+	constant.ChannelTypeAugment: "augment-chat,augment-codebase-retrieval",
+}
+
+// channelTypeNames 各渠道类型对应的渠道名称
+var channelTypeNames = map[int]string{
+	constant.ChannelTypeExa:     "Exa (Auto)",
+	constant.ChannelTypeTavily:  "Tavily (Auto)",
+	constant.ChannelTypeAugment: "Augment (Auto)",
+}
+
 // appendKeyToChannel 将 Key 追加到指定类型的第一个 Channel
+// 如果该类型没有 Channel，自动创建一个（多 key 轮询模式）
 func appendKeyToChannel(channelType int, key string) error {
 	channels, err := model.GetChannelsByType(0, 1, false, channelType)
 	if err != nil || len(channels) == 0 {
-		return fmt.Errorf("no channel found for type %d", channelType)
+		// 自动创建渠道
+		common.SysLog(fmt.Sprintf("No channel found for type %d, auto-creating...", channelType))
+		emptyStr := ""
+		newCh := &model.Channel{
+			Type:        channelType,
+			Name:        channelTypeNames[channelType],
+			Key:         key,
+			Status:      1,
+			Models:      channelTypeModels[channelType],
+			BaseURL:     &emptyStr, // 空字符串让 GetBaseURL() 自动从 ChannelBaseURLs 取默认值
+			Group:       "default",
+			CreatedTime: time.Now().Unix(),
+		}
+		if insertErr := newCh.Insert(); insertErr != nil {
+			return fmt.Errorf("auto-create channel failed: %v", insertErr)
+		}
+		common.SysLog(fmt.Sprintf("Auto-created channel '%s' (type=%d) with first key", newCh.Name, channelType))
+		return nil
 	}
 
 	ch := channels[0]
