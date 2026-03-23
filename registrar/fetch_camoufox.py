@@ -1,29 +1,29 @@
 """下载 Camoufox 浏览器二进制文件（支持 GitHub 代理加速）
 
-camoufox 内部: install() -> self.download_file(temp_file, self.url)
-download_file(self, temp_file, url) -> webdl(url, buffer=file)
+直接 patch requests.get，在最底层拦截所有 GitHub HTTP 请求。
 """
-import camoufox.pkgman as pm
+import requests
 
-_original_download_file = pm.CamoufoxFetcher.download_file
+_original_get = requests.get
 
-def _patched_download_file(self, temp_file, url):
-    """拦截 download_file，替换 GitHub URL 为代理地址"""
-    if url and 'github.com' in url:
+def _proxied_get(url, **kwargs):
+    if isinstance(url, str) and 'github.com' in url:
         proxies = [
-            ('ghgo.xyz', url.replace('https://github.com', 'https://ghgo.xyz/https://github.com')),
             ('ghfast.top', url.replace('https://github.com', 'https://ghfast.top/https://github.com')),
+            ('ghgo.xyz', url.replace('https://github.com', 'https://ghgo.xyz/https://github.com')),
         ]
         for name, proxy_url in proxies:
             print(f'[camoufox] Trying {name}: {proxy_url}', flush=True)
             try:
-                return _original_download_file(self, temp_file, proxy_url)
+                resp = _original_get(proxy_url, **kwargs)
+                resp.raise_for_status()
+                return resp
             except Exception as e:
                 print(f'[camoufox] {name} failed: {e}', flush=True)
-        print(f'[camoufox] All proxies failed, using direct: {url}', flush=True)
-    return _original_download_file(self, temp_file, url)
+        print(f'[camoufox] All proxies failed, direct: {url}', flush=True)
+    return _original_get(url, **kwargs)
 
-pm.CamoufoxFetcher.download_file = _patched_download_file
+requests.get = _proxied_get
 
 from camoufox.__main__ import CamoufoxUpdate
 CamoufoxUpdate().update()
