@@ -36,15 +36,28 @@ func (a *Adaptor) GetRequestURL(info *relaycommon.RelayInfo) (string, error) {
 }
 
 func (a *Adaptor) SetupRequestHeader(c *gin.Context, req *http.Header, info *relaycommon.RelayInfo) error {
-	channel.SetupApiRequestHeader(info, c, req)
+	// 不调用 channel.SetupApiRequestHeader — 需要完全控制请求头
+	// acemcp-relay 会过滤掉客户端传来的所有敏感头，只保留安全的头
 	req.Set("Authorization", "Bearer "+info.ApiKey)
 	req.Set("Content-Type", "application/json")
 	req.Set("Accept", "application/json")
-	// 伪装 User-Agent
+
+	// 伪装 CLI/插件 请求头（关键：每个请求随机生成，模拟不同用户/会话）
 	req.Set("User-Agent", GetRandomUA())
-	// 伪装 Request ID 和 Session ID
 	req.Set("X-Request-Id", GenerateID())
 	req.Set("X-Request-Session-Id", GenerateID())
+
+	// 过滤掉客户端传入的危险头（防止泄露真实信息或干扰上游）
+	// 参考 acemcp-relay 的 skipRequestHeaders
+	for _, h := range []string{
+		"X-Forwarded-For", "X-Forwarded-Proto", "X-Forwarded-Host",
+		"X-Real-Ip", "X-Original-Uri", "Via",
+		"Sentry-Trace", "Baggage",
+		"Proxy-Authorization", "Proxy-Connection",
+	} {
+		req.Del(h)
+	}
+
 	return nil
 }
 
@@ -86,6 +99,13 @@ func (a *Adaptor) DoRequest(c *gin.Context, info *relaycommon.RelayInfo, request
 
 func (a *Adaptor) DoResponse(c *gin.Context, resp *http.Response, info *relaycommon.RelayInfo) (usage any, err *types.NewAPIError) {
 	path := info.RequestURLPath
+
+	// 拦截端点 → 直接返回 200，不转发到上游（防 trace）
+	if interceptedEndpoints[path] {
+		defer resp.Body.Close()
+		c.JSON(http.StatusOK, gin.H{})
+		return nil, nil
+	}
 
 	// SSE 流式端点 → 流式转发
 	if sseEndpoints[path] {
@@ -150,11 +170,29 @@ func (a *Adaptor) handleGetModelsResponse(c *gin.Context, resp *http.Response, i
 	return nil, nil
 }
 
-// handleDirectResponse 直接透传响应
+// handleDirectResponse 直接透传响应（过滤危险响应头）
 func (a *Adaptor) handleDirectResponse(c *gin.Context, resp *http.Response, info *relaycommon.RelayInfo) (any, *types.NewAPIError) {
 	defer resp.Body.Close()
 
+	// 参考 acemcp-relay 的 skipResponseHeaders，过滤 hop-by-hop 和代理头
+	skipHeaders := map[string]bool{
+		"Connection":          true,
+		"Keep-Alive":          true,
+		"Transfer-Encoding":   true,
+		"Te":                  true,
+		"Trailer":             true,
+		"Upgrade":             true,
+		"Proxy-Authorization": true,
+		"Proxy-Authenticate":  true,
+		"Content-Length":      true,
+		"Content-Encoding":    true,
+		"Alt-Svc":             true,
+	}
+
 	for k, v := range resp.Header {
+		if skipHeaders[k] {
+			continue
+		}
 		for _, vv := range v {
 			c.Writer.Header().Add(k, vv)
 		}
