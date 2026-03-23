@@ -121,6 +121,26 @@ func (c *Client) RegisterExa(count int, proxy string) (*RegisterResponse, error)
 	return &result, nil
 }
 
+// RegisterAce 调用 sidecar 注册 Augment Code 账号
+func (c *Client) RegisterAce(count int, proxy string) (*RegisterResponse, error) {
+	body := fmt.Sprintf(`{"count":%d,"proxy":"%s"}`, count, proxy)
+	resp, err := c.HTTPClient.Post(
+		c.BaseURL+"/register/ace",
+		"application/json",
+		bytes.NewReader([]byte(body)),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("sidecar request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	var result RegisterResponse
+	if err := common.DecodeJson(resp.Body, &result); err != nil {
+		return nil, fmt.Errorf("sidecar response decode failed: %w", err)
+	}
+	return &result, nil
+}
+
 // Health 健康检查
 func (c *Client) Health() error {
 	resp, err := c.HTTPClient.Get(c.BaseURL + "/health")

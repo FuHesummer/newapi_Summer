@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from exa_registrar import ExaRegistrar
 from tavily_registrar import TavilyRegistrar
+from ace_registrar import AceRegistrar
 from domain_breaker import DomainBreaker
 from duckmail_client import DuckMailClient
 
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Registrar sidecar started (Exa + Tavily-Google)")
+    logger.info("Registrar sidecar started (Exa + Tavily-Google + ACE)")
     try:
         domains_list = await mail_client.get_available_domains()
         for d in domains_list:
@@ -28,6 +29,7 @@ app = FastAPI(title="Registrar Sidecar", version="3.0.0", lifespan=lifespan)
 breaker = DomainBreaker()
 exa_registrar = ExaRegistrar(breaker)
 tavily_registrar = TavilyRegistrar(breaker)
+ace_registrar = AceRegistrar(breaker)
 mail_client = DuckMailClient()
 
 
@@ -92,9 +94,34 @@ async def register_tavily(req: TavilyGoogleRegisterRequest):
 
 # ── 通用 ──
 
+# ── ACE 注册（DuckMail OTP） ──
+
+class AceRegisterRequest(BaseModel):
+    count: int = 1
+    proxy: str | None = None
+
+
+@app.post("/register/ace")
+async def register_ace(req: AceRegisterRequest):
+    try:
+        results = await ace_registrar.batch_register(count=req.count, proxy=req.proxy)
+        successful = [r for r in results if "api_key" in r]
+        failed = [r for r in results if "error" in r]
+        return {
+            "success": True,
+            "total": len(results),
+            "successful": len(successful),
+            "failed": len(failed),
+            "keys": successful,
+            "errors": failed,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "registrar", "providers": ["exa", "tavily-google"]}
+    return {"status": "ok", "service": "registrar", "providers": ["exa", "tavily-google", "ace"]}
 
 
 @app.get("/domains")

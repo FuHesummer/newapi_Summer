@@ -147,6 +147,8 @@ export default function RegistrarPage() {
   // Exa 手动注册
   const [exaRegisterLoading, setExaRegisterLoading] = useState(false);
   const [exaRegisterCount, setExaRegisterCount] = useState(1);
+  const [aceRegisterLoading, setAceRegisterLoading] = useState(false);
+  const [aceRegisterCount, setAceRegisterCount] = useState(1);
 
   const loadStatus = async () => {
     setLoading(true);
@@ -259,6 +261,25 @@ export default function RegistrarPage() {
       showError(t('注册失败'));
     }
     setExaRegisterLoading(false);
+  };
+
+  const handleAceRegister = async () => {
+    setAceRegisterLoading(true);
+    try {
+      const res = await API.post('/api/registrar/trigger', {
+        provider: 'ace',
+        count: aceRegisterCount,
+      });
+      if (res.data.success) {
+        showSuccess(res.data.message);
+        loadStatus();
+      } else {
+        showError(res.data.message);
+      }
+    } catch (e) {
+      showError(t('注册失败'));
+    }
+    setAceRegisterLoading(false);
   };
 
   const handleImport = async () => {
@@ -514,6 +535,35 @@ export default function RegistrarPage() {
           </div>
         </Card>
 
+        {/* ACE 注册操作 */}
+        <Card
+          style={{ marginBottom: 20 }}
+          title={t('ACE 注册')}
+        >
+          <Space>
+            <InputNumber
+              min={1}
+              max={10}
+              value={aceRegisterCount}
+              onChange={(v) => setAceRegisterCount(v)}
+              style={{ width: 80 }}
+            />
+            <Button
+              type='primary'
+              loading={aceRegisterLoading}
+              onClick={handleAceRegister}
+              disabled={!status?.enabled}
+            >
+              {t('自动注册 ACE')}
+            </Button>
+          </Space>
+          <div style={{ marginTop: 8 }}>
+            <Text type='tertiary' size='small'>
+              {t('Augment Code 使用 DuckMail 临时邮箱 OTP 验证自动注册。')}
+            </Text>
+          </div>
+        </Card>
+
         {/* 三种渠道 Key 池 */}
         <KeyPoolCard
           provider='tavily'
@@ -531,6 +581,7 @@ export default function RegistrarPage() {
           provider='augment'
           pool={status?.augment}
           t={t}
+          showWaterline
         />
 
         {/* 域名熔断状态 */}

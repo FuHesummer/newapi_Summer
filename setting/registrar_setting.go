@@ -8,6 +8,7 @@ type RegistrarSetting struct {
 	SidecarURL        string `json:"sidecar_url"`        // Python sidecar 地址
 	TavilyMinKeys     int    `json:"tavily_min_keys"`    // Tavily 最低水位线
 	ExaMinKeys        int    `json:"exa_min_keys"`       // Exa 最低水位线
+	AceMinKeys        int    `json:"ace_min_keys"`       // Augment Code 最低水位线
 	CheckIntervalMin  int    `json:"check_interval_min"` // 检查间隔（分钟）
 	RegistrationProxy string `json:"registration_proxy"` // 注册用代理
 	AutoReplenish     bool   `json:"auto_replenish"`     // 是否自动补号
@@ -18,6 +19,7 @@ var registrarSetting = RegistrarSetting{
 	SidecarURL:        "http://registrar:8081",
 	TavilyMinKeys:     5,
 	ExaMinKeys:        5,
+	AceMinKeys:        5,
 	CheckIntervalMin:  30,
 	RegistrationProxy: "",
 	AutoReplenish:     false,

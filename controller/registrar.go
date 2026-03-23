@@ -22,7 +22,7 @@ func TriggerRegistration(c *gin.Context) {
 	}
 
 	var req struct {
-		Provider string `json:"provider"` // "tavily" or "exa"
+		Provider string `json:"provider"` // "tavily", "exa", or "ace"
 		Count    int    `json:"count"`
 		Proxy    string `json:"proxy"`
 		Accounts string `json:"accounts"` // Tavily Google 账号批量导入（email|password|recovery|2fa|region 格式，多行）
@@ -93,6 +93,31 @@ func TriggerRegistration(c *gin.Context) {
 		for _, key := range result.Keys {
 			if key.APIKey != "" {
 				if err := appendKeyToChannel(58, key.APIKey); err != nil { // 58 = ChannelTypeExa
+					common.SysLog(fmt.Sprintf("Failed to import key %s: %s", key.APIKey[:10], err.Error()))
+				} else {
+					importedCount++
+				}
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success":       true,
+			"message":       fmt.Sprintf("注册 %d 个，成功 %d 个，已导入 %d 个 Key", result.Total, result.Successful, importedCount),
+			"data":          result,
+			"imported_count": importedCount,
+		})
+	case "ace":
+		result, err := client.RegisterAce(req.Count, proxy)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+			return
+		}
+
+		// 将成功的 Key 自动写入 Augment Channel
+		importedCount := 0
+		for _, key := range result.Keys {
+			if key.APIKey != "" {
+				if err := appendKeyToChannel(60, key.APIKey); err != nil { // 60 = ChannelTypeAugment
 					common.SysLog(fmt.Sprintf("Failed to import key %s: %s", key.APIKey[:10], err.Error()))
 				} else {
 					importedCount++
@@ -195,6 +220,8 @@ func GetRegistrarStatus(c *gin.Context) {
 	exaPool.BelowWaterline = exaPool.ActiveKeys < cfg.ExaMinKeys
 
 	augmentPool := buildProviderPool(60)
+	augmentPool.MinKeys = cfg.AceMinKeys
+	augmentPool.BelowWaterline = augmentPool.ActiveKeys < cfg.AceMinKeys
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
