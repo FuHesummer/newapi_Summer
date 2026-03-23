@@ -74,7 +74,7 @@ if [ "$ENABLE_REGISTRAR" = "true" ]; then
     cd "$REPO_DIR"
     # 设置 remote 为镜像地址加速拉取
     git remote set-url origin "$REPO_URL_MIRROR" 2>/dev/null || true
-    git fetch origin "$REPO_BRANCH" || {
+    git -c http.version=HTTP/1.1 fetch origin "$REPO_BRANCH" || {
       warn "镜像拉取失败，尝试直连 GitHub..."
       git remote set-url origin "$REPO_URL_ORIGIN"
       git fetch origin "$REPO_BRANCH" || error "源码同步失败"
@@ -86,9 +86,16 @@ if [ "$ENABLE_REGISTRAR" = "true" ]; then
   else
     info "首次部署，从 GitHub 克隆注册机源码 (via mirror)..."
     rm -rf "$REPO_DIR"
-    git clone --branch "$REPO_BRANCH" --depth 1 "$REPO_URL_MIRROR" "$REPO_DIR" || {
-      warn "镜像克隆失败，尝试直连 GitHub..."
-      git clone --branch "$REPO_BRANCH" --depth 1 "$REPO_URL_ORIGIN" "$REPO_DIR" || error "克隆仓库失败"
+    # 镜像1: ghgo.xyz
+    git clone --branch "$REPO_BRANCH" --depth 1 -c http.version=HTTP/1.1 "$REPO_URL_MIRROR" "$REPO_DIR" 2>/dev/null || {
+      warn "镜像 ghgo.xyz 克隆失败，尝试 ghfast.top..."
+      rm -rf "$REPO_DIR"
+      MIRROR2="https://ghfast.top/https://github.com/FuHesummer/newapi_Summer.git"
+      git clone --branch "$REPO_BRANCH" --depth 1 -c http.version=HTTP/1.1 "$MIRROR2" "$REPO_DIR" 2>/dev/null || {
+        warn "镜像 ghfast.top 克隆失败，尝试直连 GitHub..."
+        rm -rf "$REPO_DIR"
+        git clone --branch "$REPO_BRANCH" --depth 1 "$REPO_URL_ORIGIN" "$REPO_DIR" || error "克隆仓库失败"
+      }
     }
     # 把 remote 改回原始地址，方便后续 fetch
     cd "$REPO_DIR"
