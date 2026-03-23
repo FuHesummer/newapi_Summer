@@ -4,8 +4,7 @@ import time
 import random
 import asyncio
 import logging
-
-from camoufox.sync_api import Camoufox
+import threading
 
 from duckmail_client import DuckMailClient
 from domain_breaker import DomainBreaker
@@ -16,6 +15,38 @@ from config import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _run_sync_in_clean_thread(fn, *args, **kwargs):
+    """在没有 asyncio event loop 的干净线程中运行同步函数。
+
+    Playwright/Camoufox Sync API 检测当前线程是否有 asyncio loop，
+    如果有就报错。FastAPI/uvicorn 的线程池继承了主线程的 loop，
+    所以 asyncio.to_thread 也不行。
+
+    解决方案：手动创建新线程，在新线程里清除 event loop 后再运行。
+    """
+    result = [None]
+    error = [None]
+
+    def worker():
+        # 清除当前线程的 event loop（新线程默认没有，但以防万一）
+        try:
+            asyncio.set_event_loop(None)
+        except Exception:
+            pass
+        try:
+            result[0] = fn(*args, **kwargs)
+        except Exception as e:
+            error[0] = e
+
+    t = threading.Thread(target=worker, daemon=True)
+    t.start()
+    t.join(timeout=300)  # 最多等 5 分钟
+
+    if error[0]:
+        raise error[0]
+    return result[0]
 
 
 def _fill_first_input(page, selectors: list[str], value: str) -> str | None:
@@ -106,6 +137,9 @@ def register_exa(email: str, password: str, get_code_fn=None,
     logger.info(f"Starting Exa registration: {email}")
 
     try:
+        # 在函数内部导入 Camoufox，确保在独立进程中使用
+        from camoufox.sync_api import Camoufox
+
         with Camoufox(headless=headless) as browser:
             page = browser.new_page()
 
@@ -317,8 +351,11 @@ class ExaRegistrar:
                     elapsed += 3
                 return None
 
-            # Camoufox 是同步的，在线程池中运行
-            api_key = await asyncio.to_thread(
+            # Camoufox Sync API 不能在有 asyncio event loop 的线程中运行
+            # 使用干净线程来执行，避免 "Playwright Sync API inside asyncio loop" 错误
+            api_key = await asyncio.get_event_loop().run_in_executor(
+                None,
+                _run_sync_in_clean_thread,
                 register_exa, email, password, get_code_fn, REGISTER_HEADLESS
             )
 

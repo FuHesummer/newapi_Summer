@@ -4,8 +4,7 @@ import time
 import random
 import asyncio
 import logging
-
-from camoufox.sync_api import Camoufox
+import threading
 
 from domain_breaker import DomainBreaker
 from config import REGISTRATION_PROXY, COOLDOWN_BASE, COOLDOWN_JITTER, REGISTER_HEADLESS
@@ -13,6 +12,30 @@ from config import REGISTRATION_PROXY, COOLDOWN_BASE, COOLDOWN_JITTER, REGISTER_
 logger = logging.getLogger(__name__)
 
 TAVILY_SIGNIN_URL = "https://app.tavily.com/sign-in"
+
+
+def _run_sync_in_clean_thread(fn, *args, **kwargs):
+    """在没有 asyncio event loop 的干净线程中运行同步函数。"""
+    result = [None]
+    error = [None]
+
+    def worker():
+        try:
+            asyncio.set_event_loop(None)
+        except Exception:
+            pass
+        try:
+            result[0] = fn(*args, **kwargs)
+        except Exception as e:
+            error[0] = e
+
+    t = threading.Thread(target=worker, daemon=True)
+    t.start()
+    t.join(timeout=300)
+
+    if error[0]:
+        raise error[0]
+    return result[0]
 
 
 def _parse_google_accounts(text: str) -> list[dict]:
@@ -263,6 +286,8 @@ def register_tavily_with_google(account: dict,
     logger.info(f"Starting Tavily registration via Google: {email}")
 
     try:
+        from camoufox.sync_api import Camoufox
+
         with Camoufox(headless=headless) as browser:
             page = browser.new_page()
 
@@ -626,7 +651,9 @@ class TavilyRegistrar:
 
         for i, account in enumerate(accounts):
             try:
-                result = await asyncio.to_thread(
+                result = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    _run_sync_in_clean_thread,
                     register_tavily_with_google,
                     account, REGISTER_HEADLESS,
                 )
