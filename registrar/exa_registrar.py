@@ -140,7 +140,7 @@ def register_exa(email: str, password: str, get_code_fn=None,
         # 在函数内部导入 Camoufox，确保在独立进程中使用
         from camoufox.sync_api import Camoufox
 
-        with Camoufox(headless=headless) as browser:
+        with Camoufox(headless=headless, exclude_addons=True) as browser:
             page = browser.new_page()
 
             # Step 1: 打开 Exa 登录页
