@@ -287,8 +287,9 @@ def register_tavily_with_google(account: dict,
 
     try:
         from camoufox.sync_api import Camoufox
+        from camoufox import DefaultAddons
 
-        with Camoufox(headless=headless, exclude_addons=True) as browser:
+        with Camoufox(headless=headless, exclude_addons=[DefaultAddons.UBO]) as browser:
             page = browser.new_page()
 
             # ── Step 1: 打开 Tavily sign-in 页面 ──
