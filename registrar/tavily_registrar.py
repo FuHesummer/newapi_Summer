@@ -306,7 +306,14 @@ def register_tavily_with_google(account: dict,
             if not google_btn:
                 logger.error("Google login button not found")
                 return None
-            google_btn.click()
+
+            # 使用 no_wait_after 避免等待 OAuth 跳转导航完成超时
+            try:
+                google_btn.click(no_wait_after=True, timeout=10000)
+            except Exception:
+                # 降级：用 JS 点击
+                page.evaluate("el => el.click()", google_btn)
+            # 等待跳转到 Google 登录页
             time.sleep(5)
 
             # ── Step 3: Google 登录 - 填邮箱 ──
