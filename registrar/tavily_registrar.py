@@ -288,10 +288,20 @@ def register_tavily_with_google(account: dict,
     logger.info(f"Starting Tavily registration via Google: {email}")
 
     # 构建 Camoufox 代理配置
+    # Playwright 要求 server/username/password 分开传，不能嵌在 URL 里
     proxy_cfg = None
     if proxy:
-        proxy_cfg = {"server": proxy}
-        logger.info(f"Using proxy: {proxy}")
+        from urllib.parse import urlparse
+        parsed = urlparse(proxy)
+        if parsed.username:
+            proxy_cfg = {
+                "server": f"{parsed.scheme}://{parsed.hostname}:{parsed.port}",
+                "username": parsed.username,
+                "password": parsed.password or "",
+            }
+        else:
+            proxy_cfg = {"server": proxy}
+        logger.info(f"Using proxy: {parsed.scheme}://{parsed.hostname}:{parsed.port}")
 
     try:
         from camoufox.sync_api import Camoufox

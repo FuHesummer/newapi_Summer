@@ -138,10 +138,20 @@ def register_exa(email: str, password: str, get_code_fn=None,
     logger.info(f"Starting Exa registration: {email}")
 
     # 构建 Camoufox 代理配置
+    # Playwright 要求 server/username/password 分开传
     proxy_cfg = None
     if proxy:
-        proxy_cfg = {"server": proxy}
-        logger.info(f"Using proxy: {proxy}")
+        from urllib.parse import urlparse
+        parsed = urlparse(proxy)
+        if parsed.username:
+            proxy_cfg = {
+                "server": f"{parsed.scheme}://{parsed.hostname}:{parsed.port}",
+                "username": parsed.username,
+                "password": parsed.password or "",
+            }
+        else:
+            proxy_cfg = {"server": proxy}
+        logger.info(f"Using proxy: {parsed.scheme}://{parsed.hostname}:{parsed.port}")
 
     try:
         # 在函数内部导入 Camoufox，确保在独立进程中使用
