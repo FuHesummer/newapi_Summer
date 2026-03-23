@@ -236,6 +236,12 @@ func GetRegistrarStatus(c *gin.Context) {
 	})
 }
 
+// aceSessionData ACE saveSession JSON 格式
+type aceSessionData struct {
+	AccessToken string `json:"accessToken"`
+	TenantURL   string `json:"tenantURL"`
+}
+
 // ImportKeys 批量导入 Key
 func ImportKeys(c *gin.Context) {
 	var req struct {
@@ -247,6 +253,28 @@ func ImportKeys(c *gin.Context) {
 		return
 	}
 
+	// ACE (type=60) 支持 saveSession JSON 格式批量导入
+	// 格式: {"accessToken":"xxx","tenantURL":"https://d16.api.augmentcode.com/", ...}
+	// 按 tenantURL 分组，每个 tenant 创建/复用一个渠道
+	if req.ChannelType == constant.ChannelTypeAugment {
+		imported, total, errMsg := importAceTokens(req.Keys)
+		if errMsg != "" {
+			c.JSON(http.StatusOK, gin.H{
+				"success": imported > 0,
+				"message": fmt.Sprintf("导入 %d/%d 个 ACE Token。%s", imported, total, errMsg),
+				"data":    imported,
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": fmt.Sprintf("成功导入 %d 个 ACE Token", imported),
+			"data":    imported,
+		})
+		return
+	}
+
+	// Exa / Tavily: 普通 key 导入（一行一个）
 	keys := strings.Split(strings.TrimSpace(req.Keys), "\n")
 	imported := 0
 	for _, key := range keys {
@@ -266,6 +294,122 @@ func ImportKeys(c *gin.Context) {
 		"message": fmt.Sprintf("成功导入 %d 个 Key", imported),
 		"data":    imported,
 	})
+}
+
+// importAceTokens 解析 ACE saveSession JSON 并按 tenantURL 分组导入
+func importAceTokens(keysText string) (imported int, total int, errMsg string) {
+	lines := strings.Split(strings.TrimSpace(keysText), "\n")
+
+	// 按 tenantURL 分组
+	tenantTokens := make(map[string][]string) // tenantURL → []accessToken
+	var parseErrors []string
+
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		total++
+
+		var session aceSessionData
+		if err := common.UnmarshalJsonStr(line, &session); err != nil {
+			// 不是 JSON 格式，当作裸 token 处理
+			tenantTokens[""] = append(tenantTokens[""], line)
+			continue
+		}
+
+		if session.AccessToken == "" {
+			parseErrors = append(parseErrors, fmt.Sprintf("line %d: missing accessToken", total))
+			continue
+		}
+
+		tenantURL := strings.TrimRight(session.TenantURL, "/")
+		tenantTokens[tenantURL] = append(tenantTokens[tenantURL], session.AccessToken)
+	}
+
+	// 逐 tenant 导入
+	for tenantURL, tokens := range tenantTokens {
+		for _, token := range tokens {
+			var err error
+			if tenantURL != "" {
+				err = appendKeyToAceChannel(tenantURL, token)
+			} else {
+				err = appendKeyToChannel(constant.ChannelTypeAugment, token)
+			}
+			if err != nil {
+				common.SysLog(fmt.Sprintf("Failed to import ACE token: %s", err.Error()))
+			} else {
+				imported++
+			}
+		}
+	}
+
+	if len(parseErrors) > 0 {
+		errMsg = strings.Join(parseErrors, "; ")
+	}
+	return
+}
+
+// appendKeyToAceChannel 将 ACE Token 追加到指定 tenantURL 的渠道
+// 如果该 tenantURL 的渠道不存在，自动创建
+func appendKeyToAceChannel(tenantURL string, token string) error {
+	channelType := constant.ChannelTypeAugment
+
+	// 查找已有的 Augment 渠道中 BaseURL 匹配的
+	channels, err := model.GetChannelsByType(0, 100, false, channelType)
+	if err == nil {
+		for _, ch := range channels {
+			fullCh, err := model.GetChannelById(ch.Id, true)
+			if err != nil {
+				continue
+			}
+			chBaseURL := ""
+			if fullCh.BaseURL != nil {
+				chBaseURL = strings.TrimRight(*fullCh.BaseURL, "/")
+			}
+			if chBaseURL == tenantURL {
+				// 找到匹配的渠道，追加 key
+				existingKey := fullCh.Key
+				if existingKey == "" {
+					existingKey = token
+				} else {
+					existingKey = existingKey + "\n" + token
+				}
+				return model.DB.Model(&model.Channel{}).Where("id = ?", ch.Id).Update("key", existingKey).Error
+			}
+		}
+	}
+
+	// 没找到匹配的渠道，自动创建
+	common.SysLog(fmt.Sprintf("No ACE channel found for tenant %s, auto-creating...", tenantURL))
+	newCh := &model.Channel{
+		Type:        channelType,
+		Name:        fmt.Sprintf("Augment (%s)", extractTenantName(tenantURL)),
+		Key:         token,
+		Status:      1,
+		Models:      channelTypeModels[channelType],
+		BaseURL:     &tenantURL,
+		Group:       "default",
+		CreatedTime: time.Now().Unix(),
+	}
+	if insertErr := newCh.Insert(); insertErr != nil {
+		return fmt.Errorf("auto-create ACE channel failed: %v", insertErr)
+	}
+	common.SysLog(fmt.Sprintf("Auto-created ACE channel for tenant '%s'", tenantURL))
+	return nil
+}
+
+// extractTenantName 从 tenantURL 提取简短名称
+func extractTenantName(tenantURL string) string {
+	// https://d16.api.augmentcode.com/ → d16
+	tenantURL = strings.TrimRight(tenantURL, "/")
+	tenantURL = strings.TrimPrefix(tenantURL, "https://")
+	tenantURL = strings.TrimPrefix(tenantURL, "http://")
+	parts := strings.Split(tenantURL, ".")
+	if len(parts) > 0 {
+		return parts[0]
+	}
+	return tenantURL
 }
 
 // GetDomainStatus 获取域名熔断状态

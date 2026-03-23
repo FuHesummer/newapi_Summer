@@ -725,14 +725,27 @@ export default function RegistrarPage() {
             />
           </div>
           <div>
-            <Text strong>{t('Key 列表（一行一个）')}</Text>
+            <Text strong>
+              {importType === 60
+                ? t('ACE Token（一行一个 saveSession JSON）')
+                : t('Key 列表（一行一个）')}
+            </Text>
             <TextArea
-              placeholder={t('粘贴 Key，一行一个')}
+              placeholder={
+                importType === 60
+                  ? '{"accessToken":"38e697c1...","tenantURL":"https://d16.api.augmentcode.com/",...}\n{"accessToken":"abc123...","tenantURL":"https://d8.api.augmentcode.com/",...}'
+                  : t('粘贴 Key，一行一个')
+              }
               value={importKeys}
               onChange={(v) => setImportKeys(v)}
               autosize={{ minRows: 5, maxRows: 10 }}
-              style={{ marginTop: 4 }}
+              style={{ marginTop: 4, fontFamily: 'monospace', fontSize: 12 }}
             />
+            {importType === 60 && (
+              <Text type='tertiary' size='small' style={{ marginTop: 4 }}>
+                {t('支持 saveSession JSON 格式，系统会按 tenantURL 自动分组创建渠道。也支持直接粘贴裸 token。')}
+              </Text>
+            )}
           </div>
         </Modal>
 
