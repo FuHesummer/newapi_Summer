@@ -435,7 +435,7 @@ func GetDomainStatus(c *gin.Context) {
 var channelTypeModels = map[int]string{
 	constant.ChannelTypeExa:     "exa-search,exa-contents,exa-find-similar,exa-answer",
 	constant.ChannelTypeTavily:  "tavily-search,tavily-extract,tavily-crawl,tavily-map",
-	constant.ChannelTypeAugment: "augment-chat,augment-codebase-retrieval",
+	constant.ChannelTypeAugment: "augment-codebase-retrieval",
 }
 
 // channelTypeNames 各渠道类型对应的渠道名称

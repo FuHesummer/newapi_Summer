@@ -8,7 +8,6 @@ import (
 )
 
 var ModelList = []string{
-	"augment-chat",
 	"augment-codebase-retrieval",
 }
 
@@ -47,12 +46,11 @@ var interceptedEndpoints = map[string]bool{
 	"/augment/record-request-events": true,
 	"/augment/report-error":          true,
 	"/augment/prompt-enhancer":       true, // 提示词增强会扣额度，拦截
+	"/augment/chat-stream":           true, // 聊天会扣额度，拦截
 }
 
-// SSE 流式端点
-var sseEndpoints = map[string]bool{
-	"/augment/chat-stream": true,
-}
+// SSE 流式端点（已无，chat-stream 被拦截）
+var sseEndpoints = map[string]bool{}
 
 func GetRandomUA() string {
 	return fakeUserAgents[rand.Intn(len(fakeUserAgents))]
