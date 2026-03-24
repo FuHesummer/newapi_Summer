@@ -64,6 +64,16 @@ func GetAllUserTokens(userId int, startIdx int, num int) ([]*Token, error) {
 	return tokens, err
 }
 
+// SyncTokenGroupByUser 把指定用户下所有 Token.Group == oldGroup 的令牌更新为 newGroup
+// 返回受影响行数
+func SyncTokenGroupByUser(userId int, oldGroup string, newGroup string) (int64, error) {
+	result := DB.Model(&Token{}).
+		Where("user_id = ? AND deleted_at IS NULL", userId).
+		Where(commonGroupCol+" = ?", oldGroup).
+		Update(commonGroupCol, newGroup)
+	return result.RowsAffected, result.Error
+}
+
 // sanitizeLikePattern 校验并清洗用户输入的 LIKE 搜索模式。
 // 规则：
 //  1. 转义 ! 和 _（使用 ! 作为 ESCAPE 字符，兼容 MySQL/PostgreSQL/SQLite）

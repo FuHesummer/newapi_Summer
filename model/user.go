@@ -1038,6 +1038,13 @@ func (user *User) FillUserByLinuxDOId() error {
 	return err
 }
 
+// GetAllLinuxDOUsers 获取所有已绑定 LinuxDO 的用户（linux_do_id 非空）
+func GetAllLinuxDOUsers() ([]*User, error) {
+	var users []*User
+	err := DB.Where("linux_do_id != '' AND linux_do_id IS NOT NULL AND deleted_at IS NULL").Find(&users).Error
+	return users, err
+}
+
 func RootUserExists() bool {
 	var user User
 	err := DB.Where("role = ?", common.RoleRootUser).First(&user).Error

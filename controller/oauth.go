@@ -403,6 +403,9 @@ func applyLinuxDOAutoGroup(c *gin.Context, user *model.User, oauthUser *oauth.OA
 		return
 	}
 
+	// 记录旧分组用于令牌同步
+	oldGroup := user.Group
+
 	// 更新用户分组
 	user.Group = targetGroup
 	if err := user.Update(false); err != nil {
@@ -415,4 +418,22 @@ func applyLinuxDOAutoGroup(c *gin.Context, user *model.User, oauthUser *oauth.OA
 	model.UpdateUserGroupCache(user.Id, targetGroup)
 	logger.LogInfo(c.Request.Context(), fmt.Sprintf("[OAuth-LinuxDO] Updated user %d group to %s (trust_level=%d)",
 		user.Id, targetGroup, trustLevel))
+
+	// 同步更新该用户下所有使用旧分组的令牌
+	if oldGroup != "" {
+		syncTokenGroupForUser(c, user.Id, oldGroup, targetGroup)
+	}
+}
+
+// syncTokenGroupForUser 当用户分组变更时，把该用户所有 Token.Group == oldGroup 的令牌更新为 newGroup
+func syncTokenGroupForUser(c *gin.Context, userId int, oldGroup string, newGroup string) {
+	count, err := model.SyncTokenGroupByUser(userId, oldGroup, newGroup)
+	if err != nil {
+		logger.LogError(c.Request.Context(), fmt.Sprintf("[OAuth-LinuxDO] Failed to sync tokens for user %d: %s", userId, err.Error()))
+		return
+	}
+	if count > 0 {
+		logger.LogInfo(c.Request.Context(), fmt.Sprintf("[OAuth-LinuxDO] Synced %d tokens for user %d: %s -> %s",
+			count, userId, oldGroup, newGroup))
+	}
 }

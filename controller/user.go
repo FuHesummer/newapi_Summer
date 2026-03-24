@@ -877,6 +877,91 @@ func BatchSetGroupByRemark(c *gin.Context) {
 	})
 }
 
+// SyncLinuxDOGroups 批量同步所有已绑定 LinuxDO 用户的分组
+// 遍历所有 linux_do_id 非空的用户，调用 LinuxDO API 获取最新 trust_level，更新分组和令牌
+func SyncLinuxDOGroups(c *gin.Context) {
+	if !setting.IsLinuxDOAutoGroupEnabled() {
+		c.JSON(http.StatusOK, gin.H{"success": false, "message": "LinuxDO 自动分组未启用"})
+		return
+	}
+
+	users, err := model.GetAllLinuxDOUsers()
+	if err != nil {
+		common.ApiError(c, err)
+		return
+	}
+
+	if len(users) == 0 {
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": "没有已绑定 LinuxDO 的用户", "data": 0})
+		return
+	}
+
+	updated := 0
+	skipped := 0
+	tokensSynced := int64(0)
+	var errs []string
+
+	for _, user := range users {
+		// 调用 LinuxDO API 获取 trust_level
+		trustLevel, fetchErr := service.FetchLinuxDOTrustLevel(user.LinuxDOId)
+		if fetchErr != nil {
+			errs = append(errs, fmt.Sprintf("user %d (linuxdo_id=%s): %s", user.Id, user.LinuxDOId, fetchErr.Error()))
+			continue
+		}
+
+		targetGroup, found := setting.GetGroupForTrustLevel(trustLevel)
+		if !found {
+			skipped++
+			continue
+		}
+
+		if user.Group == targetGroup {
+			skipped++
+			continue
+		}
+
+		// 管理员手动设置的非 LinuxDO 分组不覆盖
+		if user.Group != "default" && !setting.IsLinuxDOManagedGroup(user.Group) {
+			skipped++
+			continue
+		}
+
+		oldGroup := user.Group
+		user.Group = targetGroup
+		if err := user.Update(false); err != nil {
+			errs = append(errs, fmt.Sprintf("user %d update failed: %s", user.Id, err.Error()))
+			continue
+		}
+		model.UpdateUserGroupCache(user.Id, targetGroup)
+
+		// 同步令牌
+		if oldGroup != "" {
+			count, _ := model.SyncTokenGroupByUser(user.Id, oldGroup, targetGroup)
+			tokensSynced += count
+		}
+
+		updated++
+	}
+
+	msg := fmt.Sprintf("同步完成：共 %d 个用户，更新 %d 个，跳过 %d 个，同步令牌 %d 个",
+		len(users), updated, skipped, tokensSynced)
+	if len(errs) > 0 {
+		msg += fmt.Sprintf("，%d 个错误", len(errs))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": msg,
+		"data": gin.H{
+			"total":         len(users),
+			"updated":       updated,
+			"skipped":       skipped,
+			"tokens_synced": tokensSynced,
+			"errors":        errs,
+		},
+	})
+}
+
 // ManageUser Only admin user can do this
 func ManageUser(c *gin.Context) {
 	var req ManageRequest
