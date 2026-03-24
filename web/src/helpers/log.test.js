@@ -17,18 +17,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 
-export function getLogOther(otherStr) {
-  if (otherStr === undefined || otherStr === null || otherStr === '') {
-    return {};
-  }
-  if (typeof otherStr === 'object') {
-    return otherStr ?? {};
-  }
-  try {
-    const parsed = JSON.parse(otherStr);
-    return parsed && typeof parsed === 'object' ? parsed : {};
-  } catch (e) {
-    console.error(`Failed to parse record.other: "${otherStr}".`, e);
-    return {};
-  }
-}
+import test from 'node:test';
+import assert from 'node:assert/strict';
+
+import { getLogOther } from './log.js';
+
+test('getLogOther returns empty object for string null payload', () => {
+  assert.deepEqual(getLogOther('null'), {});
+});
+
+test('getLogOther returns empty object for invalid json payload', () => {
+  assert.deepEqual(getLogOther('{invalid json}'), {});
+});
