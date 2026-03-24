@@ -104,12 +104,18 @@ func SearchAPIRelay(c *gin.Context) {
 		}
 	}
 	model.RecordConsumeLog(c, userId, model.RecordConsumeLogParams{
-		ChannelId:    channelId,
-		ModelName:    modelName,
-		TokenName:    tokenName,
-		TokenId:      tokenId,
-		Group:        group,
-		Content:      fmt.Sprintf("status=%d path=%s", resp.StatusCode, c.Request.URL.Path),
+		ChannelId: channelId,
+		ModelName: modelName,
+		TokenName: tokenName,
+		TokenId:   tokenId,
+		Group:     group,
+		Content:   fmt.Sprintf("status=%d path=%s", resp.StatusCode, c.Request.URL.Path),
+		Other: map[string]interface{}{
+			"model_ratio":      1,
+			"model_price":      0,
+			"completion_ratio": 1,
+			"group_ratio":      1,
+		},
 	})
 
 	// 处理上游错误 — 自动禁用 Key
@@ -195,6 +201,12 @@ func AugmentAPIRelay(c *gin.Context) {
 		TokenId:   c.GetInt("token_id"),
 		Group:     c.GetString("group"),
 		Content:   fmt.Sprintf("status=%d path=%s", resp.StatusCode, path),
+		Other: map[string]interface{}{
+			"model_ratio":      1,
+			"model_price":      0,
+			"completion_ratio": 1,
+			"group_ratio":      1,
+		},
 	})
 
 	// SSE 流式转发
