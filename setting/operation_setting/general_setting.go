@@ -20,6 +20,8 @@ type GeneralSetting struct {
 	CustomCurrencySymbol string `json:"custom_currency_symbol"`
 	// 自定义货币与美元汇率（1 USD = X Custom）
 	CustomCurrencyExchangeRate float64 `json:"custom_currency_exchange_rate"`
+	// 管理员全局控制：是否在日志中记录用户 IP
+	RecordIpLogEnabled bool `json:"record_ip_log_enabled"`
 }
 
 // 默认配置
@@ -88,4 +90,9 @@ func GetUsdToCurrencyRate(usdToCny float64) float64 {
 	default:
 		return 1
 	}
+}
+
+// IsRecordIpLogEnabled 管理员是否开启了全局 IP 记录
+func IsRecordIpLogEnabled() bool {
+	return generalSetting.RecordIpLogEnabled
 }

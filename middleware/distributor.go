@@ -265,6 +265,19 @@ func getModelRequest(c *gin.Context) (*ModelRequest, bool, error) {
 			modelRequest.Model = modelName
 		}
 		c.Set("relay_mode", relayMode)
+	} else if strings.HasPrefix(c.Request.URL.Path, "/exa/") {
+		// Exa Search API — 根据路径映射模型名
+		segment := strings.TrimPrefix(c.Request.URL.Path, "/exa/")
+		segment = strings.SplitN(segment, "/", 2)[0]
+		modelRequest.Model = "exa-" + segment // exa-search, exa-contents, exa-findSimilar, exa-answer
+	} else if strings.HasPrefix(c.Request.URL.Path, "/tavily/") {
+		// Tavily Search API — 根据路径映射模型名
+		segment := strings.TrimPrefix(c.Request.URL.Path, "/tavily/")
+		segment = strings.SplitN(segment, "/", 2)[0]
+		modelRequest.Model = "tavily-" + segment // tavily-search, tavily-extract, tavily-crawl, tavily-map
+	} else if strings.HasPrefix(c.Request.URL.Path, "/augment/") {
+		// Augment Code API — 所有端点统一用 augment-codebase-retrieval 模型做路由
+		modelRequest.Model = "augment-codebase-retrieval"
 	} else if !strings.HasPrefix(c.Request.URL.Path, "/v1/audio/transcriptions") && !strings.Contains(c.Request.Header.Get("Content-Type"), "multipart/form-data") {
 		req, err := getModelFromRequest(c)
 		if err != nil {

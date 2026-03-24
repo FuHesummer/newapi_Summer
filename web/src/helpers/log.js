@@ -22,12 +22,13 @@ export function getLogOther(otherStr) {
     return {};
   }
   if (typeof otherStr === 'object') {
-    return otherStr;
+    return otherStr ?? {};
   }
   try {
-    return JSON.parse(otherStr);
+    const parsed = JSON.parse(otherStr);
+    return parsed && typeof parsed === 'object' ? parsed : {};
   } catch (e) {
     console.error(`Failed to parse record.other: "${otherStr}".`, e);
-    return null;
+    return {};
   }
 }

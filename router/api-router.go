@@ -120,6 +120,7 @@ func SetApiRouter(router *gin.Engine) {
 				adminRoute.GET("/:id", controller.GetUser)
 				adminRoute.POST("/", controller.CreateUser)
 				adminRoute.POST("/manage", controller.ManageUser)
+				adminRoute.POST("/batch/group", controller.BatchSetGroupByRemark)
 				adminRoute.PUT("/", controller.UpdateUser)
 				adminRoute.DELETE("/:id", controller.DeleteUser)
 				adminRoute.DELETE("/:id/reset_passkey", controller.AdminResetPasskey)
@@ -128,6 +129,16 @@ func SetApiRouter(router *gin.Engine) {
 				adminRoute.GET("/2fa/stats", controller.Admin2FAStats)
 				adminRoute.DELETE("/:id/2fa", controller.AdminDisable2FA)
 			}
+		}
+
+		// Registrar management (root only)
+		registrarRoute := apiRouter.Group("/registrar")
+		registrarRoute.Use(middleware.RootAuth())
+		{
+			registrarRoute.POST("/trigger", controller.TriggerRegistration)
+			registrarRoute.GET("/status", controller.GetRegistrarStatus)
+			registrarRoute.POST("/import", controller.ImportKeys)
+			registrarRoute.GET("/domains", controller.GetDomainStatus)
 		}
 
 		// Subscription billing (plans, purchase, admin management)

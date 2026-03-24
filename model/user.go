@@ -288,6 +288,23 @@ func SearchUsers(keyword string, group string, startIdx int, num int) ([]*User, 
 	return users, total, nil
 }
 
+// BatchUpdateGroupByRemark 按备注精确匹配批量更新用户分组
+func BatchUpdateGroupByRemark(remark string, group string) (int64, error) {
+	result := DB.Model(&User{}).
+		Where("remark = ? AND deleted_at IS NULL", remark).
+		Update(commonGroupCol, group)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	// 逐个清除缓存
+	var userIds []int
+	DB.Model(&User{}).Where("remark = ? AND deleted_at IS NULL", remark).Pluck("id", &userIds)
+	for _, id := range userIds {
+		_ = UpdateUserGroupCache(id, group)
+	}
+	return result.RowsAffected, nil
+}
+
 func GetUserById(id int, selectAll bool) (*User, error) {
 	if id == 0 {
 		return nil, errors.New("id 为空！")

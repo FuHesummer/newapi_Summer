@@ -50,9 +50,10 @@ func HasCheckedInToday(userId int) (bool, error) {
 }
 
 // UserCheckin 执行用户签到
+// userGroup 用于获取该分组的签到额度范围（分组级配置优先，无配置时用全局默认）
 // MySQL 和 PostgreSQL 使用事务保证原子性
 // SQLite 不支持嵌套事务，使用顺序操作 + 手动回滚
-func UserCheckin(userId int) (*Checkin, error) {
+func UserCheckin(userId int, userGroup string) (*Checkin, error) {
 	setting := operation_setting.GetCheckinSetting()
 	if !setting.Enabled {
 		return nil, errors.New("签到功能未启用")
@@ -67,10 +68,13 @@ func UserCheckin(userId int) (*Checkin, error) {
 		return nil, errors.New("今日已签到")
 	}
 
+	// 获取分组级签到额度范围
+	minQuota, maxQuota := operation_setting.GetCheckinQuotaRangeForGroup(userGroup)
+
 	// 计算随机额度奖励
-	quotaAwarded := setting.MinQuota
-	if setting.MaxQuota > setting.MinQuota {
-		quotaAwarded = setting.MinQuota + rand.Intn(setting.MaxQuota-setting.MinQuota+1)
+	quotaAwarded := minQuota
+	if maxQuota > minQuota {
+		quotaAwarded = minQuota + rand.Intn(maxQuota-minQuota+1)
 	}
 
 	today := time.Now().Format("2006-01-02")

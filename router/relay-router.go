@@ -189,6 +189,46 @@ func SetRelayRouter(router *gin.Engine) {
 			controller.Relay(c, types.RelayFormatGemini)
 		})
 	}
+
+	// Exa Search API
+	exaRouter := router.Group("/exa")
+	exaRouter.Use(middleware.SystemPerformanceCheck())
+	exaRouter.Use(middleware.TokenAuth(), middleware.Distribute())
+	{
+		exaRouter.POST("/search", controller.SearchAPIRelay)
+		exaRouter.POST("/contents", controller.SearchAPIRelay)
+		exaRouter.POST("/findSimilar", controller.SearchAPIRelay)
+		exaRouter.POST("/answer", controller.SearchAPIRelay)
+	}
+
+	// Tavily Search API
+	tavilyRouter := router.Group("/tavily")
+	tavilyRouter.Use(middleware.SystemPerformanceCheck())
+	tavilyRouter.Use(middleware.TokenAuth(), middleware.Distribute())
+	{
+		tavilyRouter.POST("/search", controller.SearchAPIRelay)
+		tavilyRouter.POST("/extract", controller.SearchAPIRelay)
+		tavilyRouter.POST("/crawl", controller.SearchAPIRelay)
+		tavilyRouter.POST("/map", controller.SearchAPIRelay)
+	}
+
+	// Augment Code API
+	augmentRouter := router.Group("/augment")
+	augmentRouter.Use(middleware.SystemPerformanceCheck())
+	augmentRouter.Use(middleware.TokenAuth(), middleware.Distribute())
+	{
+		augmentRouter.POST("/chat-stream", controller.AugmentInterceptRelay)       // 扣额度，拦截
+		augmentRouter.POST("/prompt-enhancer", controller.AugmentInterceptRelay)   // 扣额度，拦截
+		augmentRouter.POST("/record-request-events", controller.AugmentInterceptRelay) // 追踪，拦截
+		augmentRouter.POST("/report-error", controller.AugmentInterceptRelay)      // 追踪，拦截
+		augmentRouter.POST("/codebase-retrieval", controller.SearchAPIRelay)
+		augmentRouter.POST("/agents/codebase-retrieval", controller.SearchAPIRelay)
+		augmentRouter.POST("/agents/list-remote-tools", controller.AugmentAPIRelay)
+		augmentRouter.POST("/get-models", controller.AugmentAPIRelay)
+		augmentRouter.POST("/batch-upload", controller.SearchAPIRelay)
+		augmentRouter.POST("/find-missing", controller.SearchAPIRelay)
+		augmentRouter.POST("/checkpoint-blobs", controller.SearchAPIRelay)
+	}
 }
 
 func registerMjRouterGroup(relayMjRouter *gin.RouterGroup) {

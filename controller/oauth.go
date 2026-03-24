@@ -7,8 +7,10 @@ import (
 
 	"github.com/QuantumNous/new-api/common"
 	"github.com/QuantumNous/new-api/i18n"
+	"github.com/QuantumNous/new-api/logger"
 	"github.com/QuantumNous/new-api/model"
 	"github.com/QuantumNous/new-api/oauth"
+	"github.com/QuantumNous/new-api/setting"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -116,6 +118,9 @@ func HandleOAuth(c *gin.Context) {
 		}
 		return
 	}
+
+	// 7.5 Apply LinuxDO auto group based on trust_level
+	applyLinuxDOAutoGroup(c, user, oauthUser, providerName)
 
 	// 8. Check user status
 	if user.Status != common.UserStatusEnabled {
@@ -357,4 +362,57 @@ func handleOAuthError(c *gin.Context, err error) {
 	default:
 		common.ApiError(c, err)
 	}
+}
+
+// applyLinuxDOAutoGroup 根据 LinuxDO trust_level 自动设置/更新用户分组
+func applyLinuxDOAutoGroup(c *gin.Context, user *model.User, oauthUser *oauth.OAuthUser, providerName string) {
+	if providerName != "linuxdo" {
+		return
+	}
+	if !setting.IsLinuxDOAutoGroupEnabled() {
+		return
+	}
+
+	// 从 oauthUser.Extra 获取 trust_level
+	trustLevelRaw, ok := oauthUser.Extra["trust_level"]
+	if !ok {
+		return
+	}
+	trustLevel, ok := trustLevelRaw.(int)
+	if !ok {
+		// 尝试 float64（JSON 解码可能产生 float64）
+		if f, ok2 := trustLevelRaw.(float64); ok2 {
+			trustLevel = int(f)
+		} else {
+			return
+		}
+	}
+
+	targetGroup, found := setting.GetGroupForTrustLevel(trustLevel)
+	if !found {
+		return
+	}
+
+	// 如果当前 Group 已经是目标，无需操作
+	if user.Group == targetGroup {
+		return
+	}
+
+	// 如果当前 Group 不是 LinuxDO 管辖范围内的（管理员手动设置的非 linuxdo 分组），不覆盖
+	if user.Group != "default" && !setting.IsLinuxDOManagedGroup(user.Group) {
+		return
+	}
+
+	// 更新用户分组
+	user.Group = targetGroup
+	if err := user.Update(false); err != nil {
+		logger.LogError(c.Request.Context(), fmt.Sprintf("[OAuth-LinuxDO] Failed to update user %d group to %s: %s",
+			user.Id, targetGroup, err.Error()))
+		return
+	}
+
+	// 更新缓存
+	model.UpdateUserGroupCache(user.Id, targetGroup)
+	logger.LogInfo(c.Request.Context(), fmt.Sprintf("[OAuth-LinuxDO] Updated user %d group to %s (trust_level=%d)",
+		user.Id, targetGroup, trustLevel))
 }

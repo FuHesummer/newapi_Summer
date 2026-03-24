@@ -8,6 +8,13 @@ import (
 )
 
 func GetUserUsableGroups(userGroup string) map[string]string {
+	// 如果启用了 LinuxDO 分组锁定，且该用户在 LinuxDO 管辖范围内，严格锁定
+	if setting.IsLinuxDOGroupLocked() && setting.IsLinuxDOManagedGroup(userGroup) {
+		return map[string]string{
+			userGroup: "LinuxDO " + userGroup,
+		}
+	}
+
 	groupsCopy := setting.GetUserUsableGroupsCopy()
 	if userGroup != "" {
 		specialSettings, b := ratio_setting.GetGroupRatioSetting().GroupSpecialUsableGroup.Get(userGroup)
