@@ -91,9 +91,26 @@ func SearchAPIRelay(c *gin.Context) {
 	defer resp.Body.Close()
 
 	// 记录日志
-	model.RecordLog(userId, model.LogTypeConsume,
-		fmt.Sprintf("SearchAPI relay: channel=%d path=%s status=%d token=%s group=%s",
-			channelId, c.Request.URL.Path, resp.StatusCode, tokenName, group))
+	modelName := c.GetString("request_model")
+	if modelName == "" {
+		// 从路径推断模型名
+		switch {
+		case strings.HasPrefix(c.Request.URL.Path, "/exa"):
+			modelName = "exa-" + strings.TrimPrefix(strings.SplitN(strings.TrimPrefix(c.Request.URL.Path, "/exa/"), "/", 2)[0], "")
+		case strings.HasPrefix(c.Request.URL.Path, "/tavily"):
+			modelName = "tavily-" + strings.TrimPrefix(strings.SplitN(strings.TrimPrefix(c.Request.URL.Path, "/tavily/"), "/", 2)[0], "")
+		case strings.HasPrefix(c.Request.URL.Path, "/augment"):
+			modelName = "augment-codebase-retrieval"
+		}
+	}
+	model.RecordConsumeLog(c, userId, model.RecordConsumeLogParams{
+		ChannelId:    channelId,
+		ModelName:    modelName,
+		TokenName:    tokenName,
+		TokenId:      tokenId,
+		Group:        group,
+		Content:      fmt.Sprintf("status=%d path=%s", resp.StatusCode, c.Request.URL.Path),
+	})
 
 	// 处理上游错误 — 自动禁用 Key
 	if resp.StatusCode == 401 || resp.StatusCode == 403 {
@@ -171,9 +188,14 @@ func AugmentAPIRelay(c *gin.Context) {
 	}
 	defer resp.Body.Close()
 
-	model.RecordLog(userId, model.LogTypeConsume,
-		fmt.Sprintf("Augment relay: channel=%d path=%s status=%d token=%s",
-			channelId, path, resp.StatusCode, tokenName))
+	model.RecordConsumeLog(c, userId, model.RecordConsumeLogParams{
+		ChannelId: channelId,
+		ModelName: "augment-codebase-retrieval",
+		TokenName: tokenName,
+		TokenId:   c.GetInt("token_id"),
+		Group:     c.GetString("group"),
+		Content:   fmt.Sprintf("status=%d path=%s", resp.StatusCode, path),
+	})
 
 	// SSE 流式转发
 	if augment.IsSSEEndpoint(path) {
