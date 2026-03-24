@@ -219,10 +219,13 @@ func SetRelayRouter(router *gin.Engine) {
 	{
 		augmentRouter.POST("/chat-stream", controller.AugmentAPIRelay)
 		augmentRouter.POST("/codebase-retrieval", controller.SearchAPIRelay)
+		augmentRouter.POST("/agents/codebase-retrieval", controller.SearchAPIRelay)
+		augmentRouter.POST("/agents/list-remote-tools", controller.AugmentAPIRelay)
 		augmentRouter.POST("/get-models", controller.AugmentAPIRelay)
 		augmentRouter.POST("/prompt-enhancer", controller.AugmentAPIRelay)
 		augmentRouter.POST("/batch-upload", controller.SearchAPIRelay)
 		augmentRouter.POST("/find-missing", controller.SearchAPIRelay)
+		augmentRouter.POST("/checkpoint-blobs", controller.SearchAPIRelay)
 		augmentRouter.POST("/record-request-events", controller.AugmentInterceptRelay)
 		augmentRouter.POST("/report-error", controller.AugmentInterceptRelay)
 	}

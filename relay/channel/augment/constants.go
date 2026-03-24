@@ -29,14 +29,17 @@ var fakeUserAgents = []string{
 
 // 端点路径映射：new-api 路径 → 上游路径
 var endpointMapping = map[string]string{
-	"/augment/chat-stream":           "/chat-stream",
-	"/augment/codebase-retrieval":    "/agents/codebase-retrieval",
-	"/augment/get-models":            "/get-models",
-	"/augment/prompt-enhancer":       "/prompt-enhancer",
-	"/augment/batch-upload":          "/batch-upload",
-	"/augment/find-missing":          "/find-missing",
-	"/augment/record-request-events": "/record-request-events",
-	"/augment/report-error":          "/report-error",
+	"/augment/chat-stream":                "/chat-stream",
+	"/augment/codebase-retrieval":         "/agents/codebase-retrieval",
+	"/augment/agents/codebase-retrieval":  "/agents/codebase-retrieval",
+	"/augment/agents/list-remote-tools":   "/agents/list-remote-tools",
+	"/augment/get-models":                 "/get-models",
+	"/augment/prompt-enhancer":            "/prompt-enhancer",
+	"/augment/batch-upload":               "/batch-upload",
+	"/augment/find-missing":               "/find-missing",
+	"/augment/checkpoint-blobs":           "/checkpoint-blobs",
+	"/augment/record-request-events":      "/record-request-events",
+	"/augment/report-error":               "/report-error",
 }
 
 // 需要拦截（不转发到上游）的端点
